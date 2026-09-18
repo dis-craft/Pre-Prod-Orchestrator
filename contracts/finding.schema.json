@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SecurityFinding",
+  "type": "object",
+  "required": ["id", "tool", "rule", "severity", "file", "line", "message", "confidence"],
+  "properties": {
+    "id": {"type": "string"},
+    "tool": {"type": "string"},
+    "rule": {"type": "string"},
+    "severity": {"type": "string", "enum": ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "file": {"type": "string"},
+    "line": {"type": "integer", "minimum": 1},
+    "end_line": {"type": "integer", "minimum": 1},
+    "message": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "fixability": {"type": "string", "enum": ["AUTO", "AI_ASSISTED", "HUMAN_ONLY", "UNKNOWN"]},
+    "metadata": {"type": "object", "additionalProperties": true}
+  },
+  "additionalProperties": false
+}
