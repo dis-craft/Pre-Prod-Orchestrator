@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RemediationResult",
+  "type": "object",
+  "required": ["finding_id", "status", "patch"],
+  "properties": {
+    "finding_id": {"type": "string"},
+    "status": {"type": "string", "enum": ["PROPOSED", "VALIDATED", "REJECTED"]},
+    "patch": {"type": "string"},
+    "summary": {"type": "string"},
+    "tests": {"type": "array", "items": {"type": "object"}},
+    "security_rescan": {"type": "object"},
+    "evidence": {"type": "object", "additionalProperties": true}
+  },
+  "additionalProperties": false
+}
