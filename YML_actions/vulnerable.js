@@ -7,7 +7,7 @@ app.use(express.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "SuperSecret123!",
+  password: process.env.DB_PASSWORD,
   database: "users"
 });
 
@@ -15,9 +15,7 @@ const db = mysql.createConnection({
 app.get("/user", (req, res) => {
   const username = req.query.username;
 
-  const query = `SELECT * FROM users WHERE username = '${username}'`;
-
-  db.query(query, (err, results) => {
+  db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
     if (err) return res.status(500).send(err.message);
     res.json(results);
   });

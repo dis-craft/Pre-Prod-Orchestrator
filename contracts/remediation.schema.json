@@ -2,15 +2,31 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "RemediationResult",
   "type": "object",
-  "required": ["finding_id", "status", "patch"],
+  "required": ["finding_id", "status"],
   "properties": {
     "finding_id": {"type": "string"},
-    "status": {"type": "string", "enum": ["PROPOSED", "VALIDATED", "REJECTED"]},
+    "status": {"type": "string", "enum": ["PROPOSED", "APPLIED", "VALIDATED", "REJECTED", "SKIPPED", "FAILED"]},
     "patch": {"type": "string"},
     "summary": {"type": "string"},
+    "edits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "start_line", "end_line", "original", "replacement", "explanation"],
+        "properties": {
+          "file": {"type": "string"},
+          "start_line": {"type": "integer"},
+          "end_line": {"type": "integer"},
+          "original": {"type": "string"},
+          "replacement": {"type": "string"},
+          "explanation": {"type": "string"}
+        }
+      }
+    },
     "tests": {"type": "array", "items": {"type": "object"}},
     "security_rescan": {"type": "object"},
-    "evidence": {"type": "object", "additionalProperties": true}
+    "evidence": {"type": "object", "additionalProperties": true},
+    "error": {"type": ["string", "null"]}
   },
   "additionalProperties": false
 }
