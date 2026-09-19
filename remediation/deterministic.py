@@ -27,15 +27,24 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     line = lines[index]
     # Narrow audited pattern: SQL text is built from one variable concatenation.
     pattern = re.compile(
-        r'''(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*)'\s*\+\s*'''
-        r'''(?P<var>[A-Za-z_]\w*)\s*\+\s*'(?P<suffix>[^"]*)"'''
+        r'''^(?P<indent>\\s*)query\\s*=\\s*"(?P<left>.*?)"\\s*\\+\\s*'''
+        r'''(?P<var>[A-Za-z_]\\w*)\\s*\\+\\s*"(?P<right>.*?)"\\s*$'''
     )
-    match = pattern.fullmatch(line.rstrip("\n"))
+    match = pattern.match(line.rstrip("\\n"))
     if not match:
         raise NoDeterministicFix("no audited SQL concatenation pattern found")
-    prefix = match.group("prefix")
-    suffix = match.group("suffix")
-    replacement = f'{match.group("indent")}query = "{prefix}?{suffix}"' + ("\n" if line.endswith("\n") else "")
+
+    left = match.group("left")
+    right = match.group("right")
+    if not (left.endswith("'") and right.startswith("'")):
+        raise NoDeterministicFix("SQL concatenation does not match the audited quoted-value pattern")
+
+    prefix = left[:-1]
+    suffix = right[1:]
+    replacement = (
+        f'{match.group("indent")}query = "{prefix}?{suffix}"'
+        + ("\\n" if line.endswith("\\n") else "")
+    )
     new_lines = list(lines)
     new_lines[index] = replacement
     execute_index = next((j for j in range(index + 1, min(index + 6, len(new_lines))) if "execute(query" in new_lines[j]), None)
