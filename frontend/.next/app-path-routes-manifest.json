@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/audit/page": "/audit",
+  "/dashboard/page": "/dashboard",
+  "/favicon.ico/route": "/favicon.ico",
+  "/findings/[findingId]/page": "/findings/[findingId]",
+  "/findings/page": "/findings",
+  "/page": "/",
+  "/pull-requests/[prId]/page": "/pull-requests/[prId]",
+  "/pull-requests/page": "/pull-requests",
+  "/remediation/[remediationId]/page": "/remediation/[remediationId]",
+  "/repositories/[repo]/page": "/repositories/[repo]",
+  "/repositories/page": "/repositories",
+  "/settings/page": "/settings",
+  "/validation/[validationId]/page": "/validation/[validationId]"
+}
