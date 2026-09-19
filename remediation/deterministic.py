@@ -9,7 +9,6 @@ class NoDeterministicFix(Exception):
     pass
 
 def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> RemediationProposal:
-    """Fix only the audited Python qmark-SQL fixture pattern."""
     if "sql" not in finding.rule.lower() and "injection" not in finding.message.lower():
         raise NoDeterministicFix("finding is not classified as SQL injection")
     root = Path(repo_path).resolve()
@@ -27,31 +26,21 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
         raise NoDeterministicFix("finding line is outside the file")
     line = lines[index]
     pattern = re.compile(
-        r'(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*)"\s*\+\s*'
-        r'(?P<var>[A-Za-z_]\w*)\s*\+\s*"(?P<suffix>[^"]*)"'
+        r'(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*)\s*\'?"?\s*\+\s*'
+        r'(?P<var>[A-Za-z_]\w*)\s*\+\s*"\'?(?P<suffix>[^"]*)"'
     )
     match = pattern.fullmatch(line.rstrip("\n"))
     if not match:
         raise NoDeterministicFix("no audited SQL concatenation pattern found")
-    var = match.group("var")
-    replacement = (
-        f'{match.group("indent")}query = "'
-        f'{match.group("prefix")}?{match.group("suffix")}"'
-        + ("\n" if line.endswith("\n") else "")
-    )
+    prefix = match.group("prefix").rstrip()
+    suffix = match.group("suffix").lstrip()
+    replacement = f'{match.group("indent")}query = "{prefix}?{suffix}"' + ("\n" if line.endswith("\n") else "")
     new_lines = list(lines)
     new_lines[index] = replacement
-    execute_index = None
-    for j in range(index + 1, min(index + 6, len(new_lines))):
-        if "execute(query" in new_lines[j]:
-            execute_index = j
-            break
+    execute_index = next((j for j in range(index + 1, min(index + 6, len(new_lines))) if "execute(query" in new_lines[j]), None)
     if execute_index is None:
         raise NoDeterministicFix("could not locate execute(query) call")
-    execute_line = new_lines[execute_index]
-    if f"execute(query, ({var},))" not in execute_line:
-        execute_line = execute_line.replace("execute(query)", f"execute(query, ({var},))")
-    new_lines[execute_index] = execute_line
+    new_lines[execute_index] = new_lines[execute_index].replace("execute(query)", f"execute(query, ({match.group('var')},))")
     after = "".join(new_lines)
     if after == before:
         raise NoDeterministicFix("deterministic rule produced no change")
