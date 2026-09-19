@@ -79,6 +79,32 @@ export interface Validation {
   completedAt?: string;
 }
 
+export interface CICheck {
+  id: string;
+  workflowName: string;
+  checkName: string;
+  status: 'QUEUED' | 'IN_PROGRESS' | 'COMPLETED';
+  conclusion: 'SUCCESS' | 'FAILURE' | 'CANCELLED' | 'SKIPPED' | 'UNKNOWN' | 'UNAVAILABLE';
+  commitSha?: string;
+  branch?: string;
+  startedAt?: string;
+  completedAt?: string;
+  durationMs?: number;
+  url?: string;
+  failureSummary?: string;
+}
+
+export interface PlatformEvidenceItem {
+  id: string;
+  type: 'TEST_REPORT' | 'SECURITY_SCAN' | 'CI_RESULT' | 'DIFF' | 'VALIDATION_OUTPUT' | 'ARTIFACT' | 'LOG_REFERENCE';
+  source: string;
+  title: string;
+  createdAt: string;
+  commitSha?: string;
+  reference?: string;
+  metadata: Record<string, unknown>;
+}
+
 export interface PullRequest {
   id: string;
   number: number;
