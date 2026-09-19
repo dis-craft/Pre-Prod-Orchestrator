@@ -25,9 +25,10 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     if not 0 <= index < len(lines):
         raise NoDeterministicFix("finding line is outside the file")
     line = lines[index]
+    # Narrow fixture pattern: "... = 'prefix'" + variable + "'suffix'"
     pattern = re.compile(
-        r'(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*)\s*\'?"?\s*\+\s*'
-        r'(?P<var>[A-Za-z_]\w*)\s*\+\s*"\'?(?P<suffix>[^"]*)"'
+        r"(?P<indent>\s*)query\s*=\s*\"(?P<prefix>[^\"]*?)(?:')?\"\s*\+\s*"
+        r"(?P<var>[A-Za-z_]\w*)\s*\+\s*\"(?:')?(?P<suffix>[^\"]*)\""
     )
     match = pattern.fullmatch(line.rstrip("\n"))
     if not match:
@@ -40,7 +41,9 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     execute_index = next((j for j in range(index + 1, min(index + 6, len(new_lines))) if "execute(query" in new_lines[j]), None)
     if execute_index is None:
         raise NoDeterministicFix("could not locate execute(query) call")
-    new_lines[execute_index] = new_lines[execute_index].replace("execute(query)", f"execute(query, ({match.group('var')},))")
+    new_lines[execute_index] = new_lines[execute_index].replace(
+        "execute(query)", f"execute(query, ({match.group('var')},))"
+    )
     after = "".join(new_lines)
     if after == before:
         raise NoDeterministicFix("deterministic rule produced no change")
