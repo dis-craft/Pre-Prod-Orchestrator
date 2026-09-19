@@ -18,11 +18,24 @@ Your only task is to propose the smallest safe source-code patch for the supplie
 security finding. Return JSON only with exactly these fields:
 root_cause (string), patch (unified diff string), tests (array of strings),
 assumptions (array of strings), confidence (number 0..1), risk (LOW|MEDIUM|HIGH).
+Risk describes the implementation risk of applying the proposed patch, not the
+severity of the security finding. A minimal, localized parameterized-query fix
+that preserves the existing API and test behavior should be LOW risk.
 
 The patch must touch only the finding file, must be a minimal unified diff, and
 must not execute commands, add dependencies, or modify CI/config unless that is
-strictly necessary for the finding. If you cannot safely propose a patch, return
-an empty patch, confidence 0, and risk HIGH.
+strictly necessary for the finding. Every hunk must use complete line ranges,
+such as `@@ -1,3 +1,3 @@`; never emit an abbreviated `@@` header. Include the
+unchanged context lines in each hunk. If you cannot safely propose a patch,
+return an empty patch, confidence 0, and risk HIGH.
+
+Example patch format:
+--- a/app.py
++++ b/app.py
+@@ -1,2 +1,2 @@
+ def run(value):
+-    return value + user_input
++    return value
 """
 
 class LLMError(RuntimeError):
@@ -193,11 +206,24 @@ def _post_json(url: str, payload: dict, *, timeout: float, headers: dict[str, st
     body = json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
         url, data=body, method="POST",
-        headers={"Content-Type": "application/json", **(headers or {})},
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "pre-prod-orchestrator/1.0",
+            **(headers or {}),
+        },
     )
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        try:
+            detail = exc.read().decode("utf-8", errors="replace").strip()
+        except OSError:
+            detail = ""
+        suffix = f": {detail[:500]}" if detail else ""
+        if "1010" in detail:
+            suffix += " (request blocked by the provider's Cloudflare access policy; check network/VPN/proxy restrictions or use a permitted API endpoint)"
+        raise LLMError(f"LLM request failed: HTTP {exc.code} {exc.reason}{suffix}") from exc
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise LLMError(f"LLM request failed: {exc}") from exc
 
