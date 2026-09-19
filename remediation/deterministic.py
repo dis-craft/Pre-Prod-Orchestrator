@@ -43,7 +43,7 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     suffix = right[1:]
     replacement = (
         f'{match.group("indent")}query = "{prefix}?{suffix}"'
-        + ("\\n" if line.endswith("\\n") else "")
+        + ("\n" if line.endswith("\n") else "")
     )
     new_lines = list(lines)
     new_lines[index] = replacement
