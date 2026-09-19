@@ -10,4 +10,4 @@ class FakeConnection:
 def test_parameterized_query():
     conn = FakeConnection()
     get_user(conn, "alice")
-    assert conn.calls == [("SELECT * FROM users WHERE name = '?'", ("alice",))]
+    assert conn.calls == [("SELECT * FROM users WHERE name = ?", ("alice",))]
