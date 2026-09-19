@@ -16,6 +16,7 @@ from platform.api.scan_router import router as scan_router
 from platform.api.ci_router import router as ci_router
 from platform.api.evidence_router import router as evidence_router
 from platform.api.workflow_router import router as workflow_router
+from platform.api.dashboard_router import router as dashboard_router
 
 
 app = FastAPI(
@@ -49,5 +50,6 @@ app.include_router(scan_router)
 app.include_router(ci_router)
 app.include_router(evidence_router)
 app.include_router(workflow_router)
+app.include_router(dashboard_router)
 
 logger.info(f"Platform API initialized (app={settings.app_name}, version={settings.version}, env={settings.env})")
