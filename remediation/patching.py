@@ -24,7 +24,7 @@ class PatchError(ValueError):
 
 
 def unified_diff(before: str, after: str, path: str) -> str:
-    if not path or path.startswith("/") or ".." in PurePosixPath(path).parts:
+    if not path or path.startswith("/") or ".." in PurePosixPath(path).parts or ":" in PurePosixPath(path).parts[0]:
         raise PatchError("unsafe patch path")
     diff = difflib.unified_diff(
         before.splitlines(keepends=True),
