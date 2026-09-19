@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 from .models import RemediationProposal, SecurityFinding
 from .patching import PatchError, PatchInspection, inspect_patch
@@ -28,6 +28,7 @@ def validate_proposal(
     finding: SecurityFinding,
     proposal: RemediationProposal,
     *,
+    repo_path: str | Path | None = None,
     max_changed_lines: int = 80,
 ) -> PatchInspection:
     threshold = MIN_CONFIDENCE[finding.severity]
@@ -42,7 +43,7 @@ def validate_proposal(
     try:
         inspection = inspect_patch(
             proposal.patch,
-            allowed_files={finding.file},
+            allowed_files={_allowed_file(finding.file, repo_path)},
             max_changed_lines=max_changed_lines,
         )
     except PatchError as exc:
@@ -59,3 +60,13 @@ def _validate_test_reference(path: str) -> None:
     parts = PurePosixPath(path).parts
     if ".." in parts:
         raise SafetyError(f"test path escapes repository: {path}")
+
+
+def _allowed_file(file: str, repo_path: str | Path | None) -> str:
+    if repo_path is None or not Path(file).is_absolute():
+        return file
+    root = Path(repo_path).resolve()
+    try:
+        return Path(file).resolve().relative_to(root).as_posix()
+    except ValueError as exc:
+        raise SafetyError("finding path escapes repository") from exc

@@ -5,7 +5,7 @@ import re
 import shutil
 import subprocess
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Sequence
 from .models import SecurityFinding, ValidationEvidence
@@ -35,13 +35,14 @@ class DockerSandboxValidator:
         source = Path(repo_path).resolve()
         if not (source / ".git").exists():
             raise SandboxError("repository must contain .git for exact-SHA validation")
+        sandbox_finding = replace(finding, file=self._relative_finding_file(source, finding.file))
         if shutil.which("docker") is None:
             raise SandboxError("docker is required for sandbox validation")
         with tempfile.TemporaryDirectory(prefix="preprod-remediation-") as tmp:
             workspace = Path(tmp) / "repo"
             shutil.copytree(source, workspace, symlinks=False)
             self._git_checkout(workspace, expected_sha)
-            before_scan = self._scan(workspace, finding)
+            before_scan = self._scan(workspace, sandbox_finding)
             self._apply_patch(workspace, patch)
             commands = []
             tests = self._run_container(workspace, self.config.test_command)
@@ -60,9 +61,9 @@ class DockerSandboxValidator:
                 commands.append({"kind": "lint", **lint})
                 if lint["returncode"] != 0:
                     return ValidationEvidence(True, True, None if build is None else True, False, False, 0, commands, error="allowlisted lint failed")
-            after_scan = self._scan(workspace, finding)
-            original_remains = any(self._same_finding(item, finding) for item in after_scan)
-            new_high_critical = sum(1 for item in after_scan if item.get("severity") in {"HIGH","CRITICAL"} and not self._same_finding(item, finding))
+            after_scan = self._scan(workspace, sandbox_finding)
+            original_remains = any(self._same_finding(item, sandbox_finding) for item in after_scan)
+            new_high_critical = sum(1 for item in after_scan if item.get("severity") in {"HIGH","CRITICAL"} and not self._same_finding(item, sandbox_finding))
             return ValidationEvidence(
                 True, True, None if build is None else build["returncode"] == 0,
                 None if lint is None else lint["returncode"] == 0,
@@ -76,6 +77,16 @@ class DockerSandboxValidator:
     def _validate_sha(sha: str) -> None:
         if not _SHA.fullmatch(sha):
             raise SandboxError("expected_sha must be a hexadecimal git SHA")
+
+    @staticmethod
+    def _relative_finding_file(repo: Path, file: str) -> str:
+        path = Path(file)
+        if not path.is_absolute():
+            return path.as_posix()
+        try:
+            return path.resolve().relative_to(repo).as_posix()
+        except ValueError as exc:
+            raise SandboxError("finding path escapes repository") from exc
 
     @staticmethod
     def _git_checkout(workspace: Path, sha: str) -> None:

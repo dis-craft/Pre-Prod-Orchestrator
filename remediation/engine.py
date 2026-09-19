@@ -94,7 +94,7 @@ class RemediationEngine:
                 return self._rejected(finding, f"LLM proposal failed: {exc}", trace=self.trace)
 
         try:
-            inspection = validate_proposal(finding, proposal)
+            inspection = validate_proposal(finding, proposal, repo_path=self.repo_path)
             self._emit(
                 "patch_safety",
                 "passed",
@@ -129,7 +129,7 @@ class RemediationEngine:
         self._emit(
             "validation",
             "completed",
-            status=status,
+            result_status=status,
             patch_applied=evidence.patch_applied,
             tests_passed=evidence.tests_passed,
             original_finding_resolved=evidence.original_finding_resolved,
