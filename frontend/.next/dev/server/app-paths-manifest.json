@@ -1,6 +1,0 @@
-{
-  "/dashboard/page": "app/dashboard/page.js",
-  "/findings/[findingId]/page": "app/findings/[findingId]/page.js",
-  "/findings/page": "app/findings/page.js",
-  "/page": "app/page.js"
-}
