@@ -26,9 +26,12 @@ class SecurityFinding:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "SecurityFinding":
         required = ("id", "tool", "rule", "severity", "file", "line", "message", "confidence")
+        allowed_severities = {"INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"}
         missing = [key for key in required if key not in data]
         if missing:
             raise ValueError(f"finding missing required fields: {missing}")
+        if data["severity"] not in allowed_severities:
+            raise ValueError("invalid finding severity")
         if not 0 <= float(data["confidence"]) <= 1:
             raise ValueError("finding confidence must be between 0 and 1")
         if int(data["line"]) < 1:
@@ -63,6 +66,8 @@ class RemediationProposal:
         missing = [key for key in required if key not in data]
         if missing:
             raise ValueError(f"LLM response missing required fields: {missing}")
+        if set(data) != set(required):
+            raise ValueError("LLM response contains unexpected fields")
         if not isinstance(data["patch"], str):
             raise ValueError("patch must be a string")
         if not 0 <= float(data["confidence"]) <= 1:
