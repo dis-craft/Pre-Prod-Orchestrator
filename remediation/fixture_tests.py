@@ -11,7 +11,7 @@ class FakeConnection:
 def main() -> int:
     conn = FakeConnection()
     get_user(conn, "alice")
-    assert conn.calls == [("SELECT * FROM users WHERE name = '?'", ("alice",))]
+    assert conn.calls == [("SELECT * FROM users WHERE name = ?", ("alice",))]
     return 0
 
 if __name__ == "__main__":
