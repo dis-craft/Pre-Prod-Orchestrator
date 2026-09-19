@@ -6,6 +6,7 @@ from platform.logging import logger
 from platform.errors import register_error_handlers
 from platform.api.health import router as health_router
 from platform.api.router import router as findings_router
+from platform.api.validation_router import router as validation_router
 
 
 app = FastAPI(
@@ -29,5 +30,6 @@ register_error_handlers(app)
 # Include Platform API routers
 app.include_router(health_router)
 app.include_router(findings_router)
+app.include_router(validation_router)
 
 logger.info(f"Platform API initialized (app={settings.app_name}, version={settings.version}, env={settings.env})")
