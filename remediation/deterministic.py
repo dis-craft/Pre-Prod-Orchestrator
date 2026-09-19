@@ -25,16 +25,16 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     if not 0 <= index < len(lines):
         raise NoDeterministicFix("finding line is outside the file")
     line = lines[index]
-    # Narrow fixture pattern: "... = 'prefix'" + variable + "'suffix'"
+    # Narrow audited pattern: SQL text is built from one variable concatenation.
     pattern = re.compile(
-        r"(?P<indent>\s*)query\s*=\s*\"(?P<prefix>[^\"]*?)(?:')?\"\s*\+\s*"
-        r"(?P<var>[A-Za-z_]\w*)\s*\+\s*\"(?:')?(?P<suffix>[^\"]*)\""
+        r'''(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*?)'\s*\+\s*'''
+        r'''(?P<var>[A-Za-z_]\w*)\s*\+\s*'(?P<suffix>[^"]*)"'''
     )
     match = pattern.fullmatch(line.rstrip("\n"))
     if not match:
         raise NoDeterministicFix("no audited SQL concatenation pattern found")
-    prefix = match.group("prefix").rstrip()
-    suffix = match.group("suffix").lstrip()
+    prefix = match.group("prefix")
+    suffix = match.group("suffix")
     replacement = f'{match.group("indent")}query = "{prefix}?{suffix}"' + ("\n" if line.endswith("\n") else "")
     new_lines = list(lines)
     new_lines[index] = replacement
