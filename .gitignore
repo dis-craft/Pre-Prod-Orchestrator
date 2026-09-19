@@ -1,0 +1,175 @@
+# ==============================================================================
+# ENVIRONMENT & SECRETS (NEVER COMMIT THESE)
+# ==============================================================================
+# Local environment variables
+.env
+.env.local
+.env.*.local
+*.env
+*.pem
+*.key
+*.cert
+*.p10
+*.p12
+credentials.json
+client_secret.json
+
+# ==============================================================================
+# OS & SYSTEM FILES
+# ==============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.Trashes
+*.icloud
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]ownloads/
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+~*
+.fuse_hidden*
+.directory
+.trash/
+
+# ==============================================================================
+# IDEs & EDITORS
+# ==============================================================================
+# Visual Studio Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+.history/
+*.code-workspace
+
+# JetBrains (IntelliJ, WebStorm, PyCharm, etc.)
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.suo
+*.user
+*.sln.docstates
+
+# Sublime Text / Atom
+*.sublime-project
+*.sublime-workspace
+.atom/
+
+# ==============================================================================
+# DEPENDENCIES & PACKAGE MANAGERS
+# ==============================================================================
+# Node / JavaScript
+node_modules/
+jspm_packages/
+.npm/
+.eslintcache
+.stylelintcache
+.next/
+.nuxt/
+out/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.poetry/
+.pytest_cache/
+.tox/
+.mypy_cache/
+
+# Java / Maven / Gradle
+target/
+*.class
+.gradle/
+build/
+local.properties
+.mtj.tmp/
+
+# Go
+/bin/
+/pkg/
+/src/
+
+# Ruby
+.bundle/
+vendor/bundle/
+log/*.log
+tmp/
+
+# PHP
+vendor/
+.phpunit.result.cache
+
+# ==============================================================================
+# LOGS, TEMPS, & DIAGNOSTICS
+# ==============================================================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Crash dumps
+drwatsn.log
+_notes
+clearcase.inf
+DropBox
+.dropBox
+SyncToyDir.db
+SyncToyLog.forefront
+
+# Runtime data
+pids
+pid
+*.pid
+*.seed
+*.pid.lock
+
+# ==============================================================================
+# TESTING & COVERAGE
+# ==============================================================================
+coverage/
+.nyc_output/
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.pyo
+
+# ==============================================================================
+# DOCKER & INFRASTRUCTURE (LOCAL ONLY)
+# ==============================================================================
+.docker/
+docker-compose.override.yml
