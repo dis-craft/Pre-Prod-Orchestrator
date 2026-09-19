@@ -4,6 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from platform.config import settings
 from platform.logging import logger
 from platform.errors import register_error_handlers
+from platform.middleware import (
+    SecurityHeadersMiddleware,
+    RequestCorrelationMiddleware,
+    RateLimiterMiddleware
+)
 from platform.api.health import router as health_router
 from platform.api.router import router as findings_router
 from platform.api.validation_router import router as validation_router
@@ -18,6 +23,11 @@ app = FastAPI(
     description="Person 4 Platform API for Pre-Prod Security Remediation Orchestrator",
     version=settings.version
 )
+
+# Configure Security, Correlation, and Rate Limiting Middlewares
+app.add_middleware(RateLimiterMiddleware, max_requests=150, window_seconds=60)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RequestCorrelationMiddleware)
 
 # Configure CORS Middleware
 app.add_middleware(
