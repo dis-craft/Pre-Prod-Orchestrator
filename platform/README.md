@@ -1,56 +1,23 @@
-# Person 4 — CI/CD, Reports & Platform
+# Person 4 — Platform Module (`platform/`)
 
-## Goal
+## Architecture & Responsibilities
 
-Make the system easy to trigger, visible, testable and demonstrable.
+`platform/` is the top-level module owned by **Person 4 (Platform)**. It provides workflow visibility, developer/operator UI, platform API integration, CI status visibility, audit, and reporting.
 
-## Own
+### Module Structure
 
-- `.github/`
-- `reports/`
-- `platform/`
-- integration/demo fixtures
-- dashboard code later under `dashboard/`
+- `platform/frontend/`: Next.js developer/operator frontend application.
+  - UI components and dashboards.
+  - **Service/API Abstraction**: The frontend communicates with backend capabilities through dedicated service/API abstraction layers (`platform/frontend/src/lib/adapters/`), supporting both **Demo Mode** and **Live API Mode**.
 
-## Phase 1 — GitHub Actions
+### Integration Points
 
-Add:
-- PR security workflow;
-- test workflow;
-- SARIF upload;
-- artifact upload for JSON/HTML reports.
+- Platform functionality consumes normalized findings, remediation results, and workflow state via shared contract schemas under `contracts/`.
+- Platform integrates reporting, CI/CD, and dashboard visibility with backend workflow triggers.
 
-Trigger on:
-- pull_request: opened, reopened, synchronize;
-- push to protected branches for final validation.
+### Ownership Boundaries
 
-## Phase 2 — policy gates
+- `platform/` does **not** own scanner implementations (owned by `scanner/`).
+- `platform/` does **not** own patch generation or sandbox verification logic (owned by `remediation/`).
+- `platform/` does **not** duplicate orchestration state machine logic (owned by `orchestrator/`).
 
-Require:
-- tests pass;
-- security scan pass;
-- no unresolved HIGH/CRITICAL findings;
-- remediation PR requires human approval.
-
-## Phase 3 — reports
-
-Generate:
-- per-PR Markdown report;
-- JSON machine report;
-- SARIF;
-- HTML summary;
-- remediation evidence bundle.
-
-## Phase 4 — dashboard
-
-Show:
-- open findings;
-- fixed findings;
-- remediation success rate;
-- mean time to remediation;
-- false-fix/rejection count;
-- scan history.
-
-## Acceptance
-
-A seeded vulnerable demo PR triggers the full CI workflow and leaves a downloadable report artifact.
