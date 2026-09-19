@@ -1,0 +1,1502 @@
+{
+  "schema_version": "1.1",
+  "scan": {
+    "id": "scn_948ddf2dfa41",
+    "trigger": "push",
+    "captured_at": "2026-09-19T09:55:54.632188+00:00",
+    "workflow_run_id": "35436019907",
+    "workflow_url": "https://github.com/dis-craft/Pre-prod-tester/actions/runs/35436019907"
+  },
+  "repository": {
+    "full_name": "dis-craft/Pre-prod-tester",
+    "url": "https://github.com/dis-craft/Pre-prod-tester",
+    "default_branch": "main"
+  },
+  "comparison": {
+    "base_commit": "898ec28b8e48bf2d667d88bf6980b9265ab0e0c2",
+    "target_commit": "948ddf2dfa41ca5b501cd77b5e04d716af9c689e",
+    "range": "898ec28b8e48bf2d667d88bf6980b9265ab0e0c2..948ddf2dfa41ca5b501cd77b5e04d716af9c689e",
+    "method": "git diff two-commit comparison"
+  },
+  "commit": {
+    "before": "898ec28b8e48bf2d667d88bf6980b9265ab0e0c2",
+    "after": "948ddf2dfa41ca5b501cd77b5e04d716af9c689e",
+    "branch": "main",
+    "message": "Merge branch 'main' of https://github.com/dis-craft/Pre-prod-tester",
+    "author": {
+      "name": "dis-craft",
+      "email": "mrsrikart@gmail.com"
+    },
+    "committed_at": "2026-09-19T15:25:36+05:30"
+  },
+  "change_summary": {
+    "files_changed": 1,
+    "additions": 70,
+    "deletions": 0,
+    "net_lines": 70
+  },
+  "changes": {
+    "format": "github-style-unified-diff",
+    "legend": {
+      "added": "+",
+      "removed": "-",
+      "context": " "
+    },
+    "files": [
+      {
+        "path": "vulnerable.js",
+        "status": "A",
+        "additions": 70,
+        "deletions": 0,
+        "added_lines": [
+          {
+            "type": "added",
+            "new_line": 1,
+            "content": "const express = require(\"express\");"
+          },
+          {
+            "type": "added",
+            "new_line": 2,
+            "content": "const mysql = require(\"mysql2\");"
+          },
+          {
+            "type": "added",
+            "new_line": 3,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 4,
+            "content": "const app = express();"
+          },
+          {
+            "type": "added",
+            "new_line": 5,
+            "content": "app.use(express.json());"
+          },
+          {
+            "type": "added",
+            "new_line": 6,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 7,
+            "content": "const db = mysql.createConnection({"
+          },
+          {
+            "type": "added",
+            "new_line": 8,
+            "content": "  host: \"localhost\","
+          },
+          {
+            "type": "added",
+            "new_line": 9,
+            "content": "  user: \"root\","
+          },
+          {
+            "type": "added",
+            "new_line": 10,
+            "content": "  password: \"SuperSecret123!\","
+          },
+          {
+            "type": "added",
+            "new_line": 11,
+            "content": "  database: \"users\""
+          },
+          {
+            "type": "added",
+            "new_line": 12,
+            "content": "});"
+          },
+          {
+            "type": "added",
+            "new_line": 13,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 14,
+            "content": "// SQL Injection"
+          },
+          {
+            "type": "added",
+            "new_line": 15,
+            "content": "app.get(\"/user\", (req, res) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 16,
+            "content": "  const username = req.query.username;"
+          },
+          {
+            "type": "added",
+            "new_line": 17,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 18,
+            "content": "  const query = `SELECT * FROM users WHERE username = '${username}'`;"
+          },
+          {
+            "type": "added",
+            "new_line": 19,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 20,
+            "content": "  db.query(query, (err, results) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 21,
+            "content": "    if (err) return res.status(500).send(err.message);"
+          },
+          {
+            "type": "added",
+            "new_line": 22,
+            "content": "    res.json(results);"
+          },
+          {
+            "type": "added",
+            "new_line": 23,
+            "content": "  });"
+          },
+          {
+            "type": "added",
+            "new_line": 24,
+            "content": "});"
+          },
+          {
+            "type": "added",
+            "new_line": 25,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 26,
+            "content": "// Command Injection"
+          },
+          {
+            "type": "added",
+            "new_line": 27,
+            "content": "app.get(\"/ping\", (req, res) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 28,
+            "content": "  const { host } = req.query;"
+          },
+          {
+            "type": "added",
+            "new_line": 29,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 30,
+            "content": "  require(\"child_process\").exec(`ping -c 1 ${host}`, (err, stdout) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 31,
+            "content": "    if (err) return res.status(500).send(err.message);"
+          },
+          {
+            "type": "added",
+            "new_line": 32,
+            "content": "    res.send(stdout);"
+          },
+          {
+            "type": "added",
+            "new_line": 33,
+            "content": "  });"
+          },
+          {
+            "type": "added",
+            "new_line": 34,
+            "content": "});"
+          },
+          {
+            "type": "added",
+            "new_line": 35,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 36,
+            "content": "// Weak cryptography"
+          },
+          {
+            "type": "added",
+            "new_line": 37,
+            "content": "const crypto = require(\"crypto\");"
+          },
+          {
+            "type": "added",
+            "new_line": 38,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 39,
+            "content": "app.post(\"/hash\", (req, res) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 40,
+            "content": "  const password = req.body.password;"
+          },
+          {
+            "type": "added",
+            "new_line": 41,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 42,
+            "content": "  const hash = crypto"
+          },
+          {
+            "type": "added",
+            "new_line": 43,
+            "content": "    .createHash(\"md5\")"
+          },
+          {
+            "type": "added",
+            "new_line": 44,
+            "content": "    .update(password)"
+          },
+          {
+            "type": "added",
+            "new_line": 45,
+            "content": "    .digest(\"hex\");"
+          },
+          {
+            "type": "added",
+            "new_line": 46,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 47,
+            "content": "  res.json({ hash });"
+          },
+          {
+            "type": "added",
+            "new_line": 48,
+            "content": "});"
+          },
+          {
+            "type": "added",
+            "new_line": 49,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 50,
+            "content": "// Path traversal"
+          },
+          {
+            "type": "added",
+            "new_line": 51,
+            "content": "const fs = require(\"fs\");"
+          },
+          {
+            "type": "added",
+            "new_line": 52,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 53,
+            "content": "app.get(\"/file\", (req, res) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 54,
+            "content": "  const filename = req.query.filename;"
+          },
+          {
+            "type": "added",
+            "new_line": 55,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 56,
+            "content": "  const data = fs.readFileSync(`/tmp/uploads/${filename}`);"
+          },
+          {
+            "type": "added",
+            "new_line": 57,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 58,
+            "content": "  res.send(data);"
+          },
+          {
+            "type": "added",
+            "new_line": 59,
+            "content": "});"
+          },
+          {
+            "type": "added",
+            "new_line": 60,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 61,
+            "content": "// Dangerous eval"
+          },
+          {
+            "type": "added",
+            "new_line": 62,
+            "content": "app.post(\"/calculate\", (req, res) => {"
+          },
+          {
+            "type": "added",
+            "new_line": 63,
+            "content": "  const expression = req.body.expression;"
+          },
+          {
+            "type": "added",
+            "new_line": 64,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 65,
+            "content": "  const result = eval(expression);"
+          },
+          {
+            "type": "added",
+            "new_line": 66,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 67,
+            "content": "  res.json({ result });"
+          },
+          {
+            "type": "added",
+            "new_line": 68,
+            "content": "});"
+          },
+          {
+            "type": "added",
+            "new_line": 69,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 70,
+            "content": "app.listen(3000);"
+          }
+        ],
+        "removed_lines": [],
+        "hunks": [
+          {
+            "header": "@@ -0,0 +1,70 @@",
+            "old_start": 0,
+            "old_count": 0,
+            "new_start": 1,
+            "new_count": 70,
+            "lines": [
+              {
+                "type": "added",
+                "new_line": 1,
+                "content": "const express = require(\"express\");"
+              },
+              {
+                "type": "added",
+                "new_line": 2,
+                "content": "const mysql = require(\"mysql2\");"
+              },
+              {
+                "type": "added",
+                "new_line": 3,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 4,
+                "content": "const app = express();"
+              },
+              {
+                "type": "added",
+                "new_line": 5,
+                "content": "app.use(express.json());"
+              },
+              {
+                "type": "added",
+                "new_line": 6,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 7,
+                "content": "const db = mysql.createConnection({"
+              },
+              {
+                "type": "added",
+                "new_line": 8,
+                "content": "  host: \"localhost\","
+              },
+              {
+                "type": "added",
+                "new_line": 9,
+                "content": "  user: \"root\","
+              },
+              {
+                "type": "added",
+                "new_line": 10,
+                "content": "  password: \"SuperSecret123!\","
+              },
+              {
+                "type": "added",
+                "new_line": 11,
+                "content": "  database: \"users\""
+              },
+              {
+                "type": "added",
+                "new_line": 12,
+                "content": "});"
+              },
+              {
+                "type": "added",
+                "new_line": 13,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 14,
+                "content": "// SQL Injection"
+              },
+              {
+                "type": "added",
+                "new_line": 15,
+                "content": "app.get(\"/user\", (req, res) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 16,
+                "content": "  const username = req.query.username;"
+              },
+              {
+                "type": "added",
+                "new_line": 17,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 18,
+                "content": "  const query = `SELECT * FROM users WHERE username = '${username}'`;"
+              },
+              {
+                "type": "added",
+                "new_line": 19,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 20,
+                "content": "  db.query(query, (err, results) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 21,
+                "content": "    if (err) return res.status(500).send(err.message);"
+              },
+              {
+                "type": "added",
+                "new_line": 22,
+                "content": "    res.json(results);"
+              },
+              {
+                "type": "added",
+                "new_line": 23,
+                "content": "  });"
+              },
+              {
+                "type": "added",
+                "new_line": 24,
+                "content": "});"
+              },
+              {
+                "type": "added",
+                "new_line": 25,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 26,
+                "content": "// Command Injection"
+              },
+              {
+                "type": "added",
+                "new_line": 27,
+                "content": "app.get(\"/ping\", (req, res) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 28,
+                "content": "  const { host } = req.query;"
+              },
+              {
+                "type": "added",
+                "new_line": 29,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 30,
+                "content": "  require(\"child_process\").exec(`ping -c 1 ${host}`, (err, stdout) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 31,
+                "content": "    if (err) return res.status(500).send(err.message);"
+              },
+              {
+                "type": "added",
+                "new_line": 32,
+                "content": "    res.send(stdout);"
+              },
+              {
+                "type": "added",
+                "new_line": 33,
+                "content": "  });"
+              },
+              {
+                "type": "added",
+                "new_line": 34,
+                "content": "});"
+              },
+              {
+                "type": "added",
+                "new_line": 35,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 36,
+                "content": "// Weak cryptography"
+              },
+              {
+                "type": "added",
+                "new_line": 37,
+                "content": "const crypto = require(\"crypto\");"
+              },
+              {
+                "type": "added",
+                "new_line": 38,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 39,
+                "content": "app.post(\"/hash\", (req, res) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 40,
+                "content": "  const password = req.body.password;"
+              },
+              {
+                "type": "added",
+                "new_line": 41,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 42,
+                "content": "  const hash = crypto"
+              },
+              {
+                "type": "added",
+                "new_line": 43,
+                "content": "    .createHash(\"md5\")"
+              },
+              {
+                "type": "added",
+                "new_line": 44,
+                "content": "    .update(password)"
+              },
+              {
+                "type": "added",
+                "new_line": 45,
+                "content": "    .digest(\"hex\");"
+              },
+              {
+                "type": "added",
+                "new_line": 46,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 47,
+                "content": "  res.json({ hash });"
+              },
+              {
+                "type": "added",
+                "new_line": 48,
+                "content": "});"
+              },
+              {
+                "type": "added",
+                "new_line": 49,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 50,
+                "content": "// Path traversal"
+              },
+              {
+                "type": "added",
+                "new_line": 51,
+                "content": "const fs = require(\"fs\");"
+              },
+              {
+                "type": "added",
+                "new_line": 52,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 53,
+                "content": "app.get(\"/file\", (req, res) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 54,
+                "content": "  const filename = req.query.filename;"
+              },
+              {
+                "type": "added",
+                "new_line": 55,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 56,
+                "content": "  const data = fs.readFileSync(`/tmp/uploads/${filename}`);"
+              },
+              {
+                "type": "added",
+                "new_line": 57,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 58,
+                "content": "  res.send(data);"
+              },
+              {
+                "type": "added",
+                "new_line": 59,
+                "content": "});"
+              },
+              {
+                "type": "added",
+                "new_line": 60,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 61,
+                "content": "// Dangerous eval"
+              },
+              {
+                "type": "added",
+                "new_line": 62,
+                "content": "app.post(\"/calculate\", (req, res) => {"
+              },
+              {
+                "type": "added",
+                "new_line": 63,
+                "content": "  const expression = req.body.expression;"
+              },
+              {
+                "type": "added",
+                "new_line": 64,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 65,
+                "content": "  const result = eval(expression);"
+              },
+              {
+                "type": "added",
+                "new_line": 66,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 67,
+                "content": "  res.json({ result });"
+              },
+              {
+                "type": "added",
+                "new_line": 68,
+                "content": "});"
+              },
+              {
+                "type": "added",
+                "new_line": 69,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 70,
+                "content": "app.listen(3000);"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "security_context": {
+    "detection_enabled": false,
+    "secrets_scan": false,
+    "sast_scan": false,
+    "dependency_scan": false,
+    "llm_analysis": false
+  },
+  "files": [
+    {
+      "path": "vulnerable.js",
+      "status": "A",
+      "language": "js",
+      "changes": {
+        "additions": 70,
+        "deletions": 0,
+        "total": 70
+      },
+      "diff": "diff --git a/vulnerable.js b/vulnerable.js\nnew file mode 100644\nindex 0000000..d3dfdbb\n--- /dev/null\n+++ b/vulnerable.js\n@@ -0,0 +1,70 @@\n+const express = require(\"express\");\n+const mysql = require(\"mysql2\");\n+\n+const app = express();\n+app.use(express.json());\n+\n+const db = mysql.createConnection({\n+  host: \"localhost\",\n+  user: \"root\",\n+  password: \"SuperSecret123!\",\n+  database: \"users\"\n+});\n+\n+// SQL Injection\n+app.get(\"/user\", (req, res) => {\n+  const username = req.query.username;\n+\n+  const query = `SELECT * FROM users WHERE username = '${username}'`;\n+\n+  db.query(query, (err, results) => {\n+    if (err) return res.status(500).send(err.message);\n+    res.json(results);\n+  });\n+});\n+\n+// Command Injection\n+app.get(\"/ping\", (req, res) => {\n+  const { host } = req.query;\n+\n+  require(\"child_process\").exec(`ping -c 1 ${host}`, (err, stdout) => {\n+    if (err) return res.status(500).send(err.message);\n+    res.send(stdout);\n+  });\n+});\n+\n+// Weak cryptography\n+const crypto = require(\"crypto\");\n+\n+app.post(\"/hash\", (req, res) => {\n+  const password = req.body.password;\n+\n+  const hash = crypto\n+    .createHash(\"md5\")\n+    .update(password)\n+    .digest(\"hex\");\n+\n+  res.json({ hash });\n+});\n+\n+// Path traversal\n+const fs = require(\"fs\");\n+\n+app.get(\"/file\", (req, res) => {\n+  const filename = req.query.filename;\n+\n+  const data = fs.readFileSync(`/tmp/uploads/${filename}`);\n+\n+  res.send(data);\n+});\n+\n+// Dangerous eval\n+app.post(\"/calculate\", (req, res) => {\n+  const expression = req.body.expression;\n+\n+  const result = eval(expression);\n+\n+  res.json({ result });\n+});\n+\n+app.listen(3000);\n\\ No newline at end of file\n",
+      "hunks": [
+        {
+          "header": "@@ -0,0 +1,70 @@",
+          "old_start": 0,
+          "old_count": 0,
+          "new_start": 1,
+          "new_count": 70,
+          "lines": [
+            {
+              "type": "added",
+              "new_line": 1,
+              "content": "const express = require(\"express\");"
+            },
+            {
+              "type": "added",
+              "new_line": 2,
+              "content": "const mysql = require(\"mysql2\");"
+            },
+            {
+              "type": "added",
+              "new_line": 3,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 4,
+              "content": "const app = express();"
+            },
+            {
+              "type": "added",
+              "new_line": 5,
+              "content": "app.use(express.json());"
+            },
+            {
+              "type": "added",
+              "new_line": 6,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 7,
+              "content": "const db = mysql.createConnection({"
+            },
+            {
+              "type": "added",
+              "new_line": 8,
+              "content": "  host: \"localhost\","
+            },
+            {
+              "type": "added",
+              "new_line": 9,
+              "content": "  user: \"root\","
+            },
+            {
+              "type": "added",
+              "new_line": 10,
+              "content": "  password: \"SuperSecret123!\","
+            },
+            {
+              "type": "added",
+              "new_line": 11,
+              "content": "  database: \"users\""
+            },
+            {
+              "type": "added",
+              "new_line": 12,
+              "content": "});"
+            },
+            {
+              "type": "added",
+              "new_line": 13,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 14,
+              "content": "// SQL Injection"
+            },
+            {
+              "type": "added",
+              "new_line": 15,
+              "content": "app.get(\"/user\", (req, res) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 16,
+              "content": "  const username = req.query.username;"
+            },
+            {
+              "type": "added",
+              "new_line": 17,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 18,
+              "content": "  const query = `SELECT * FROM users WHERE username = '${username}'`;"
+            },
+            {
+              "type": "added",
+              "new_line": 19,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 20,
+              "content": "  db.query(query, (err, results) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 21,
+              "content": "    if (err) return res.status(500).send(err.message);"
+            },
+            {
+              "type": "added",
+              "new_line": 22,
+              "content": "    res.json(results);"
+            },
+            {
+              "type": "added",
+              "new_line": 23,
+              "content": "  });"
+            },
+            {
+              "type": "added",
+              "new_line": 24,
+              "content": "});"
+            },
+            {
+              "type": "added",
+              "new_line": 25,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 26,
+              "content": "// Command Injection"
+            },
+            {
+              "type": "added",
+              "new_line": 27,
+              "content": "app.get(\"/ping\", (req, res) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 28,
+              "content": "  const { host } = req.query;"
+            },
+            {
+              "type": "added",
+              "new_line": 29,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 30,
+              "content": "  require(\"child_process\").exec(`ping -c 1 ${host}`, (err, stdout) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 31,
+              "content": "    if (err) return res.status(500).send(err.message);"
+            },
+            {
+              "type": "added",
+              "new_line": 32,
+              "content": "    res.send(stdout);"
+            },
+            {
+              "type": "added",
+              "new_line": 33,
+              "content": "  });"
+            },
+            {
+              "type": "added",
+              "new_line": 34,
+              "content": "});"
+            },
+            {
+              "type": "added",
+              "new_line": 35,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 36,
+              "content": "// Weak cryptography"
+            },
+            {
+              "type": "added",
+              "new_line": 37,
+              "content": "const crypto = require(\"crypto\");"
+            },
+            {
+              "type": "added",
+              "new_line": 38,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 39,
+              "content": "app.post(\"/hash\", (req, res) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 40,
+              "content": "  const password = req.body.password;"
+            },
+            {
+              "type": "added",
+              "new_line": 41,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 42,
+              "content": "  const hash = crypto"
+            },
+            {
+              "type": "added",
+              "new_line": 43,
+              "content": "    .createHash(\"md5\")"
+            },
+            {
+              "type": "added",
+              "new_line": 44,
+              "content": "    .update(password)"
+            },
+            {
+              "type": "added",
+              "new_line": 45,
+              "content": "    .digest(\"hex\");"
+            },
+            {
+              "type": "added",
+              "new_line": 46,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 47,
+              "content": "  res.json({ hash });"
+            },
+            {
+              "type": "added",
+              "new_line": 48,
+              "content": "});"
+            },
+            {
+              "type": "added",
+              "new_line": 49,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 50,
+              "content": "// Path traversal"
+            },
+            {
+              "type": "added",
+              "new_line": 51,
+              "content": "const fs = require(\"fs\");"
+            },
+            {
+              "type": "added",
+              "new_line": 52,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 53,
+              "content": "app.get(\"/file\", (req, res) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 54,
+              "content": "  const filename = req.query.filename;"
+            },
+            {
+              "type": "added",
+              "new_line": 55,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 56,
+              "content": "  const data = fs.readFileSync(`/tmp/uploads/${filename}`);"
+            },
+            {
+              "type": "added",
+              "new_line": 57,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 58,
+              "content": "  res.send(data);"
+            },
+            {
+              "type": "added",
+              "new_line": 59,
+              "content": "});"
+            },
+            {
+              "type": "added",
+              "new_line": 60,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 61,
+              "content": "// Dangerous eval"
+            },
+            {
+              "type": "added",
+              "new_line": 62,
+              "content": "app.post(\"/calculate\", (req, res) => {"
+            },
+            {
+              "type": "added",
+              "new_line": 63,
+              "content": "  const expression = req.body.expression;"
+            },
+            {
+              "type": "added",
+              "new_line": 64,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 65,
+              "content": "  const result = eval(expression);"
+            },
+            {
+              "type": "added",
+              "new_line": 66,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 67,
+              "content": "  res.json({ result });"
+            },
+            {
+              "type": "added",
+              "new_line": 68,
+              "content": "});"
+            },
+            {
+              "type": "added",
+              "new_line": 69,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 70,
+              "content": "app.listen(3000);"
+            }
+          ]
+        }
+      ],
+      "added_lines": [
+        {
+          "type": "added",
+          "new_line": 1,
+          "content": "const express = require(\"express\");"
+        },
+        {
+          "type": "added",
+          "new_line": 2,
+          "content": "const mysql = require(\"mysql2\");"
+        },
+        {
+          "type": "added",
+          "new_line": 3,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 4,
+          "content": "const app = express();"
+        },
+        {
+          "type": "added",
+          "new_line": 5,
+          "content": "app.use(express.json());"
+        },
+        {
+          "type": "added",
+          "new_line": 6,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 7,
+          "content": "const db = mysql.createConnection({"
+        },
+        {
+          "type": "added",
+          "new_line": 8,
+          "content": "  host: \"localhost\","
+        },
+        {
+          "type": "added",
+          "new_line": 9,
+          "content": "  user: \"root\","
+        },
+        {
+          "type": "added",
+          "new_line": 10,
+          "content": "  password: \"SuperSecret123!\","
+        },
+        {
+          "type": "added",
+          "new_line": 11,
+          "content": "  database: \"users\""
+        },
+        {
+          "type": "added",
+          "new_line": 12,
+          "content": "});"
+        },
+        {
+          "type": "added",
+          "new_line": 13,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 14,
+          "content": "// SQL Injection"
+        },
+        {
+          "type": "added",
+          "new_line": 15,
+          "content": "app.get(\"/user\", (req, res) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 16,
+          "content": "  const username = req.query.username;"
+        },
+        {
+          "type": "added",
+          "new_line": 17,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 18,
+          "content": "  const query = `SELECT * FROM users WHERE username = '${username}'`;"
+        },
+        {
+          "type": "added",
+          "new_line": 19,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 20,
+          "content": "  db.query(query, (err, results) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 21,
+          "content": "    if (err) return res.status(500).send(err.message);"
+        },
+        {
+          "type": "added",
+          "new_line": 22,
+          "content": "    res.json(results);"
+        },
+        {
+          "type": "added",
+          "new_line": 23,
+          "content": "  });"
+        },
+        {
+          "type": "added",
+          "new_line": 24,
+          "content": "});"
+        },
+        {
+          "type": "added",
+          "new_line": 25,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 26,
+          "content": "// Command Injection"
+        },
+        {
+          "type": "added",
+          "new_line": 27,
+          "content": "app.get(\"/ping\", (req, res) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 28,
+          "content": "  const { host } = req.query;"
+        },
+        {
+          "type": "added",
+          "new_line": 29,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 30,
+          "content": "  require(\"child_process\").exec(`ping -c 1 ${host}`, (err, stdout) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 31,
+          "content": "    if (err) return res.status(500).send(err.message);"
+        },
+        {
+          "type": "added",
+          "new_line": 32,
+          "content": "    res.send(stdout);"
+        },
+        {
+          "type": "added",
+          "new_line": 33,
+          "content": "  });"
+        },
+        {
+          "type": "added",
+          "new_line": 34,
+          "content": "});"
+        },
+        {
+          "type": "added",
+          "new_line": 35,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 36,
+          "content": "// Weak cryptography"
+        },
+        {
+          "type": "added",
+          "new_line": 37,
+          "content": "const crypto = require(\"crypto\");"
+        },
+        {
+          "type": "added",
+          "new_line": 38,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 39,
+          "content": "app.post(\"/hash\", (req, res) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 40,
+          "content": "  const password = req.body.password;"
+        },
+        {
+          "type": "added",
+          "new_line": 41,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 42,
+          "content": "  const hash = crypto"
+        },
+        {
+          "type": "added",
+          "new_line": 43,
+          "content": "    .createHash(\"md5\")"
+        },
+        {
+          "type": "added",
+          "new_line": 44,
+          "content": "    .update(password)"
+        },
+        {
+          "type": "added",
+          "new_line": 45,
+          "content": "    .digest(\"hex\");"
+        },
+        {
+          "type": "added",
+          "new_line": 46,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 47,
+          "content": "  res.json({ hash });"
+        },
+        {
+          "type": "added",
+          "new_line": 48,
+          "content": "});"
+        },
+        {
+          "type": "added",
+          "new_line": 49,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 50,
+          "content": "// Path traversal"
+        },
+        {
+          "type": "added",
+          "new_line": 51,
+          "content": "const fs = require(\"fs\");"
+        },
+        {
+          "type": "added",
+          "new_line": 52,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 53,
+          "content": "app.get(\"/file\", (req, res) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 54,
+          "content": "  const filename = req.query.filename;"
+        },
+        {
+          "type": "added",
+          "new_line": 55,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 56,
+          "content": "  const data = fs.readFileSync(`/tmp/uploads/${filename}`);"
+        },
+        {
+          "type": "added",
+          "new_line": 57,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 58,
+          "content": "  res.send(data);"
+        },
+        {
+          "type": "added",
+          "new_line": 59,
+          "content": "});"
+        },
+        {
+          "type": "added",
+          "new_line": 60,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 61,
+          "content": "// Dangerous eval"
+        },
+        {
+          "type": "added",
+          "new_line": 62,
+          "content": "app.post(\"/calculate\", (req, res) => {"
+        },
+        {
+          "type": "added",
+          "new_line": 63,
+          "content": "  const expression = req.body.expression;"
+        },
+        {
+          "type": "added",
+          "new_line": 64,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 65,
+          "content": "  const result = eval(expression);"
+        },
+        {
+          "type": "added",
+          "new_line": 66,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 67,
+          "content": "  res.json({ result });"
+        },
+        {
+          "type": "added",
+          "new_line": 68,
+          "content": "});"
+        },
+        {
+          "type": "added",
+          "new_line": 69,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 70,
+          "content": "app.listen(3000);"
+        }
+      ],
+      "removed_lines": []
+    }
+  ]
+}

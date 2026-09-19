@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "scan": {
+    "id": "scn_a7c798a3a5ea",
+    "trigger": "push",
+    "captured_at": "2026-09-19T07:29:23.664447+00:00",
+    "workflow_run_id": "35429452981",
+    "workflow_url": "https://github.com/dis-craft/Pre-prod-tester/actions/runs/35429452981"
+  },
+  "repository": {
+    "full_name": "dis-craft/Pre-prod-tester",
+    "url": "https://github.com/dis-craft/Pre-prod-tester",
+    "default_branch": "main"
+  },
+  "commit": {
+    "before": "f3c0689a73b49b6cfa51dbf19da588bf5668d12f",
+    "after": "a7c798a3a5eaded9fa6d5a0309effb9bf311d666",
+    "branch": "main",
+    "message": "Merge branch 'main' of https://github.com/dis-craft/Pre-prod-tester",
+    "author": {
+      "name": "dis-craft",
+      "email": "mrsrikart@gmail.com"
+    },
+    "committed_at": "2026-09-19T12:58:43+05:30"
+  },
+  "change_summary": {
+    "files_changed": 1,
+    "additions": 0,
+    "deletions": 0
+  },
+  "security_context": {
+    "detection_enabled": false,
+    "secrets_scan": false,
+    "sast_scan": false,
+    "dependency_scan": false,
+    "llm_analysis": false
+  },
+  "files": [
+    {
+      "path": "test.txt",
+      "status": "M",
+      "language": "txt",
+      "changes": {
+        "additions": 0,
+        "deletions": 0,
+        "total": 0
+      },
+      "diff": "diff --git a/test.txt b/test.txt\nindex 534e3f7..a7b94df 100644\nBinary files a/test.txt and b/test.txt differ\n"
+    }
+  ]
+}

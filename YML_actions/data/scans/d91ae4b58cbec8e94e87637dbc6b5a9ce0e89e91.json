@@ -1,0 +1,1282 @@
+{
+  "schema_version": "1.1",
+  "scan": {
+    "id": "scn_d91ae4b58cbe",
+    "trigger": "push",
+    "captured_at": "2026-09-19T13:04:43.357861+00:00",
+    "workflow_run_id": "35444693208",
+    "workflow_url": "https://github.com/dis-craft/Pre-prod-tester/actions/runs/35444693208"
+  },
+  "repository": {
+    "full_name": "dis-craft/Pre-prod-tester",
+    "url": "https://github.com/dis-craft/Pre-prod-tester",
+    "default_branch": "main"
+  },
+  "comparison": {
+    "base_commit": "73d32f30dfe6b93c710dd57a4caef2395526b8ea",
+    "target_commit": "d91ae4b58cbec8e94e87637dbc6b5a9ce0e89e91",
+    "range": "73d32f30dfe6b93c710dd57a4caef2395526b8ea..d91ae4b58cbec8e94e87637dbc6b5a9ce0e89e91",
+    "method": "git diff two-commit comparison"
+  },
+  "commit": {
+    "before": "73d32f30dfe6b93c710dd57a4caef2395526b8ea",
+    "after": "d91ae4b58cbec8e94e87637dbc6b5a9ce0e89e91",
+    "branch": "main",
+    "message": "feat: add remediation payload bridge",
+    "author": {
+      "name": "Srikar T",
+      "email": "169169726+dis-craft@users.noreply.github.com"
+    },
+    "committed_at": "2026-09-19T18:34:31+05:30"
+  },
+  "change_summary": {
+    "files_changed": 1,
+    "additions": 59,
+    "deletions": 0,
+    "net_lines": 59
+  },
+  "changes": {
+    "format": "github-style-unified-diff",
+    "legend": {
+      "added": "+",
+      "removed": "-",
+      "context": " "
+    },
+    "files": [
+      {
+        "path": "scripts/remediation-payload.py",
+        "status": "A",
+        "additions": 59,
+        "deletions": 0,
+        "added_lines": [
+          {
+            "type": "added",
+            "new_line": 1,
+            "content": "#!/usr/bin/env python3"
+          },
+          {
+            "type": "added",
+            "new_line": 2,
+            "content": "\"\"\"Build a minimal remediation request for Pre-Prod Orchestrator."
+          },
+          {
+            "type": "added",
+            "new_line": 3,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 4,
+            "content": "Reads a scanner report/finding JSON and emits a stable payload containing the"
+          },
+          {
+            "type": "added",
+            "new_line": 5,
+            "content": "repository, finding, and the commit to remediate. Patch generation remains in"
+          },
+          {
+            "type": "added",
+            "new_line": 6,
+            "content": "the orchestrator; this bridge does not modify source code."
+          },
+          {
+            "type": "added",
+            "new_line": 7,
+            "content": "\"\"\""
+          },
+          {
+            "type": "added",
+            "new_line": 8,
+            "content": "from __future__ import annotations"
+          },
+          {
+            "type": "added",
+            "new_line": 9,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 10,
+            "content": "import argparse"
+          },
+          {
+            "type": "added",
+            "new_line": 11,
+            "content": "import json"
+          },
+          {
+            "type": "added",
+            "new_line": 12,
+            "content": "import os"
+          },
+          {
+            "type": "added",
+            "new_line": 13,
+            "content": "import sys"
+          },
+          {
+            "type": "added",
+            "new_line": 14,
+            "content": "from pathlib import Path"
+          },
+          {
+            "type": "added",
+            "new_line": 15,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 16,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 17,
+            "content": "def load_json(path: str) -> dict:"
+          },
+          {
+            "type": "added",
+            "new_line": 18,
+            "content": "    try:"
+          },
+          {
+            "type": "added",
+            "new_line": 19,
+            "content": "        return json.loads(Path(path).read_text(encoding=\"utf-8\"))"
+          },
+          {
+            "type": "added",
+            "new_line": 20,
+            "content": "    except Exception as exc:"
+          },
+          {
+            "type": "added",
+            "new_line": 21,
+            "content": "        raise SystemExit(f\"Unable to read JSON {path}: {exc}\") from exc"
+          },
+          {
+            "type": "added",
+            "new_line": 22,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 23,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 24,
+            "content": "def main() -> int:"
+          },
+          {
+            "type": "added",
+            "new_line": 25,
+            "content": "    parser = argparse.ArgumentParser()"
+          },
+          {
+            "type": "added",
+            "new_line": 26,
+            "content": "    parser.add_argument(\"--input\", required=True, help=\"Scanner findings/report JSON\")"
+          },
+          {
+            "type": "added",
+            "new_line": 27,
+            "content": "    parser.add_argument(\"--output\", default=\".preprod/remediation-request.json\")"
+          },
+          {
+            "type": "added",
+            "new_line": 28,
+            "content": "    parser.add_argument(\"--repository\", default=os.environ.get(\"GITHUB_REPOSITORY\", \"\"))"
+          },
+          {
+            "type": "added",
+            "new_line": 29,
+            "content": "    parser.add_argument(\"--commit\", default=os.environ.get(\"GITHUB_SHA\", \"\"))"
+          },
+          {
+            "type": "added",
+            "new_line": 30,
+            "content": "    parser.add_argument(\"--ref\", default=os.environ.get(\"GITHUB_REF_NAME\", \"\"))"
+          },
+          {
+            "type": "added",
+            "new_line": 31,
+            "content": "    parser.add_argument(\"--pull-request\", default=os.environ.get(\"PR_NUMBER\", \"\"))"
+          },
+          {
+            "type": "added",
+            "new_line": 32,
+            "content": "    parser.add_argument(\"--generate\", action=\"store_true\", help=\"Request remediation generation\")"
+          },
+          {
+            "type": "added",
+            "new_line": 33,
+            "content": "    args = parser.parse_args()"
+          },
+          {
+            "type": "added",
+            "new_line": 34,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 35,
+            "content": "    source = load_json(args.input)"
+          },
+          {
+            "type": "added",
+            "new_line": 36,
+            "content": "    findings = source.get(\"findings\", [])"
+          },
+          {
+            "type": "added",
+            "new_line": 37,
+            "content": "    if not findings and isinstance(source.get(\"result\"), dict):"
+          },
+          {
+            "type": "added",
+            "new_line": 38,
+            "content": "        findings = source[\"result\"].get(\"findings\", [])"
+          },
+          {
+            "type": "added",
+            "new_line": 39,
+            "content": "    if not isinstance(findings, list):"
+          },
+          {
+            "type": "added",
+            "new_line": 40,
+            "content": "        raise SystemExit(\"Input does not contain a findings list\")"
+          },
+          {
+            "type": "added",
+            "new_line": 41,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 42,
+            "content": "    payload = {"
+          },
+          {
+            "type": "added",
+            "new_line": 43,
+            "content": "        \"repository\": args.repository,"
+          },
+          {
+            "type": "added",
+            "new_line": 44,
+            "content": "        \"commit_sha\": args.commit,"
+          },
+          {
+            "type": "added",
+            "new_line": 45,
+            "content": "        \"ref\": args.ref,"
+          },
+          {
+            "type": "added",
+            "new_line": 46,
+            "content": "        \"pull_request\": args.pull_request or None,"
+          },
+          {
+            "type": "added",
+            "new_line": 47,
+            "content": "        \"generate_remediation\": bool(args.generate),"
+          },
+          {
+            "type": "added",
+            "new_line": 48,
+            "content": "        \"findings\": findings,"
+          },
+          {
+            "type": "added",
+            "new_line": 49,
+            "content": "    }"
+          },
+          {
+            "type": "added",
+            "new_line": 50,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 51,
+            "content": "    out = Path(args.output)"
+          },
+          {
+            "type": "added",
+            "new_line": 52,
+            "content": "    out.parent.mkdir(parents=True, exist_ok=True)"
+          },
+          {
+            "type": "added",
+            "new_line": 53,
+            "content": "    out.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")"
+          },
+          {
+            "type": "added",
+            "new_line": 54,
+            "content": "    print(out)"
+          },
+          {
+            "type": "added",
+            "new_line": 55,
+            "content": "    return 0"
+          },
+          {
+            "type": "added",
+            "new_line": 56,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 57,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 58,
+            "content": "if __name__ == \"__main__\":"
+          },
+          {
+            "type": "added",
+            "new_line": 59,
+            "content": "    raise SystemExit(main())"
+          }
+        ],
+        "removed_lines": [],
+        "hunks": [
+          {
+            "header": "@@ -0,0 +1,59 @@",
+            "old_start": 0,
+            "old_count": 0,
+            "new_start": 1,
+            "new_count": 59,
+            "lines": [
+              {
+                "type": "added",
+                "new_line": 1,
+                "content": "#!/usr/bin/env python3"
+              },
+              {
+                "type": "added",
+                "new_line": 2,
+                "content": "\"\"\"Build a minimal remediation request for Pre-Prod Orchestrator."
+              },
+              {
+                "type": "added",
+                "new_line": 3,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 4,
+                "content": "Reads a scanner report/finding JSON and emits a stable payload containing the"
+              },
+              {
+                "type": "added",
+                "new_line": 5,
+                "content": "repository, finding, and the commit to remediate. Patch generation remains in"
+              },
+              {
+                "type": "added",
+                "new_line": 6,
+                "content": "the orchestrator; this bridge does not modify source code."
+              },
+              {
+                "type": "added",
+                "new_line": 7,
+                "content": "\"\"\""
+              },
+              {
+                "type": "added",
+                "new_line": 8,
+                "content": "from __future__ import annotations"
+              },
+              {
+                "type": "added",
+                "new_line": 9,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 10,
+                "content": "import argparse"
+              },
+              {
+                "type": "added",
+                "new_line": 11,
+                "content": "import json"
+              },
+              {
+                "type": "added",
+                "new_line": 12,
+                "content": "import os"
+              },
+              {
+                "type": "added",
+                "new_line": 13,
+                "content": "import sys"
+              },
+              {
+                "type": "added",
+                "new_line": 14,
+                "content": "from pathlib import Path"
+              },
+              {
+                "type": "added",
+                "new_line": 15,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 16,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 17,
+                "content": "def load_json(path: str) -> dict:"
+              },
+              {
+                "type": "added",
+                "new_line": 18,
+                "content": "    try:"
+              },
+              {
+                "type": "added",
+                "new_line": 19,
+                "content": "        return json.loads(Path(path).read_text(encoding=\"utf-8\"))"
+              },
+              {
+                "type": "added",
+                "new_line": 20,
+                "content": "    except Exception as exc:"
+              },
+              {
+                "type": "added",
+                "new_line": 21,
+                "content": "        raise SystemExit(f\"Unable to read JSON {path}: {exc}\") from exc"
+              },
+              {
+                "type": "added",
+                "new_line": 22,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 23,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 24,
+                "content": "def main() -> int:"
+              },
+              {
+                "type": "added",
+                "new_line": 25,
+                "content": "    parser = argparse.ArgumentParser()"
+              },
+              {
+                "type": "added",
+                "new_line": 26,
+                "content": "    parser.add_argument(\"--input\", required=True, help=\"Scanner findings/report JSON\")"
+              },
+              {
+                "type": "added",
+                "new_line": 27,
+                "content": "    parser.add_argument(\"--output\", default=\".preprod/remediation-request.json\")"
+              },
+              {
+                "type": "added",
+                "new_line": 28,
+                "content": "    parser.add_argument(\"--repository\", default=os.environ.get(\"GITHUB_REPOSITORY\", \"\"))"
+              },
+              {
+                "type": "added",
+                "new_line": 29,
+                "content": "    parser.add_argument(\"--commit\", default=os.environ.get(\"GITHUB_SHA\", \"\"))"
+              },
+              {
+                "type": "added",
+                "new_line": 30,
+                "content": "    parser.add_argument(\"--ref\", default=os.environ.get(\"GITHUB_REF_NAME\", \"\"))"
+              },
+              {
+                "type": "added",
+                "new_line": 31,
+                "content": "    parser.add_argument(\"--pull-request\", default=os.environ.get(\"PR_NUMBER\", \"\"))"
+              },
+              {
+                "type": "added",
+                "new_line": 32,
+                "content": "    parser.add_argument(\"--generate\", action=\"store_true\", help=\"Request remediation generation\")"
+              },
+              {
+                "type": "added",
+                "new_line": 33,
+                "content": "    args = parser.parse_args()"
+              },
+              {
+                "type": "added",
+                "new_line": 34,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 35,
+                "content": "    source = load_json(args.input)"
+              },
+              {
+                "type": "added",
+                "new_line": 36,
+                "content": "    findings = source.get(\"findings\", [])"
+              },
+              {
+                "type": "added",
+                "new_line": 37,
+                "content": "    if not findings and isinstance(source.get(\"result\"), dict):"
+              },
+              {
+                "type": "added",
+                "new_line": 38,
+                "content": "        findings = source[\"result\"].get(\"findings\", [])"
+              },
+              {
+                "type": "added",
+                "new_line": 39,
+                "content": "    if not isinstance(findings, list):"
+              },
+              {
+                "type": "added",
+                "new_line": 40,
+                "content": "        raise SystemExit(\"Input does not contain a findings list\")"
+              },
+              {
+                "type": "added",
+                "new_line": 41,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 42,
+                "content": "    payload = {"
+              },
+              {
+                "type": "added",
+                "new_line": 43,
+                "content": "        \"repository\": args.repository,"
+              },
+              {
+                "type": "added",
+                "new_line": 44,
+                "content": "        \"commit_sha\": args.commit,"
+              },
+              {
+                "type": "added",
+                "new_line": 45,
+                "content": "        \"ref\": args.ref,"
+              },
+              {
+                "type": "added",
+                "new_line": 46,
+                "content": "        \"pull_request\": args.pull_request or None,"
+              },
+              {
+                "type": "added",
+                "new_line": 47,
+                "content": "        \"generate_remediation\": bool(args.generate),"
+              },
+              {
+                "type": "added",
+                "new_line": 48,
+                "content": "        \"findings\": findings,"
+              },
+              {
+                "type": "added",
+                "new_line": 49,
+                "content": "    }"
+              },
+              {
+                "type": "added",
+                "new_line": 50,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 51,
+                "content": "    out = Path(args.output)"
+              },
+              {
+                "type": "added",
+                "new_line": 52,
+                "content": "    out.parent.mkdir(parents=True, exist_ok=True)"
+              },
+              {
+                "type": "added",
+                "new_line": 53,
+                "content": "    out.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")"
+              },
+              {
+                "type": "added",
+                "new_line": 54,
+                "content": "    print(out)"
+              },
+              {
+                "type": "added",
+                "new_line": 55,
+                "content": "    return 0"
+              },
+              {
+                "type": "added",
+                "new_line": 56,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 57,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 58,
+                "content": "if __name__ == \"__main__\":"
+              },
+              {
+                "type": "added",
+                "new_line": 59,
+                "content": "    raise SystemExit(main())"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "security_context": {
+    "detection_enabled": false,
+    "secrets_scan": false,
+    "sast_scan": false,
+    "dependency_scan": false,
+    "llm_analysis": false
+  },
+  "files": [
+    {
+      "path": "scripts/remediation-payload.py",
+      "status": "A",
+      "language": "py",
+      "changes": {
+        "additions": 59,
+        "deletions": 0,
+        "total": 59
+      },
+      "diff": "diff --git a/scripts/remediation-payload.py b/scripts/remediation-payload.py\nnew file mode 100644\nindex 0000000..3a8f5f8\n--- /dev/null\n+++ b/scripts/remediation-payload.py\n@@ -0,0 +1,59 @@\n+#!/usr/bin/env python3\n+\"\"\"Build a minimal remediation request for Pre-Prod Orchestrator.\n+\n+Reads a scanner report/finding JSON and emits a stable payload containing the\n+repository, finding, and the commit to remediate. Patch generation remains in\n+the orchestrator; this bridge does not modify source code.\n+\"\"\"\n+from __future__ import annotations\n+\n+import argparse\n+import json\n+import os\n+import sys\n+from pathlib import Path\n+\n+\n+def load_json(path: str) -> dict:\n+    try:\n+        return json.loads(Path(path).read_text(encoding=\"utf-8\"))\n+    except Exception as exc:\n+        raise SystemExit(f\"Unable to read JSON {path}: {exc}\") from exc\n+\n+\n+def main() -> int:\n+    parser = argparse.ArgumentParser()\n+    parser.add_argument(\"--input\", required=True, help=\"Scanner findings/report JSON\")\n+    parser.add_argument(\"--output\", default=\".preprod/remediation-request.json\")\n+    parser.add_argument(\"--repository\", default=os.environ.get(\"GITHUB_REPOSITORY\", \"\"))\n+    parser.add_argument(\"--commit\", default=os.environ.get(\"GITHUB_SHA\", \"\"))\n+    parser.add_argument(\"--ref\", default=os.environ.get(\"GITHUB_REF_NAME\", \"\"))\n+    parser.add_argument(\"--pull-request\", default=os.environ.get(\"PR_NUMBER\", \"\"))\n+    parser.add_argument(\"--generate\", action=\"store_true\", help=\"Request remediation generation\")\n+    args = parser.parse_args()\n+\n+    source = load_json(args.input)\n+    findings = source.get(\"findings\", [])\n+    if not findings and isinstance(source.get(\"result\"), dict):\n+        findings = source[\"result\"].get(\"findings\", [])\n+    if not isinstance(findings, list):\n+        raise SystemExit(\"Input does not contain a findings list\")\n+\n+    payload = {\n+        \"repository\": args.repository,\n+        \"commit_sha\": args.commit,\n+        \"ref\": args.ref,\n+        \"pull_request\": args.pull_request or None,\n+        \"generate_remediation\": bool(args.generate),\n+        \"findings\": findings,\n+    }\n+\n+    out = Path(args.output)\n+    out.parent.mkdir(parents=True, exist_ok=True)\n+    out.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")\n+    print(out)\n+    return 0\n+\n+\n+if __name__ == \"__main__\":\n+    raise SystemExit(main())\n",
+      "hunks": [
+        {
+          "header": "@@ -0,0 +1,59 @@",
+          "old_start": 0,
+          "old_count": 0,
+          "new_start": 1,
+          "new_count": 59,
+          "lines": [
+            {
+              "type": "added",
+              "new_line": 1,
+              "content": "#!/usr/bin/env python3"
+            },
+            {
+              "type": "added",
+              "new_line": 2,
+              "content": "\"\"\"Build a minimal remediation request for Pre-Prod Orchestrator."
+            },
+            {
+              "type": "added",
+              "new_line": 3,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 4,
+              "content": "Reads a scanner report/finding JSON and emits a stable payload containing the"
+            },
+            {
+              "type": "added",
+              "new_line": 5,
+              "content": "repository, finding, and the commit to remediate. Patch generation remains in"
+            },
+            {
+              "type": "added",
+              "new_line": 6,
+              "content": "the orchestrator; this bridge does not modify source code."
+            },
+            {
+              "type": "added",
+              "new_line": 7,
+              "content": "\"\"\""
+            },
+            {
+              "type": "added",
+              "new_line": 8,
+              "content": "from __future__ import annotations"
+            },
+            {
+              "type": "added",
+              "new_line": 9,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 10,
+              "content": "import argparse"
+            },
+            {
+              "type": "added",
+              "new_line": 11,
+              "content": "import json"
+            },
+            {
+              "type": "added",
+              "new_line": 12,
+              "content": "import os"
+            },
+            {
+              "type": "added",
+              "new_line": 13,
+              "content": "import sys"
+            },
+            {
+              "type": "added",
+              "new_line": 14,
+              "content": "from pathlib import Path"
+            },
+            {
+              "type": "added",
+              "new_line": 15,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 16,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 17,
+              "content": "def load_json(path: str) -> dict:"
+            },
+            {
+              "type": "added",
+              "new_line": 18,
+              "content": "    try:"
+            },
+            {
+              "type": "added",
+              "new_line": 19,
+              "content": "        return json.loads(Path(path).read_text(encoding=\"utf-8\"))"
+            },
+            {
+              "type": "added",
+              "new_line": 20,
+              "content": "    except Exception as exc:"
+            },
+            {
+              "type": "added",
+              "new_line": 21,
+              "content": "        raise SystemExit(f\"Unable to read JSON {path}: {exc}\") from exc"
+            },
+            {
+              "type": "added",
+              "new_line": 22,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 23,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 24,
+              "content": "def main() -> int:"
+            },
+            {
+              "type": "added",
+              "new_line": 25,
+              "content": "    parser = argparse.ArgumentParser()"
+            },
+            {
+              "type": "added",
+              "new_line": 26,
+              "content": "    parser.add_argument(\"--input\", required=True, help=\"Scanner findings/report JSON\")"
+            },
+            {
+              "type": "added",
+              "new_line": 27,
+              "content": "    parser.add_argument(\"--output\", default=\".preprod/remediation-request.json\")"
+            },
+            {
+              "type": "added",
+              "new_line": 28,
+              "content": "    parser.add_argument(\"--repository\", default=os.environ.get(\"GITHUB_REPOSITORY\", \"\"))"
+            },
+            {
+              "type": "added",
+              "new_line": 29,
+              "content": "    parser.add_argument(\"--commit\", default=os.environ.get(\"GITHUB_SHA\", \"\"))"
+            },
+            {
+              "type": "added",
+              "new_line": 30,
+              "content": "    parser.add_argument(\"--ref\", default=os.environ.get(\"GITHUB_REF_NAME\", \"\"))"
+            },
+            {
+              "type": "added",
+              "new_line": 31,
+              "content": "    parser.add_argument(\"--pull-request\", default=os.environ.get(\"PR_NUMBER\", \"\"))"
+            },
+            {
+              "type": "added",
+              "new_line": 32,
+              "content": "    parser.add_argument(\"--generate\", action=\"store_true\", help=\"Request remediation generation\")"
+            },
+            {
+              "type": "added",
+              "new_line": 33,
+              "content": "    args = parser.parse_args()"
+            },
+            {
+              "type": "added",
+              "new_line": 34,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 35,
+              "content": "    source = load_json(args.input)"
+            },
+            {
+              "type": "added",
+              "new_line": 36,
+              "content": "    findings = source.get(\"findings\", [])"
+            },
+            {
+              "type": "added",
+              "new_line": 37,
+              "content": "    if not findings and isinstance(source.get(\"result\"), dict):"
+            },
+            {
+              "type": "added",
+              "new_line": 38,
+              "content": "        findings = source[\"result\"].get(\"findings\", [])"
+            },
+            {
+              "type": "added",
+              "new_line": 39,
+              "content": "    if not isinstance(findings, list):"
+            },
+            {
+              "type": "added",
+              "new_line": 40,
+              "content": "        raise SystemExit(\"Input does not contain a findings list\")"
+            },
+            {
+              "type": "added",
+              "new_line": 41,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 42,
+              "content": "    payload = {"
+            },
+            {
+              "type": "added",
+              "new_line": 43,
+              "content": "        \"repository\": args.repository,"
+            },
+            {
+              "type": "added",
+              "new_line": 44,
+              "content": "        \"commit_sha\": args.commit,"
+            },
+            {
+              "type": "added",
+              "new_line": 45,
+              "content": "        \"ref\": args.ref,"
+            },
+            {
+              "type": "added",
+              "new_line": 46,
+              "content": "        \"pull_request\": args.pull_request or None,"
+            },
+            {
+              "type": "added",
+              "new_line": 47,
+              "content": "        \"generate_remediation\": bool(args.generate),"
+            },
+            {
+              "type": "added",
+              "new_line": 48,
+              "content": "        \"findings\": findings,"
+            },
+            {
+              "type": "added",
+              "new_line": 49,
+              "content": "    }"
+            },
+            {
+              "type": "added",
+              "new_line": 50,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 51,
+              "content": "    out = Path(args.output)"
+            },
+            {
+              "type": "added",
+              "new_line": 52,
+              "content": "    out.parent.mkdir(parents=True, exist_ok=True)"
+            },
+            {
+              "type": "added",
+              "new_line": 53,
+              "content": "    out.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")"
+            },
+            {
+              "type": "added",
+              "new_line": 54,
+              "content": "    print(out)"
+            },
+            {
+              "type": "added",
+              "new_line": 55,
+              "content": "    return 0"
+            },
+            {
+              "type": "added",
+              "new_line": 56,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 57,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 58,
+              "content": "if __name__ == \"__main__\":"
+            },
+            {
+              "type": "added",
+              "new_line": 59,
+              "content": "    raise SystemExit(main())"
+            }
+          ]
+        }
+      ],
+      "added_lines": [
+        {
+          "type": "added",
+          "new_line": 1,
+          "content": "#!/usr/bin/env python3"
+        },
+        {
+          "type": "added",
+          "new_line": 2,
+          "content": "\"\"\"Build a minimal remediation request for Pre-Prod Orchestrator."
+        },
+        {
+          "type": "added",
+          "new_line": 3,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 4,
+          "content": "Reads a scanner report/finding JSON and emits a stable payload containing the"
+        },
+        {
+          "type": "added",
+          "new_line": 5,
+          "content": "repository, finding, and the commit to remediate. Patch generation remains in"
+        },
+        {
+          "type": "added",
+          "new_line": 6,
+          "content": "the orchestrator; this bridge does not modify source code."
+        },
+        {
+          "type": "added",
+          "new_line": 7,
+          "content": "\"\"\""
+        },
+        {
+          "type": "added",
+          "new_line": 8,
+          "content": "from __future__ import annotations"
+        },
+        {
+          "type": "added",
+          "new_line": 9,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 10,
+          "content": "import argparse"
+        },
+        {
+          "type": "added",
+          "new_line": 11,
+          "content": "import json"
+        },
+        {
+          "type": "added",
+          "new_line": 12,
+          "content": "import os"
+        },
+        {
+          "type": "added",
+          "new_line": 13,
+          "content": "import sys"
+        },
+        {
+          "type": "added",
+          "new_line": 14,
+          "content": "from pathlib import Path"
+        },
+        {
+          "type": "added",
+          "new_line": 15,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 16,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 17,
+          "content": "def load_json(path: str) -> dict:"
+        },
+        {
+          "type": "added",
+          "new_line": 18,
+          "content": "    try:"
+        },
+        {
+          "type": "added",
+          "new_line": 19,
+          "content": "        return json.loads(Path(path).read_text(encoding=\"utf-8\"))"
+        },
+        {
+          "type": "added",
+          "new_line": 20,
+          "content": "    except Exception as exc:"
+        },
+        {
+          "type": "added",
+          "new_line": 21,
+          "content": "        raise SystemExit(f\"Unable to read JSON {path}: {exc}\") from exc"
+        },
+        {
+          "type": "added",
+          "new_line": 22,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 23,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 24,
+          "content": "def main() -> int:"
+        },
+        {
+          "type": "added",
+          "new_line": 25,
+          "content": "    parser = argparse.ArgumentParser()"
+        },
+        {
+          "type": "added",
+          "new_line": 26,
+          "content": "    parser.add_argument(\"--input\", required=True, help=\"Scanner findings/report JSON\")"
+        },
+        {
+          "type": "added",
+          "new_line": 27,
+          "content": "    parser.add_argument(\"--output\", default=\".preprod/remediation-request.json\")"
+        },
+        {
+          "type": "added",
+          "new_line": 28,
+          "content": "    parser.add_argument(\"--repository\", default=os.environ.get(\"GITHUB_REPOSITORY\", \"\"))"
+        },
+        {
+          "type": "added",
+          "new_line": 29,
+          "content": "    parser.add_argument(\"--commit\", default=os.environ.get(\"GITHUB_SHA\", \"\"))"
+        },
+        {
+          "type": "added",
+          "new_line": 30,
+          "content": "    parser.add_argument(\"--ref\", default=os.environ.get(\"GITHUB_REF_NAME\", \"\"))"
+        },
+        {
+          "type": "added",
+          "new_line": 31,
+          "content": "    parser.add_argument(\"--pull-request\", default=os.environ.get(\"PR_NUMBER\", \"\"))"
+        },
+        {
+          "type": "added",
+          "new_line": 32,
+          "content": "    parser.add_argument(\"--generate\", action=\"store_true\", help=\"Request remediation generation\")"
+        },
+        {
+          "type": "added",
+          "new_line": 33,
+          "content": "    args = parser.parse_args()"
+        },
+        {
+          "type": "added",
+          "new_line": 34,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 35,
+          "content": "    source = load_json(args.input)"
+        },
+        {
+          "type": "added",
+          "new_line": 36,
+          "content": "    findings = source.get(\"findings\", [])"
+        },
+        {
+          "type": "added",
+          "new_line": 37,
+          "content": "    if not findings and isinstance(source.get(\"result\"), dict):"
+        },
+        {
+          "type": "added",
+          "new_line": 38,
+          "content": "        findings = source[\"result\"].get(\"findings\", [])"
+        },
+        {
+          "type": "added",
+          "new_line": 39,
+          "content": "    if not isinstance(findings, list):"
+        },
+        {
+          "type": "added",
+          "new_line": 40,
+          "content": "        raise SystemExit(\"Input does not contain a findings list\")"
+        },
+        {
+          "type": "added",
+          "new_line": 41,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 42,
+          "content": "    payload = {"
+        },
+        {
+          "type": "added",
+          "new_line": 43,
+          "content": "        \"repository\": args.repository,"
+        },
+        {
+          "type": "added",
+          "new_line": 44,
+          "content": "        \"commit_sha\": args.commit,"
+        },
+        {
+          "type": "added",
+          "new_line": 45,
+          "content": "        \"ref\": args.ref,"
+        },
+        {
+          "type": "added",
+          "new_line": 46,
+          "content": "        \"pull_request\": args.pull_request or None,"
+        },
+        {
+          "type": "added",
+          "new_line": 47,
+          "content": "        \"generate_remediation\": bool(args.generate),"
+        },
+        {
+          "type": "added",
+          "new_line": 48,
+          "content": "        \"findings\": findings,"
+        },
+        {
+          "type": "added",
+          "new_line": 49,
+          "content": "    }"
+        },
+        {
+          "type": "added",
+          "new_line": 50,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 51,
+          "content": "    out = Path(args.output)"
+        },
+        {
+          "type": "added",
+          "new_line": 52,
+          "content": "    out.parent.mkdir(parents=True, exist_ok=True)"
+        },
+        {
+          "type": "added",
+          "new_line": 53,
+          "content": "    out.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")"
+        },
+        {
+          "type": "added",
+          "new_line": 54,
+          "content": "    print(out)"
+        },
+        {
+          "type": "added",
+          "new_line": 55,
+          "content": "    return 0"
+        },
+        {
+          "type": "added",
+          "new_line": 56,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 57,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 58,
+          "content": "if __name__ == \"__main__\":"
+        },
+        {
+          "type": "added",
+          "new_line": 59,
+          "content": "    raise SystemExit(main())"
+        }
+      ],
+      "removed_lines": []
+    }
+  ]
+}
