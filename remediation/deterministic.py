@@ -12,7 +12,8 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     if "sql" not in finding.rule.lower() and "injection" not in finding.message.lower():
         raise NoDeterministicFix("finding is not classified as SQL injection")
     root = Path(repo_path).resolve()
-    path = (root / finding.file).resolve()
+    finding_path = Path(finding.file)
+    path = finding_path.resolve() if finding_path.is_absolute() else (root / finding_path).resolve()
     try:
         path.relative_to(root)
     except ValueError as exc:
@@ -20,6 +21,10 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     if path.suffix != ".py":
         raise NoDeterministicFix("deterministic SQL rule currently targets Python fixtures")
     before = path.read_text(encoding="utf-8")
+    try:
+        patch_path = path.relative_to(root).as_posix()
+    except ValueError as exc:
+        raise NoDeterministicFix("finding path escapes repository") from exc
     lines = before.splitlines(keepends=True)
     index = finding.line - 1
     if not 0 <= index < len(lines):
@@ -58,7 +63,7 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
         raise NoDeterministicFix("deterministic rule produced no change")
     return RemediationProposal(
         root_cause="User-controlled input is concatenated into an SQL statement.",
-        patch=unified_diff(before, after, finding.file),
+        patch=unified_diff(before, after, patch_path),
         tests=["remediation/fixture_tests.py"],
         assumptions=["The fixture uses a DB-API qmark parameter style."],
         confidence=1.0,
