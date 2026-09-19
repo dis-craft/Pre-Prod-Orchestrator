@@ -54,7 +54,10 @@ def main() -> int:
     parser.add_argument("--quiet", action="store_true", help="disable JSONL progress events")
     args = parser.parse_args()
 
-    repo = Path(args.repo).resolve()
+    repo_arg = Path(args.repo)
+    repo = repo_arg.resolve()
+    if args.demo and args.repo == ".":
+        repo = Path(__file__).resolve().parent.parent
 
     if args.demo:
         sha, finding_json = _demo_inputs(repo)
