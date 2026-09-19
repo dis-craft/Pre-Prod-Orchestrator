@@ -27,10 +27,10 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     line = lines[index]
     # Narrow audited pattern: SQL text is built from one variable concatenation.
     pattern = re.compile(
-        r'''^(?P<indent>\\s*)query\\s*=\\s*"(?P<left>.*?)"\\s*\\+\\s*'''
-        r'''(?P<var>[A-Za-z_]\\w*)\\s*\\+\\s*"(?P<right>.*?)"\\s*$'''
+        r'^(?P<indent> *)query *=[ ]*"(?P<left>.*?)"[ ]*[+][ ]*'
+        r'(?P<var>[A-Za-z_][A-Za-z0-9_]*)[ ]*[+][ ]*"(?P<right>.*?)"[ ]*$'
     )
-    match = pattern.match(line.rstrip("\\n"))
+    match = pattern.match(line.rstrip("\n"))
     if not match:
         raise NoDeterministicFix("no audited SQL concatenation pattern found")
 
