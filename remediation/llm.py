@@ -5,6 +5,7 @@ import os
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
+from typing import Protocol
 from .context import RemediationContext
 from .models import RemediationProposal
 
@@ -26,6 +27,10 @@ an empty patch, confidence 0, and risk HIGH.
 
 class LLMError(RuntimeError):
     pass
+
+class LLMProvider(Protocol):
+    def generate(self, context: RemediationContext) -> RemediationProposal:
+        ...
 
 @dataclass
 class OllamaProvider:
