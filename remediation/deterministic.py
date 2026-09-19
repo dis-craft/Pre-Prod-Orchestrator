@@ -27,7 +27,7 @@ def sql_injection_fix(repo_path: str | Path, finding: SecurityFinding) -> Remedi
     line = lines[index]
     # Narrow audited pattern: SQL text is built from one variable concatenation.
     pattern = re.compile(
-        r'''(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*?)'\s*\+\s*'''
+        r'''(?P<indent>\s*)query\s*=\s*"(?P<prefix>[^"]*)'\s*\+\s*'''
         r'''(?P<var>[A-Za-z_]\w*)\s*\+\s*'(?P<suffix>[^"]*)"'''
     )
     match = pattern.fullmatch(line.rstrip("\n"))
