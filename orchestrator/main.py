@@ -168,3 +168,10 @@ def get_pull_request(pr_id: str):
 @app.get("/api/audit", response_model=List[AuditEvent])
 def get_audit_events():
     return store.get_audit_events()
+
+
+@app.post("/api/reset")
+def reset_store():
+    store.reset()
+    return {"status": "success", "timestamp": datetime.now(timezone.utc).isoformat()}
+

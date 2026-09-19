@@ -18,6 +18,9 @@ class BackendStore:
     def __init__(self):
         self._init_data()
 
+    def reset(self):
+        self._init_data()
+
     def _init_data(self):
         self.repositories: List[Repository] = [
             Repository(

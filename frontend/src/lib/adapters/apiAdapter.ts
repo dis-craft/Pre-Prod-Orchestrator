@@ -166,6 +166,11 @@ export class ApiAdapter implements IOrchestratorAdapter {
   }
 
   public async resetState(): Promise<void> {
+    try {
+      await apiClient.post('/api/reset');
+    } catch {
+      // Ignore if backend reset fails
+    }
     this.notify();
   }
 }
