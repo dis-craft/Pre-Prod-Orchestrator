@@ -36,7 +36,7 @@ def _current_sha(repo: Path) -> str:
 
 
 def _demo_inputs(repo: Path) -> tuple[str, str]:
-    fixture = Path("remediation/fixtures/vulnerable_sql.py")
+    fixture = Path(__file__).resolve().parent / "fixtures" / "vulnerable_sql.py"
     findings = scan(str(fixture))
     if not findings:
         raise RuntimeError("demo fixture is no longer detected by the seeded scanner")
