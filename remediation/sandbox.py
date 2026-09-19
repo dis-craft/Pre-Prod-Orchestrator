@@ -116,10 +116,29 @@ class DockerSandboxValidator:
 
     def _scan(self, workspace: Path, finding: SecurityFinding) -> list[dict]:
         result = self._run_container(workspace, (*self.config.scan_command, finding.file))
+
+        # Exit 1 means "findings detected" for the seeded scanner.
+        if result["returncode"] not in (0, 1):
+            raise SandboxError(
+                "security scanner failed: "
+                f"exit={result['returncode']} stderr={result['stderr']}"
+            )
+
+        stdout = result["stdout"].strip()
+        if not stdout:
+            raise SandboxError(
+                "security scanner returned no JSON: "
+                f"exit={result['returncode']} stderr={result['stderr']}"
+            )
+
         try:
-            parsed = json.loads(result["stdout"])
+            parsed = json.loads(stdout)
         except json.JSONDecodeError as exc:
-            raise SandboxError("security scanner did not return JSON") from exc
+            raise SandboxError(
+                "security scanner returned invalid JSON: "
+                f"{stdout[:1000]}"
+            ) from exc
+
         if not isinstance(parsed, list):
             raise SandboxError("security scanner JSON must be an array")
         return parsed
