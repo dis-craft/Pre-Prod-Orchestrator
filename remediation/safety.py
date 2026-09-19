@@ -16,7 +16,7 @@ MIN_CONFIDENCE = {
 }
 
 _SECRET = re.compile(
-    r"(?i)(?:-----BEGIN .* PRIVATE KEY-----|(?:api[_-]?key|secret|password|token)\s*[:=]\s*['"][^'"]+)"
+    r"""(?i)(?:-----BEGIN .* PRIVATE KEY-----|(?:api[_-]?key|secret|password|token)\s*[:=]\s*[\'"][^\'"]+)"""
 )
 
 
