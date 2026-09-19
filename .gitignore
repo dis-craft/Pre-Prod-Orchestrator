@@ -57,3 +57,14 @@ next-env.d.ts
 # Misc
 *.pem
 .vercel
+
+# Platform & Frontend Module
+platform/frontend/node_modules/
+platform/frontend/.next/
+platform/frontend/out/
+platform/frontend/build/
+platform/frontend/dist/
+platform/frontend/.env.local
+platform/frontend/.env*.local
+platform/frontend/*.tsbuildinfo
+platform/frontend/next-env.d.ts
