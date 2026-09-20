@@ -44,10 +44,14 @@ inputs:
     description: Scan the whole repository.
     required: false
     default: "false"
+  reuse-findings:
+    description: Reuse security findings already stored in the canonical scan artifact.
+    required: false
+    default: "false"
 outputs:
   findings:
     description: Baseline findings JSON path.
-    value: ${{ steps.scan.outputs.findings }}
+    value: ${{ inputs.reuse-findings == 'true' && steps.canonical.outputs.findings || steps.scan.outputs.findings }}
   remediation:
     description: Remediation result JSON path.
     value: ${{ steps.remediate.outputs.result }}
@@ -60,8 +64,34 @@ runs:
       run: |
         python3 -m pip install --disable-pip-version-check -q -r "$GITHUB_ACTION_PATH/../../../requirements.txt"
 
+    - id: canonical
+      name: Load canonical security findings
+      if: ${{ inputs.reuse-findings == 'true' }}
+      shell: bash
+      env:
+        SCAN_INPUT: ${{ inputs.scan-input }}
+        SCAN_OUTPUT: ${{ inputs.scan-output }}
+      run: |
+        set -euo pipefail
+        python3 - "$GITHUB_WORKSPACE/$SCAN_INPUT" "$GITHUB_WORKSPACE/$SCAN_OUTPUT/findings.json" <<'PY'
+        import json, sys
+        from pathlib import Path
+        src = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+        engine = src.get("security_engine")
+        if not isinstance(engine, dict):
+            raise SystemExit("Canonical scan has no security_engine findings.")
+        out = Path(sys.argv[2])
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps({
+            "findings": engine.get("findings", []),
+            "scan_metadata": engine.get("scan_metadata", {}),
+        }, indent=2) + "\n", encoding="utf-8")
+        PY
+        echo "findings=$GITHUB_WORKSPACE/$SCAN_OUTPUT/findings.json" >> "$GITHUB_OUTPUT"
+
     - id: scan
       name: Initial security scan
+      if: ${{ inputs.reuse-findings != 'true' }}
       shell: bash
       env:
         SCAN_INPUT: ${{ inputs.scan-input }}
@@ -86,7 +116,7 @@ runs:
       if: ${{ inputs.generate-remediation == 'true' }}
       shell: bash
       env:
-        FINDINGS: ${{ steps.scan.outputs.findings }}
+        FINDINGS: ${{ inputs.reuse-findings == 'true' && steps.canonical.outputs.findings || steps.scan.outputs.findings }}
         OUTPUT: ${{ inputs.remediation-output }}
         MODEL: ${{ inputs.model }}
         CONTEXT_WINDOW: ${{ inputs.context-window }}
