@@ -407,7 +407,7 @@ class RemediationAgent:
     # ------------------------------------------------------------------
 
     def _call_llm(self, prompt: str) -> str:
-        """Call the selected model. Gemini is primary; xAI/Grok is supported as fallback."""
+        """Call Gemini and require schema-constrained JSON edits."""
         provider = os.environ.get("REMEDIATION_PROVIDER", "gemini").lower()
         if provider == "xai":
             return self._call_xai(prompt)
@@ -423,6 +423,27 @@ class RemediationAgent:
                         system_instruction=_SYSTEM_PROMPT,
                         max_output_tokens=4096,
                         response_mime_type="application/json",
+                        response_schema={
+                            "type": "object",
+                            "properties": {
+                                "edits": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "file": {"type": "string"},
+                                            "start_line": {"type": "integer"},
+                                            "end_line": {"type": "integer"},
+                                            "original": {"type": "string"},
+                                            "replacement": {"type": "string"},
+                                            "explanation": {"type": "string"},
+                                        },
+                                        "required": ["file", "start_line", "end_line", "original", "replacement", "explanation"],
+                                    },
+                                }
+                            },
+                            "required": ["edits"],
+                        },
                     ),
                 )
                 return response.text or ""
