@@ -29,15 +29,15 @@ inputs:
     required: false
     default: "60"
   fallback-model:
-    description: xAI/Grok fallback model.
+    description: Secondary Gemini model used after primary retries.
     required: false
-    default: grok-4.6
+    default: gemini-2.5-flash
   primary-attempts:
-    description: Primary remediation attempts.
+    description: Primary Gemini model attempts.
     required: false
     default: "3"
   fallback-attempts:
-    description: Fallback remediation attempts.
+    description: Secondary Gemini model attempts.
     required: false
     default: "2"
   full-repo-rescan:
@@ -93,11 +93,10 @@ runs:
         FALLBACK_MODEL: ${{ inputs.fallback-model }}
         PRIMARY_ATTEMPTS: ${{ inputs.primary-attempts }}
         FALLBACK_ATTEMPTS: ${{ inputs.fallback-attempts }}
-        XAI_API_KEY: ${{ env.XAI_API_KEY }}
         GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
         PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set -euo pipefail
-        if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${XAI_API_KEY:-}" ]; then echo "At least one remediation model API key is required."; exit 1; fi
+        if [ -z "${GEMINI_API_KEY:-}" ]; then echo "GEMINI_API_KEY is required when generate-remediation=true."; exit 1; fi
         python3 "$GITHUB_ACTION_PATH/../../../remediation/retry_pipeline.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --primary-model "$MODEL" --fallback-model "$FALLBACK_MODEL" --primary-attempts "$PRIMARY_ATTEMPTS" --fallback-attempts "$FALLBACK_ATTEMPTS"
         echo "result=$GITHUB_WORKSPACE/$OUTPUT" >> "$GITHUB_OUTPUT"
