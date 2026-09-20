@@ -6,7 +6,45 @@ const DEFAULT_URL='https://dis-craft.github.io/Pre-prod-tester/data/latest.json'
 
 async function fetchScan():Promise<ScanPayload>{const r=await fetch(process.env.NEXT_PUBLIC_SCAN_DATA_URL||DEFAULT_URL,{cache:'no-store'});if(!r.ok)throw new Error(`Live scan fetch failed: HTTP ${r.status}`);return r.json();}
 type PublishedPR={number:number;title?:string;state?:string;merged?:boolean;head?:string;base?:string;url?:string;created_at?:string;updated_at?:string};
-async function fetchPublishedPRs():Promise<PublishedPR[]>{const base=(process.env.NEXT_PUBLIC_SCAN_DATA_URL||DEFAULT_URL).replace(/\/data\/latest\.json$/,'');const r=await fetch(`${base}/data/pull-requests.json`,{cache:'no-store'});if(!r.ok)throw new Error(`Live PR state fetch failed: HTTP ${r.status}`);return r.json();}
+async function fetchPublishedPRs():Promise<PublishedPR[]>{
+  try{
+    const base=(process.env.NEXT_PUBLIC_SCAN_DATA_URL||DEFAULT_URL).replace(/\/data\/latest\.json$/,'');
+    const r=await fetch(`${base}/data/pull-requests.json`,{cache:'no-store'});
+    if(r.ok){
+      const data=await r.json();
+      if(Array.isArray(data))return data;
+    }
+  }catch{
+    // Ignore and fallback
+  }
+
+  try{
+    const r=await fetch('https://api.github.com/repos/dis-craft/Pre-prod-tester/pulls?state=all&per_page=30&sort=updated&direction=desc',{
+      cache:'no-store',
+      headers:{Accept:'application/vnd.github+json'}
+    });
+    if(r.ok){
+      const prs=await r.json();
+      if(Array.isArray(prs)){
+        return prs.map((p:Record<string,unknown>)=>({
+          number:Number(p.number),
+          title:String(p.title||''),
+          state:String(p.state||'open'),
+          merged:Boolean(p.merged_at),
+          head:String((p.head as Record<string,unknown>|undefined)?.ref||''),
+          base:String((p.base as Record<string,unknown>|undefined)?.ref||'main'),
+          url:String(p.html_url||''),
+          created_at:String(p.created_at||''),
+          updated_at:String(p.updated_at||'')
+        }));
+      }
+    }
+  }catch{
+    // Fallback to empty array
+  }
+
+  return [];
+}
 function mapFinding(raw:Record<string,unknown>,s:ScanPayload):Finding{const line=Number(raw.line??1),confidence=Number(raw.confidence??0),severity=String(raw.severity??'INFO').toUpperCase() as Finding['severity'],location=String(raw.location_detail??'');return{id:String(raw.id??`${raw.rule}-${raw.file}-${line}`),repository:s.repository?.full_name||'dis-craft/Pre-prod-tester',pullRequest:'',commitSha:s.commit?.after||'',tool:String(raw.tool??'rule_engine'),ruleId:String(raw.rule??''),title:String(raw.rule??raw.message??'Security finding'),message:String(raw.message??''),severity,confidence:confidence<=1?Math.round(confidence*100):confidence,file:String(raw.file??''),startLine:line,endLine:Number(raw.end_line??line),cwe:raw.cwe?`CWE-${raw.cwe}`:'CWE-Other',owasp:String(raw.category??''),introducedByPR:'',fixability:['AUTO','AI_ASSISTED'].includes(String(raw.fixability??'').toUpperCase())?'AUTO_REMEDIABLE':'REQUIRES_HUMAN_TRIAGE',status:'OPEN',evidence:{snippet:location,vulnerableLine:location.split('\n').pop()||String(raw.message??''),contextBefore:[],contextAfter:[],explanation:String(raw.what_and_why??raw.message??'')}};}
 class LiveScanAdapter implements IOrchestratorAdapter{
  private listeners=new Set<()=>void>();

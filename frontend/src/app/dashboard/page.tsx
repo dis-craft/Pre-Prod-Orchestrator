@@ -19,6 +19,7 @@ import {
   Bot,
   CheckCircle2,
   Clock3,
+  Sliders,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -100,7 +101,6 @@ export default function DashboardPage() {
   const latestRepo = String(evidence.repository || latestFinding?.repository || 'dis-craft/Pre-prod-tester');
   const latestCommit = String(evidence.commit || latestFinding?.commitSha || '');
   const latestWorkflow = String(evidence.workflowUrl || '');
-  const latestPR = findings.length ? null : null; // PR data is rendered from the live pull-request adapter.
   const scanFailed = findings.some((f) => ['CRITICAL', 'HIGH'].includes(f.severity));
   const pipelineState = scanFailed ? 'FIX REQUIRED' : 'SECURITY CHECK PASSED';
   const latestFindingExplanation = latestFinding?.message || latestFinding?.evidence?.explanation || 'No security finding reported.';
@@ -139,6 +139,62 @@ export default function DashboardPage() {
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}
+        </div>
+
+        {/* Repository Automation Setup Banner */}
+        <div className="bg-[#161b22] border border-[#30363d] rounded p-3 sm:p-4 space-y-3 font-sans">
+          <div className="flex items-start justify-between flex-wrap gap-3">
+            <div className="flex items-start gap-2.5">
+              <div className="w-8 h-8 rounded bg-blue-950/60 border border-blue-800/60 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                <Sliders className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold text-gray-200 font-mono">Repository Automation Setup</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/60 border border-amber-800/60 text-amber-400 font-mono font-bold uppercase tracking-wider">
+                    BANKAI • PREVIEW
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed">
+                  Preview how Pre-Prod security gates, automated GitHub Actions workflows, and Vercel descriptors look when configured for a repository.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/setup"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium font-sans shadow-xs transition-colors shrink-0"
+            >
+              <span>Preview Setup & Config</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {/* Quick Config Preview Chips showing what would it look like */}
+          <div className="pt-1 border-t border-[#21262d] flex items-center justify-between flex-wrap gap-2 text-[11px] font-mono">
+            <div className="flex items-center gap-1.5 flex-wrap text-gray-400">
+              <span className="text-gray-500 text-[10px] uppercase">Calculated Output:</span>
+              <span className="px-2 py-0.5 rounded bg-[#0d1117] border border-emerald-800/40 text-emerald-400">
+                + .github/workflows/preprod-security.yml
+              </span>
+              <span className="px-2 py-0.5 rounded bg-[#0d1117] border border-emerald-800/40 text-emerald-400">
+                + .preprod/config.yml
+              </span>
+              <span className="px-2 py-0.5 rounded bg-[#0d1117] border border-amber-800/40 text-amber-400">
+                ~ vercel.json
+              </span>
+              <span className="px-2 py-0.5 rounded bg-[#0d1117] border border-purple-800/40 text-purple-300">
+                6-Stage CI Pipeline
+              </span>
+            </div>
+            <Link
+              href="/setup"
+              className="text-blue-400 hover:text-blue-300 text-[11px] transition-colors flex items-center gap-1"
+            >
+              <span>Inspect Generated Files</span>
+              <ArrowRight className="w-2.5 h-2.5" />
+            </Link>
+          </div>
         </div>
 
         {/* Dense Security Overview Bar */}

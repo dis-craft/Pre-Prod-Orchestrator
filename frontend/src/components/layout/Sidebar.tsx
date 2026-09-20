@@ -14,6 +14,7 @@ import {
   BarChart3, 
   Settings,
   Database,
+  Sliders,
   X
 } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -30,6 +31,12 @@ export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const { isDemoMode } = useAppMode();
   const [repositoryName, setRepositoryName] = useState('Loading…');
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (isDemoMode) return;
     let active = true;
@@ -44,6 +51,7 @@ export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const navigationItems = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Repositories', href: '/repositories', icon: GitBranch },
+    { name: 'Repository Setup', href: '/setup', icon: Sliders },
     { name: 'Findings', href: '/findings', icon: SearchCode },
     { name: 'Remediations', href: isDemoMode ? '/remediation/REM-SEC-001' : '/findings', icon: Wrench },
     { name: 'Pull Requests', href: '/pull-requests', icon: GitPullRequest },
@@ -72,11 +80,16 @@ export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
           </Link>
 
           <div className="flex items-center gap-2">
-            {/* Mode Indicator Badge */}
-            {isDemoMode ? (
+            {/* Mode Indicator Badge with SSR Hydration Protection */}
+            {!mounted ? (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-900/50 text-[10px] font-mono text-emerald-400 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>NORMAL</span>
+              </div>
+            ) : isDemoMode ? (
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-950/40 border border-amber-800/50 text-[10px] font-mono text-amber-400 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                <span>DEMO</span>
+                <span>BANKAI</span>
               </div>
             ) : (
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-900/50 text-[10px] font-mono text-emerald-400 font-medium">

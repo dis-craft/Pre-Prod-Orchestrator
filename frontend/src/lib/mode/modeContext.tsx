@@ -33,32 +33,16 @@ function getInitialMode(): AppMode {
 }
 
 export function AppModeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<AppMode>(() => {
-    const initial = getInitialMode();
-    orchestratorService.setMode(initial);
-    if (initial === 'demo') {
-      demoStore.resetState();
-      simulatorEngine.reset();
-    } else {
-      simulatorEngine.stop();
-    }
-    return initial;
-  });
+  const [mode, setModeState] = useState<AppMode>('normal');
 
   const handleSetMode = useCallback((newMode: AppMode) => {
     if (newMode === 'normal') {
-      // 1. Stop simulator engine & cancel all active timers
       simulatorEngine.stop();
-      // 2. Clear & reset demo store state so it stays isolated
       demoStore.resetState();
-      // 3. Switch orchestrator service data adapter to Normal mode
       orchestratorService.setMode('normal');
     } else if (newMode === 'demo') {
-      // 1. Reset demo store to deterministic clean initial state
       demoStore.resetState();
-      // 2. Initialize simulator engine cleanly
       simulatorEngine.reset();
-      // 3. Switch orchestrator service data adapter to Demo mode
       orchestratorService.setMode('demo');
     }
 
@@ -66,9 +50,20 @@ export function AppModeProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem(STORAGE_KEY, newMode);
     } catch {
-      // Ignore storage errors in restricted contexts
+      // Ignore storage errors
     }
   }, []);
+
+  React.useEffect(() => {
+    try {
+      const savedMode = localStorage.getItem(STORAGE_KEY) as AppMode | null;
+      if (savedMode === 'demo') {
+        handleSetMode('demo');
+      }
+    } catch {
+      // Ignore
+    }
+  }, [handleSetMode]);
 
   return (
     <AppModeContext.Provider
