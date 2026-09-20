@@ -1,0 +1,718 @@
+{
+  "scan_metadata": {
+    "timestamp": "2026-09-19T15:18:00.414393",
+    "total_findings": 27,
+    "by_severity": {
+      "CRITICAL": 16,
+      "HIGH": 11,
+      "MEDIUM": 0,
+      "LOW": 0,
+      "INFO": 0
+    },
+    "model_used": "none"
+  },
+  "findings": [
+    {
+      "id": "9498eae3-da42-4e4e-8f00-51c579fdaaf9",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "scanner/rules.py",
+      "line": 71,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 71,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 71:\n        add(\"INJ-EVAL-PY\", \"94\", \"Injection\", \"Code Injection / Eval (Python)\", \"CRITICAL\",",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 71
+        }
+      ]
+    },
+    {
+      "id": "00270e30-556e-468e-b329-24c4f72e686f",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "scanner/rules.py",
+      "line": 73,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 73,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 73:\n            [\".py\"], \"Evaluating strings as Python code.\", \"Attacker can execute arbitrary Python code.\", \"Avoid eval(). Use ast.literal_eval if parsing data.\")",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "id": "c15e03be-93de-4aab-94c5-878d180712f6",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "scanner/rules.py",
+      "line": 74,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 74,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 74:\n        add(\"INJ-EVAL-JS\", \"94\", \"Injection\", \"Code Injection / Eval (JS)\", \"CRITICAL\",",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 74
+        }
+      ]
+    },
+    {
+      "id": "5b1919f7-ae12-47b8-96fb-e8f1877475e9",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "scanner/rules.py",
+      "line": 76,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 76,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 76:\n            [\".js\", \".ts\"], \"Evaluating strings as JS code.\", \"Attacker can execute arbitrary JS code.\", \"Avoid eval() and string arguments to setTimeout.\")",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 76
+        }
+      ]
+    },
+    {
+      "id": "d8a35ea8-c954-4488-b8db-28be9bbccd61",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "scanner/rules.py",
+      "line": 77,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 77,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 77:\n        add(\"INJ-EVAL-PHP\", \"94\", \"Injection\", \"Code Injection / Eval (PHP)\", \"CRITICAL\",",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "id": "93ac559e-1339-40d1-93c3-4fbea18b3e8b",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "scanner/rules.py",
+      "line": 79,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 79,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 79:\n            [\".php\"], \"Evaluating strings as PHP code.\", \"Attacker can execute arbitrary PHP code.\", \"Do not use eval().\")",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 79
+        }
+      ]
+    },
+    {
+      "id": "49c3d752-4a24-46d1-a4f7-8c4c6ad5e516",
+      "tool": "rule_engine",
+      "rule": "INJ-SQL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_diff_parser.py",
+      "line": 21,
+      "message": "Unsafe string formatting in SQL execution.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 21,
+      "cwe": "89",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary SQL queries.",
+      "location_detail": "Line 21:\n+        cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")",
+      "how_to_fix": "Use parameterized queries.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_diff_parser.py",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "id": "1fcae0f7-415a-40ba-b09d-8dfe259caa8d",
+      "tool": "rule_engine",
+      "rule": "INJ-SQL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rules.py",
+      "line": 82,
+      "message": "Unsafe string formatting in SQL execution.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 82,
+      "cwe": "89",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary SQL queries.",
+      "location_detail": "Line 82:\n            'cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")',",
+      "how_to_fix": "Use parameterized queries.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 82
+        }
+      ]
+    },
+    {
+      "id": "4dc8e8e7-7482-4863-ba23-93c0cc67032d",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rules.py",
+      "line": 126,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 126,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 126:\n            'eval(user_input)',",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 126
+        }
+      ]
+    },
+    {
+      "id": "869dfd90-c246-4c41-b923-66e842dfbb22",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rules.py",
+      "line": 127,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 127,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 127:\n            'exec(code_string)',",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 127
+        }
+      ]
+    },
+    {
+      "id": "80b15149-70a8-49d7-819d-6fb3202da300",
+      "tool": "rule_engine",
+      "rule": "INJ-SQL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 25,
+      "message": "Unsafe string formatting in SQL execution.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 25,
+      "cwe": "89",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary SQL queries.",
+      "location_detail": "Line 25:\n                10: 'cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")',",
+      "how_to_fix": "Use parameterized queries.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 25
+        }
+      ]
+    },
+    {
+      "id": "6485b8b5-0e01-42f7-955d-55b0729f8217",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 44,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 44,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 44:\n    def test_scan_hunks_finds_eval(self):",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 44
+        }
+      ]
+    },
+    {
+      "id": "48031ad8-d874-4d58-8798-f36f7395f579",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 48,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 48,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 48:\n                20: 'result = eval(user_input)',",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "id": "8e25847f-77fb-48b9-9ca2-ad1c6a6e87c8",
+      "tool": "rule_engine",
+      "rule": "INJ-SQL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 99,
+      "message": "Unsafe string formatting in SQL execution.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 99,
+      "cwe": "89",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary SQL queries.",
+      "location_detail": "Line 99:\n                added_lines={5: 'cursor.execute(f\"DELETE FROM {table}\")'},",
+      "how_to_fix": "Use parameterized queries.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "id": "47b162d9-ac16-45d3-816e-f5b87ee4f4a3",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 130,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 130,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 130:\n                10: 'eval(request.args[\"code\"])',",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 130
+        }
+      ]
+    },
+    {
+      "id": "3824e3f0-062b-4ecf-9cfc-7a2f79282ca3",
+      "tool": "rule_engine",
+      "rule": "INJ-EVAL-PY",
+      "severity": "CRITICAL",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 140,
+      "message": "Evaluating strings as Python code.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 140,
+      "cwe": "94",
+      "category": "Injection",
+      "what_and_why": "Attacker can execute arbitrary Python code.",
+      "location_detail": "Line 140:\n        assert hit.matched_text == 'eval(request.args[\"code\"])'",
+      "how_to_fix": "Avoid eval(). Use ast.literal_eval if parsing data.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 140
+        }
+      ]
+    },
+    {
+      "id": "cee4ae39-3746-4b0f-88bb-45390f06a182",
+      "tool": "rule_engine",
+      "rule": "AUT-NO-CSRF",
+      "severity": "HIGH",
+      "file": "scanner/rules.py",
+      "line": 195,
+      "message": "Explicitly disabling CSRF protection in Django.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 195,
+      "cwe": "352",
+      "category": "Auth & Session",
+      "what_and_why": "Attacker can perform actions on behalf of the user.",
+      "location_detail": "Line 195:\n            [r\"csrf_exempt\"],",
+      "how_to_fix": "Remove @csrf_exempt and enforce CSRF tokens.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 195
+        }
+      ]
+    },
+    {
+      "id": "f99d8fa2-bf90-4111-b3d5-95f548a7edcc",
+      "tool": "rule_engine",
+      "rule": "AUT-NO-CSRF",
+      "severity": "HIGH",
+      "file": "scanner/rules.py",
+      "line": 196,
+      "message": "Explicitly disabling CSRF protection in Django.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 196,
+      "cwe": "352",
+      "category": "Auth & Session",
+      "what_and_why": "Attacker can perform actions on behalf of the user.",
+      "location_detail": "Line 196:\n            [\".py\"], \"Explicitly disabling CSRF protection in Django.\", \"Attacker can perform actions on behalf of the user.\", \"Remove @csrf_exempt and enforce CSRF tokens.\")",
+      "how_to_fix": "Remove @csrf_exempt and enforce CSRF tokens.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "scanner/rules.py",
+          "line": 196
+        }
+      ]
+    },
+    {
+      "id": "2298c7b4-f7a5-4d21-a647-7764ae3988b6",
+      "tool": "rule_engine",
+      "rule": "SEC-PASSWORD",
+      "severity": "HIGH",
+      "file": "tests/unit/test_diff_parser.py",
+      "line": 20,
+      "message": "Hardcoded password variable.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 20,
+      "cwe": "798",
+      "category": "Secrets & Credentials",
+      "what_and_why": "Attacker can use the password to gain access.",
+      "location_detail": "Line 20:\n+        password = \"hardcoded_secret\"",
+      "how_to_fix": "Use secure vault or env vars.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_diff_parser.py",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "id": "44239d02-65dd-416c-8804-c7d60d6b721e",
+      "tool": "rule_engine",
+      "rule": "CFG-DEBUG-PY",
+      "severity": "HIGH",
+      "file": "tests/unit/test_diff_parser.py",
+      "line": 66,
+      "message": "Running application in debug mode.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 66,
+      "cwe": "215",
+      "category": "Config & Infrastructure",
+      "what_and_why": "Exposes stack traces and interactive debuggers.",
+      "location_detail": "Line 66:\n DEBUG = True",
+      "how_to_fix": "Set DEBUG=False in production.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_diff_parser.py",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "id": "d81facac-6bf2-4849-9e5e-8277154b11df",
+      "tool": "rule_engine",
+      "rule": "SEC-PASSWORD",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rules.py",
+      "line": 104,
+      "message": "Hardcoded password variable.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 104,
+      "cwe": "798",
+      "category": "Secrets & Credentials",
+      "what_and_why": "Attacker can use the password to gain access.",
+      "location_detail": "Line 104:\n            'password = \"supersecret123\"',",
+      "how_to_fix": "Use secure vault or env vars.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 104
+        }
+      ]
+    },
+    {
+      "id": "c8b2a70b-b208-4b7f-885f-4cad5f58b46b",
+      "tool": "rule_engine",
+      "rule": "SEC-PASSWORD",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rules.py",
+      "line": 105,
+      "message": "Hardcoded password variable.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 105,
+      "cwe": "798",
+      "category": "Secrets & Credentials",
+      "what_and_why": "Attacker can use the password to gain access.",
+      "location_detail": "Line 105:\n            \"db_password = 'hunter2'\",",
+      "how_to_fix": "Use secure vault or env vars.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 105
+        }
+      ]
+    },
+    {
+      "id": "e33a18c0-7a89-4bf6-b489-75909671a94c",
+      "tool": "rule_engine",
+      "rule": "SEC-PASSWORD",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rules.py",
+      "line": 106,
+      "message": "Hardcoded password variable.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 106,
+      "cwe": "798",
+      "category": "Secrets & Credentials",
+      "what_and_why": "Attacker can use the password to gain access.",
+      "location_detail": "Line 106:\n            'PASSWORD = \"admin123\"',",
+      "how_to_fix": "Use secure vault or env vars.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 106
+        }
+      ]
+    },
+    {
+      "id": "174c6d57-1c47-4eda-b13e-1c09fe70dd66",
+      "tool": "rule_engine",
+      "rule": "CRY-MD5",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rules.py",
+      "line": 154,
+      "message": "Use of broken MD5 hashing algorithm.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 154,
+      "cwe": "327",
+      "category": "Cryptography",
+      "what_and_why": "Attacker can perform collision attacks.",
+      "location_detail": "Line 154:\n            'hashlib.md5(data)',",
+      "how_to_fix": "Use SHA-256 or SHA-3.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 154
+        }
+      ]
+    },
+    {
+      "id": "3c7d7802-51b0-4b35-8a82-05cfc49cef56",
+      "tool": "rule_engine",
+      "rule": "CRY-SHA1",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rules.py",
+      "line": 155,
+      "message": "Use of weak SHA1 hashing algorithm.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 155,
+      "cwe": "328",
+      "category": "Cryptography",
+      "what_and_why": "Attacker can perform collision attacks.",
+      "location_detail": "Line 155:\n            'hashlib.sha1(password)',",
+      "how_to_fix": "Use SHA-256 or SHA-3.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rules.py",
+          "line": 155
+        }
+      ]
+    },
+    {
+      "id": "61289a9c-e8be-499c-8b43-4954b75df3e4",
+      "tool": "rule_engine",
+      "rule": "SEC-PASSWORD",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 37,
+      "message": "Hardcoded password variable.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 37,
+      "cwe": "798",
+      "category": "Secrets & Credentials",
+      "what_and_why": "Attacker can use the password to gain access.",
+      "location_detail": "Line 37:\n                5: 'password = \"super_secret_123\"',",
+      "how_to_fix": "Use secure vault or env vars.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "id": "abb89b93-134c-4c79-afb6-e57bd5329f1e",
+      "tool": "rule_engine",
+      "rule": "SEC-PASSWORD",
+      "severity": "HIGH",
+      "file": "tests/unit/test_rule_engine.py",
+      "line": 104,
+      "message": "Hardcoded password variable.",
+      "confidence": 0.5,
+      "fixability": "UNKNOWN",
+      "metadata": {},
+      "end_line": 104,
+      "cwe": "798",
+      "category": "Secrets & Credentials",
+      "what_and_why": "Attacker can use the password to gain access.",
+      "location_detail": "Line 104:\n                added_lines={10: 'const password = \"hardcoded_api_key_1234\"'},",
+      "how_to_fix": "Use secure vault or env vars.",
+      "why_fix_helps": "Mitigates vulnerability",
+      "llm_confirmed": true,
+      "occurrences": [
+        {
+          "file": "tests/unit/test_rule_engine.py",
+          "line": 104
+        }
+      ]
+    }
+  ]
+}

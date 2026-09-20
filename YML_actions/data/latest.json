@@ -3,7 +3,7 @@
   "scan": {
     "id": "scn_64d6f14ce300",
     "trigger": "push",
-    "captured_at": "2026-09-19T13:05:03.682687+00:00",
+    "captured_at": "2026-09-20T16:52:18.279557+00:00",
     "workflow_run_id": "35444703397",
     "workflow_url": "https://github.com/dis-craft/Pre-prod-tester/actions/runs/35444703397"
   },
@@ -20,9 +20,9 @@
   },
   "commit": {
     "before": "cdf51b5e1597cebb6eaccbcd65f83e61df0e534c",
-    "after": "64d6f14ce3003578c721cdea552160263d9d7bca",
+    "after": "e8b7c2f109a4716b20470bf6f3e24e3b87da4aca",
     "branch": "main",
-    "message": "feat: add AI remediation branch trigger",
+    "message": "feat: add new billing service (full scan test)",
     "author": {
       "name": "Srikar T",
       "email": "169169726+dis-craft@users.noreply.github.com"

@@ -15,9 +15,7 @@ const db = mysql.createConnection({
 app.get("/user", (req, res) => {
   const username = req.query.username;
 
-  const query = `SELECT * FROM users WHERE username = '${username}'`;
-
-  db.query(query, (err, results) => {
+  db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
     if (err) return res.status(500).send(err.message);
     res.json(results);
   });
@@ -27,7 +25,7 @@ app.get("/user", (req, res) => {
 app.get("/ping", (req, res) => {
   const { host } = req.query;
 
-  require("child_process").exec(`ping -c 1 ${host}`, (err, stdout) => {
+  require("child_process").execFile("ping", ["-c", "1", host], (err, stdout) => {
     if (err) return res.status(500).send(err.message);
     res.send(stdout);
   });

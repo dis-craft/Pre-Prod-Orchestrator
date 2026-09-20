@@ -301,6 +301,10 @@ def build_remediation_html(
         html.append(f"<span>🌿 Branch: <code>{escape(branch)}</code></span>")
     if commit_sha:
         html.append(f"<span>📌 Commit: <code>{escape(commit_sha[:12])}</code></span>")
+    html.append("</div>")
+    html.append("<div style='margin-top:14px;display:flex;gap:10px;'>")
+    html.append("<a href='../flow.html' style='color:#ffffff;background:#1d4ed8;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;'>⚡ Live Security Flow</a>")
+    html.append("<a href='../index.html' style='color:#e2e8f0;background:#334155;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500;'>⬅ Dashboard (Diff Viewer)</a>")
     html.append("</div></div>")
 
     # Content
