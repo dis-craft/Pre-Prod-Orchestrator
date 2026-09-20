@@ -2,13 +2,8 @@ from typing import List, Optional
 from platform.models.finding import PlatformSecurityFinding, WorkflowStatus, FindingWithWorkflow
 from platform.adapters.orchestrator_adapter import orchestrator_adapter, OrchestratorAdapter
 
-
 class FindingService:
-    """
-    Platform Finding Service.
-    Encapsulates platform query logic for findings and security workflow status.
-    """
-
+    """Platform Finding Service."""
     def __init__(self, adapter: Optional[OrchestratorAdapter] = None):
         self.adapter = adapter or orchestrator_adapter
 
@@ -19,9 +14,7 @@ class FindingService:
         repository: Optional[str] = None
     ) -> List[PlatformSecurityFinding]:
         return self.adapter.get_findings(
-            severity=severity,
-            status=status,
-            repository=repository
+            severity=severity, status=status, repository=repository
         )
 
     def get_finding(self, finding_id: str) -> Optional[PlatformSecurityFinding]:
@@ -38,6 +31,5 @@ class FindingService:
         if not workflow:
             return None
         return FindingWithWorkflow(finding=finding, workflow=workflow)
-
 
 finding_service = FindingService()
