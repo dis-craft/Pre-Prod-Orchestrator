@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAppMode } from '../../lib/mode/modeContext';
+import { orchestratorService } from '../../lib/services/orchestrator';
 
 interface SidebarProps {
   isMobileOpen?: boolean;
@@ -27,6 +28,18 @@ interface SidebarProps {
 export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { isDemoMode } = useAppMode();
+  const [repositoryName, setRepositoryName] = useState('Loading…');
+
+  useEffect(() => {
+    if (isDemoMode) return;
+    let active = true;
+    void orchestratorService.getRepositories().then((repos) => {
+      if (active && repos[0]) setRepositoryName(repos[0].name);
+    }).catch(() => {
+      if (active) setRepositoryName('Unavailable');
+    });
+    return () => { active = false; };
+  }, [isDemoMode]);
 
   const navigationItems = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -121,7 +134,7 @@ export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
           <div className="truncate">
             <span className="text-[10px] text-gray-500 block">TARGET REPO</span>
             <span className="text-gray-300 font-medium truncate block">
-              {isDemoMode ? 'payments-api' : 'main-service'}
+              {isDemoMode ? 'payments-api' : repositoryName}
             </span>
           </div>
         </div>
