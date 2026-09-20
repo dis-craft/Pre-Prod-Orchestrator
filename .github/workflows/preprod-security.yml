@@ -106,6 +106,7 @@ jobs:
         with:
           scan-input: .preprod/scan.json
           generate-remediation: ${{ inputs.generate-remediation }}
+          model: gemini-3.5-flash
           fallback-model: ${{ inputs.fallback-model }}
           primary-attempts: ${{ inputs.primary-attempts }}
           fallback-attempts: ${{ inputs.fallback-attempts }}
