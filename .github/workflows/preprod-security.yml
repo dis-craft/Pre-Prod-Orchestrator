@@ -50,7 +50,7 @@ jobs:
 
       - name: Run scanner and AI remediation
         id: engine
-        uses: $/.github/actions/security-engine
+        uses: dis-craft/Pre-Prod-Orchestrator/.github/actions/security-engine@Adi-initial
         with:
           scan-input: .preprod/scan.json
           generate-remediation: ${{ inputs.generate-remediation }}
