@@ -42,7 +42,7 @@ runs:
       name: Install security engine dependencies
       shell: bash
       run: |
-        python3 -m pip install --disable-pip-version-check -q -r "$GITHUB_ACTION_PATH/../../requirements.txt"
+        python3 -m pip install --disable-pip-version-check -q -r "$GITHUB_ACTION_PATH/../../../requirements.txt"
 
     - id: scan
       name: Initial security scan
@@ -50,7 +50,7 @@ runs:
       env:
         SCAN_INPUT: ${{ inputs.scan-input }}
         SCAN_OUTPUT: ${{ inputs.scan-output }}
-        PYTHONPATH: ${{ github.action_path }}/../..
+        PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set +e
         python3 -m scanner --repo "$GITHUB_WORKSPACE" --json-input "$GITHUB_WORKSPACE/$SCAN_INPUT" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
@@ -70,11 +70,11 @@ runs:
         MODEL: ${{ inputs.model }}
         CONTEXT_WINDOW: ${{ inputs.context-window }}
         GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
-        PYTHONPATH: ${{ github.action_path }}/../..
+        PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set -euo pipefail
         if [ -z "${GEMINI_API_KEY:-}" ]; then echo "GEMINI_API_KEY is required when generate-remediation=true."; exit 1; fi
-        python3 "$GITHUB_ACTION_PATH/../../remediation/ci_entrypoint.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --model "$MODEL" --context-window "$CONTEXT_WINDOW"
+        python3 "$GITHUB_ACTION_PATH/../../../remediation/ci_entrypoint.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --model "$MODEL" --context-window "$CONTEXT_WINDOW"
         echo "result=$GITHUB_WORKSPACE/$OUTPUT" >> "$GITHUB_OUTPUT"
 
     - name: Post-remediation diff rescan
@@ -82,7 +82,7 @@ runs:
       shell: bash
       env:
         OUTPUT: ${{ inputs.rescan-output }}
-        PYTHONPATH: ${{ github.action_path }}/../..
+        PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set +e
         git diff --no-ext-diff --unified=80 HEAD -- . > "$RUNNER_TEMP/post-remediation.diff"
