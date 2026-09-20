@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, RotateCcw, GitBranch, Terminal, LogOut, PlayCircle, Menu } from 'lucide-react';
 import { orchestratorService } from '../../lib/services/orchestrator';
@@ -15,6 +15,18 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
   const { setMode, isDemoMode } = useAppMode();
   const [searchQuery, setSearchQuery] = useState('');
   const [isResetting, setIsResetting] = useState(false);
+  const [repositoryName, setRepositoryName] = useState('Loading repository…');
+
+  useEffect(() => {
+    if (isDemoMode) return;
+    let active = true;
+    void orchestratorService.getRepositories().then((repos) => {
+      if (active && repos[0]) setRepositoryName(`${repos[0].owner}/${repos[0].name}`);
+    }).catch(() => {
+      if (active) setRepositoryName('Repository unavailable');
+    });
+    return () => { active = false; };
+  }, [isDemoMode]);
 
   const handleResetDemo = async () => {
     setIsResetting(true);
@@ -42,7 +54,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded bg-[#0d1117] border border-[#30363d] text-xs text-gray-300 font-mono shrink-0">
           <GitBranch className="w-3.5 h-3.5 text-gray-400" />
           <span className="truncate max-w-[120px] md:max-w-none">
-            {isDemoMode ? 'acme-corp/payments-api' : 'acme-corp/main-service'}
+            {isDemoMode ? 'acme-corp/payments-api' : repositoryName}
           </span>
         </div>
 
