@@ -35,7 +35,7 @@ def main() -> int:
     parser.add_argument("--repo", required=True)
     parser.add_argument("--findings", required=True)
     parser.add_argument("--output", required=True)
-    parser.add_argument("--model", default=os.environ.get("GEMINI_MODEL", "gemini-3.6-flash"))
+    parser.add_argument("--model", default=os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite"))
     parser.add_argument("--context-window", type=int, default=30)
     args = parser.parse_args()
 
