@@ -1,64 +1,235 @@
-# SecurityOrchestrator
+# Pre-Prod Security Orchestrator
 
-AI-assisted security remediation orchestrator for CI/CD.
+Automated vulnerability detection, LLM-assisted remediation, and verification pipeline for CI/CD workflows.
 
-## Mission
+---
 
-Detect security findings in pull requests, understand the relevant code context, generate a minimal remediation patch, validate the patch in isolation, create a remediation branch/PR, re-run CI/security checks, and require human approval before merge.
+## Overview
 
-## Four-person split
-
-| Owner | Area | Directory |
-|---|---|---|
-| Person 1 | Detection & scanning | `scanner/` |
-| Person 2 | Orchestration & GitHub integration | `orchestrator/` |
-| Person 3 | AI remediation & validation | `remediation/` |
-| Person 4 | CI/CD, reporting & platform | `.github/`, `reports/`, `dashboard/` |
-
-Each person owns their directory. Avoid editing another owner's files unless agreed in an issue.
-
-## Core lifecycle
+**Pre-Prod Security Orchestrator** intercepts code changes in pull requests, runs deterministic security rule evaluations, generates minimal AI-assisted remediation patches, and creates validated remediation PRs with human-in-the-loop review safeguards.
 
 ```
-PR → detect changes → scan → normalize finding → classify
-   → generate patch → sandbox validation → re-scan
-   → create remediation branch → remediation PR
-   → CI/security checks → human review → merge → report
+                  ┌─────────────────────────────────────────────────────────┐
+                  │                      GitHub PR                          │
+                  └──────────────────────────┬──────────────────────────────┘
+                                             │
+                                             ▼
+                  ┌─────────────────────────────────────────────────────────┐
+                  │              Scanner (`scanner/`)                       │
+                  │  • Git diff & AST parsing                               │
+                  │  • Deterministic rule engine (CWE / OWASP)              │
+                  │  • Optional LLM triage & enrichment                     │
+                  └──────────────────────────┬──────────────────────────────┘
+                                             │
+                                             ▼ Normalized Findings (`contracts/finding.schema.json`)
+                  ┌─────────────────────────────────────────────────────────┐
+                  │             Remediation (`remediation/`)                │
+                  │  • Source context extraction (configurable window)      │
+                  │  • Structured JSON edit generation (Gemini / Ollama)     │
+                  │  • Local diff verification & patch application          │
+                  └──────────────────────────┬──────────────────────────────┘
+                                             │
+                                             ▼ Candidate Patches
+                  ┌─────────────────────────────────────────────────────────┐
+                  │            Orchestrator (`orchestrator/`)               │
+                  │  • Severity threshold filtering                         │
+                  │  • Branch creation (`security-remediation/...`)         │
+                  │  • Git commit, push, and Pull Request creation          │
+                  │  • Detailed audit report & evidence attachment          │
+                  └──────────────────────────┬──────────────────────────────┘
+                                             │
+                                             ▼
+                  ┌─────────────────────────────────────────────────────────┐
+                  │              Human Review & CI Verification             │
+                  └─────────────────────────────────────────────────────────┘
 ```
 
-## Phase plan
+---
 
-1. **Phase 0 — Contracts & skeleton**
-   - Agree finding schema, result schema, branch naming, exit codes.
-   - Run a hello-world CI workflow.
-2. **Phase 1 — Deterministic detection**
-   - Integrate Semgrep first.
-   - Add Gitleaks and OSV-Scanner adapters.
-   - Normalize all findings.
-3. **Phase 2 — Orchestration**
-   - Handle PR event input.
-   - Select changed files.
-   - Call scanner service and persist run state.
-4. **Phase 3 — Remediation**
-   - Add rule-based fixes for 2–3 deterministic cases.
-   - Add local LLM adapter through Ollama.
-   - Generate unified diffs only.
-5. **Phase 4 — Verification**
-   - Apply patches in an isolated Docker workspace.
-   - Run tests/build/lint and re-scan.
-6. **Phase 5 — GitHub remediation PR**
-   - Create branch and commit.
-   - Open remediation PR.
-   - Attach evidence.
-7. **Phase 6 — Production hardening**
-   - Authentication, least-privilege GitHub App, queueing, audit logs, rate limits, retention, observability.
-8. **Phase 7 — Hackathon polish**
-   - Live demo repo, seeded vulnerabilities, dashboard, before/after metrics.
+## Core Modules
 
-## Non-negotiable safety rules
+| Module | Directory | Purpose | Key Responsibilities |
+|---|---|---|---|
+| **Scanner** | [`scanner/`](scanner/) | Vulnerability Detection | Static pattern matching, diff parsing, multi-language rule execution, finding deduplication, and LLM verification. |
+| **Remediation** | [`remediation/`](remediation/) | Automated Fixes | Contextual code extraction, prompt structuring, edit proposal parsing, and in-place patch application. |
+| **Orchestrator** | [`orchestrator/`](orchestrator/) | Pipeline Lifecycle | Git branch management, severity filtering, pull request generation, and evidence logging. |
+| **Contracts** | [`contracts/`](contracts/) | Schema Definitions | JSON Schema contracts (`finding.schema.json`, `remediation.schema.json`) decoupling components. |
+| **Platform / CI** | [`.github/workflows/`](.github/workflows/) | Automation & CI/CD | GitHub Actions workflows for scanning, automated CI entrypoints, and test suites. |
+| **Dashboard** | [`frontend/`](frontend/) | Visualization | Next.js interface for audit trails, vulnerability triage, and run histories. |
 
-- Never auto-merge an AI-generated security fix.
-- Never execute untrusted repository code on the persistent control-plane host.
-- Treat scanner findings as detection signals; treat tests and re-scan as verification.
-- Minimize LLM context to relevant code.
-- Never commit secrets or model/API credentials.
+---
+
+## Safety & Governance Principles
+
+1. **Human-in-the-Loop Review**: AI-generated remediation patches are never auto-merged. Every patch is proposed as a distinct pull request requiring team review and approval.
+2. **Deterministic-First Scanning**: Vulnerability detection relies primarily on deterministic static rules; LLMs are utilized for finding confirmation and triage assistance.
+3. **Context Minimization**: Only relevant source code around vulnerable line ranges (default ±30 lines) is provided to LLMs—never entire unvetted repositories or credentials.
+4. **Strict Schema Contracts**: All cross-boundary communication uses versioned JSON schemas defined in `contracts/`.
+
+---
+
+## Quick Start
+
+### 1. Prerequisites
+
+- Python 3.10+
+- Node.js 18+ (for frontend dashboard)
+- Git 2.30+
+- Google Gemini API key (or local Ollama instance)
+
+### 2. Environment Setup
+
+```bash
+# Clone repository
+git clone <repo-url>
+cd backend
+
+# Create and activate virtual environment
+python -m venv venv
+# Linux / macOS:
+source venv/bin/activate
+# Windows:
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+Set environment variables:
+```bash
+export GEMINI_API_KEY="your-api-key-here"
+# Optional overrides:
+export GEMINI_MODEL="gemini-2.5-flash"
+```
+
+---
+
+## Usage Guide
+
+### Running the Vulnerability Scanner
+
+Scan a local directory, git diff, or commit range:
+
+```bash
+# Scan repository against static rules and export all report formats
+python -m scanner --repo . --output reports/ --format all
+
+# Scan specific git commit range with Gemini LLM enrichment
+python -m scanner --repo . --base main --head HEAD --model gemini --api-key $GEMINI_API_KEY
+
+# Filter findings by minimum severity threshold
+python -m scanner --repo . --severity-threshold HIGH --format json --output reports/
+```
+
+**Supported CLI Options (`scanner`):**
+- `--repo <path>`: Repository or directory path (default: `.`).
+- `--diff <path>`: Explicit patch/diff file to parse.
+- `--base <ref>` / `--head <ref>`: Git references to compare.
+- `--model <gemini|ollama|custom|none>`: LLM provider for confirmation and triage.
+- `--format <json|markdown|html|all>`: Report format (default: `all`).
+- `--severity-threshold <INFO|LOW|MEDIUM|HIGH|CRITICAL>`: Filter findings.
+
+---
+
+### Running the Remediation Agent
+
+Apply fixes directly to a checked-out repository using findings generated by the scanner:
+
+```bash
+# Run standalone CI remediation bridge
+python -m remediation.ci_entrypoint \
+  --repo . \
+  --findings reports/findings.json \
+  --output reports/remediation-report.json \
+  --model gemini-2.5-flash
+```
+
+---
+
+### Running the Full Orchestrator Pipeline
+
+Execute the end-to-end workflow (Scan → Remediate → Git Branch → PR):
+
+```bash
+# Run dry-run (validates fixes locally without pushing branches or opening PRs)
+python -m orchestrator \
+  --repo-path . \
+  --findings reports/findings.json \
+  --severity-threshold HIGH \
+  --dry-run
+
+# Run live remediation with automated git branch & PR creation
+python -m orchestrator \
+  --repo-path . \
+  --findings reports/findings.json \
+  --base-ref main \
+  --severity-threshold HIGH
+```
+
+---
+
+## Contracts & Schema
+
+All scanner findings adhere to [`contracts/finding.schema.json`](contracts/finding.schema.json):
+
+```json
+{
+  "id": "scanner:rule-sql-injection:src/api/users.py:42",
+  "tool": "scanner",
+  "rule": "python.security.sql_injection",
+  "severity": "HIGH",
+  "file": "src/api/users.py",
+  "line": 42,
+  "end_line": 45,
+  "message": "Potential SQL injection via unsanitized format string.",
+  "confidence": 0.95,
+  "fixability": "AI_ASSISTED",
+  "cwe": "CWE-89",
+  "category": "Injection",
+  "what_and_why": "User input is directly interpolated into SQL query.",
+  "how_to_fix": "Use parameterized queries or ORM query bindings.",
+  "llm_confirmed": true
+}
+```
+
+---
+
+## Testing & Quality Assurance
+
+```bash
+# Run unit tests
+python -m pytest tests/unit
+
+# Run contract verification tests
+python -m pytest tests/contract
+
+# Run linting and formatting
+ruff check .
+```
+
+---
+
+## Repository Structure
+
+```
+.
+├── contracts/               # JSON Schema contracts for findings & remediations
+│   ├── finding.schema.json
+│   └── remediation.schema.json
+├── scanner/                 # Static analysis & LLM-assisted scanner
+│   ├── diff_parser.py       # Unified diff and patch parser
+│   ├── findings.py          # Finding models and serializers
+│   ├── llm_providers.py     # Gemini and Ollama integration
+│   ├── report_builder.py    # JSON, Markdown, and HTML report generators
+│   ├── rule_engine.py       # Pattern matcher and evaluation engine
+│   └── rules.py             # Security rule definitions (OWASP / CWE)
+├── remediation/             # AI-powered code fix generation
+│   ├── ci_entrypoint.py     # CI/CD bridge for automated runners
+│   └── remediation_agent.py # Gemini patch generator & verification
+├── orchestrator/            # Pipeline lifecycle & Git operations
+│   └── pipeline.py          # State machine, branch creation & PR dispatcher
+├── reports/                 # Output directory for scan and remediation reports
+├── frontend/                # Next.js UI for audit reports & finding triage
+├── tests/                   # Unit, contract, and integration tests
+└── .github/workflows/       # GitHub Actions CI/CD workflows
+```
