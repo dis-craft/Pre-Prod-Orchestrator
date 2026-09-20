@@ -143,6 +143,11 @@ class LiveScanAdapter implements IOrchestratorAdapter {
         workflowRun: scan.scan?.workflow_run_id,
         workflowUrl: scan.scan?.workflow_url,
         scanner: scan.security_engine?.scanner,
+        trigger: scan.scan?.trigger,
+        filesChanged: scan.change_summary?.files_changed,
+        additions: scan.change_summary?.additions,
+        deletions: scan.change_summary?.deletions,
+        workflowRunId: scan.scan?.workflow_run_id,
       },
     }];
   }
