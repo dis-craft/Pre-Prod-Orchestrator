@@ -10,7 +10,8 @@ import {
   SearchCode, 
   Wrench, 
   GitPullRequest, 
-  FileText, 
+  FileText,
+  BarChart3, 
   Settings,
   Database,
   X
@@ -34,6 +35,7 @@ export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
     { name: 'Remediations', href: isDemoMode ? '/remediation/REM-SEC-001' : '/findings', icon: Wrench },
     { name: 'Pull Requests', href: '/pull-requests', icon: GitPullRequest },
     { name: 'Audit Log', href: '/audit', icon: FileText },
+    { name: 'Live Report', href: '/report', icon: BarChart3 },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
