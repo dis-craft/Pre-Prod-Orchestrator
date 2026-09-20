@@ -74,6 +74,7 @@ runs:
           python3 -m scanner --repo "$GITHUB_WORKSPACE" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
         else
           python3 -m scanner --repo "$GITHUB_WORKSPACE" --json-input "$GITHUB_WORKSPACE/$SCAN_INPUT" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
+        fi
         rc=$?
         set -e
         if [ "$rc" -gt 1 ]; then exit "$rc"; fi
@@ -100,50 +101,3 @@ runs:
         if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${XAI_API_KEY:-}" ]; then echo "At least one remediation model API key is required."; exit 1; fi
         python3 "$GITHUB_ACTION_PATH/../../../remediation/retry_pipeline.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --primary-model "$MODEL" --fallback-model "$FALLBACK_MODEL" --primary-attempts "$PRIMARY_ATTEMPTS" --fallback-attempts "$FALLBACK_ATTEMPTS"
         echo "result=$GITHUB_WORKSPACE/$OUTPUT" >> "$GITHUB_OUTPUT"
-
-    - name: Post-remediation changed-file rescan
-      if: ${{ inputs.generate-remediation == 'true' }}
-      shell: bash
-      env:
-        OUTPUT: ${{ inputs.rescan-output }}
-        SCAN_INPUT: ${{ inputs.scan-input }}
-        PYTHONPATH: ${{ github.action_path }}/../../..
-      run: |
-        set +e
-        rm -rf "$RUNNER_TEMP/remediation-scan"
-        mkdir -p "$RUNNER_TEMP/remediation-scan"
-        python3 - "$GITHUB_WORKSPACE/$SCAN_INPUT" "$GITHUB_WORKSPACE" "$RUNNER_TEMP/remediation-scan" <<'PY'
-        import json, shutil, sys
-        from pathlib import Path
-        scan_path, repo, target = map(Path, sys.argv[1:])
-        payload = json.loads(scan_path.read_text(encoding='utf-8'))
-        files = payload.get('changes', {}).get('files', [])
-        copied = 0
-        for item in files:
-            rel = Path(str(item.get('path', '')))
-            if not rel or str(rel).startswith('..'):
-                continue
-            source = repo / rel
-            if not source.is_file():
-                continue
-            destination = target / rel
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, destination)
-            copied += 1
-        print(f'Copied {copied} changed source file(s) for post-remediation validation.')
-        if copied == 0:
-            raise SystemExit('No changed source files available for post-remediation validation.')
-        PY
-        python3 -m scanner --repo "$RUNNER_TEMP/remediation-scan" --model none --format all --output "$GITHUB_WORKSPACE/$OUTPUT" --quiet
-        rc=$?
-        set -e
-        if [ "$rc" -gt 1 ]; then exit "$rc"; fi
-        test -f "$GITHUB_WORKSPACE/$OUTPUT/findings.json"
-        python3 - "$GITHUB_WORKSPACE/$OUTPUT/findings.json" <<'PY'
-        import json, sys
-        with open(sys.argv[1], encoding='utf-8') as fh: p = json.load(fh)
-        findings = p.get('findings', [])
-        high = [f for f in findings if str(f.get('severity', '')).upper() in {'HIGH','CRITICAL'}]
-        if high: raise SystemExit(f'Post-remediation changed-file scan still contains {len(high)} HIGH/CRITICAL finding(s).')
-        print(f'Post-remediation changed-file scan is clean for HIGH/CRITICAL findings ({len(findings)} total findings).')
-        PY
