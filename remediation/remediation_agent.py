@@ -83,6 +83,9 @@ Rules:
 - Keep changes minimal — only modify what is necessary to fix the vulnerability.
 - Preserve indentation, quotes, and whitespace exactly.
 - Do NOT add imports unless absolutely required (and if so, add a separate edit).
+- The post-remediation scanner will run against your replacement. The replacement MUST remove the triggering pattern from the finding, not merely make the code semantically safer.
+- For INJ-SQL-JS specifically, do NOT leave a dynamically constructed SQL string in a variable passed to db.query/query(...). Prefer a parameterized call such as db.query("SELECT ... WHERE username = ?", [username]).
+- Re-read the supplied source context mentally after your edit and ensure the original scanner rule would no longer match.
 - If the vulnerability cannot be fixed with a simple edit, return {"edits": []}.
 """)
 
