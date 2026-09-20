@@ -43,6 +43,11 @@ on:
         required: false
         type: string
         default: ""
+      reuse-findings:
+        description: Reuse security findings from the canonical scan artifact.
+        required: false
+        type: boolean
+        default: false
     secrets:
       GEMINI_API_KEY:
         required: false
@@ -105,6 +110,7 @@ jobs:
           primary-attempts: ${{ inputs.primary-attempts }}
           fallback-attempts: ${{ inputs.fallback-attempts }}
           full-repo-rescan: ${{ inputs.full-repo-rescan }}
+          reuse-findings: ${{ inputs.reuse-findings }}
 
       - name: Enforce security gate for review
         if: ${{ !inputs.generate-remediation }}
