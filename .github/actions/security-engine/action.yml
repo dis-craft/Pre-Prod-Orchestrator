@@ -77,7 +77,7 @@ runs:
         python3 "$GITHUB_ACTION_PATH/../../../remediation/ci_entrypoint.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --model "$MODEL" --context-window "$CONTEXT_WINDOW"
         echo "result=$GITHUB_WORKSPACE/$OUTPUT" >> "$GITHUB_OUTPUT"
 
-    - name: Post-remediation diff rescan
+    - name: Post-remediation full repository rescan
       if: ${{ inputs.generate-remediation == 'true' }}
       shell: bash
       env:
@@ -85,8 +85,7 @@ runs:
         PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set +e
-        git diff --no-ext-diff --unified=80 HEAD -- . > "$RUNNER_TEMP/post-remediation.diff"
-        python3 -m scanner --repo "$GITHUB_WORKSPACE" --diff "$RUNNER_TEMP/post-remediation.diff" --model none --format all --output "$GITHUB_WORKSPACE/$OUTPUT" --quiet
+        python3 -m scanner --repo "$GITHUB_WORKSPACE" --model none --format all --output "$GITHUB_WORKSPACE/$OUTPUT" --quiet
         rc=$?
         set -e
         if [ "$rc" -gt 1 ]; then exit "$rc"; fi
@@ -96,6 +95,6 @@ runs:
         with open(sys.argv[1], encoding='utf-8') as fh: p = json.load(fh)
         findings = p.get('findings', [])
         high = [f for f in findings if str(f.get('severity', '')).upper() in {'HIGH','CRITICAL'}]
-        if high: raise SystemExit(f'Post-remediation scan still contains {len(high)} HIGH/CRITICAL finding(s).')
-        print(f'Post-remediation scan is clean for HIGH/CRITICAL findings ({len(findings)} total findings).')
+        if high: raise SystemExit(f'Post-remediation full scan still contains {len(high)} HIGH/CRITICAL finding(s).')
+        print(f'Post-remediation full scan is clean for HIGH/CRITICAL findings ({len(findings)} total findings).')
         PY
