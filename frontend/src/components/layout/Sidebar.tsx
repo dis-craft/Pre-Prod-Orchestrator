@@ -12,6 +12,7 @@ import {
   GitPullRequest, 
   FileText,
   BarChart3, 
+  Activity,
   Settings,
   Database,
   X
