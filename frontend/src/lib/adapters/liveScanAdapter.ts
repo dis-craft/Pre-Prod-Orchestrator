@@ -4,7 +4,7 @@ import {
 import { IOrchestratorAdapter } from './adapterInterface';
 
 type ScanPayload = {
-  scan?: { id?: string; captured_at?: string; workflow_run_id?: string; workflow_url?: string };
+  scan?: { id?: string; captured_at?: string; workflow_run_id?: string; workflow_url?: string; trigger?: string };
   repository?: { full_name?: string; default_branch?: string; url?: string };
   commit?: { before?: string; after?: string; branch?: string; message?: string };
   change_summary?: { files_changed?: number; additions?: number; deletions?: number };
