@@ -78,7 +78,7 @@ export class OrchestratorService implements IOrchestratorService {
     // When no backend URL is configured, consume the published Pre-Prod Tester
     // scan directly. If an API URL is configured, keep the full backend adapter.
     const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
-    const isUsableApiUrl = Boolean(apiUrl) && !/localhost|127\.0\.0\.1/i.test(apiUrl);
+    const isUsableApiUrl = apiUrl !== undefined && apiUrl.length > 0 && !/localhost|127\.0\.0\.1/i.test(apiUrl);
     return isUsableApiUrl ? apiAdapter : liveScanAdapter;
   }
 
