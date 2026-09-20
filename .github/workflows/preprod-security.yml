@@ -1,0 +1,119 @@
+name: Pre-Prod Full Security Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      generate-remediation:
+        description: Generate and apply AI remediation, then open a PR.
+        required: false
+        type: boolean
+        default: false
+      test-command:
+        description: Optional repository test command.
+        required: false
+        type: string
+        default: ""
+    secrets:
+      GEMINI_API_KEY:
+        required: false
+    outputs:
+      findings:
+        description: Baseline findings JSON.
+        value: ${{ jobs.security.outputs.findings }}
+      remediation:
+        description: Remediation result JSON.
+        value: ${{ jobs.security.outputs.remediation }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    outputs:
+      findings: ${{ steps.engine.outputs.findings }}
+      remediation: ${{ steps.engine.outputs.remediation }}
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - name: Checkout caller repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Capture exact push diff
+        id: capture
+        uses: dis-craft/Pre-prod-tester/.github/actions/capture-diff@main
+        with:
+          output: .preprod/scan.json
+
+      - name: Run scanner and AI remediation
+        id: engine
+        uses: $/.github/actions/security-engine
+        with:
+          scan-input: .preprod/scan.json
+          generate-remediation: ${{ inputs.generate-remediation }}
+
+      - name: Upload security evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: preprod-security-${{ github.sha }}
+          path: .preprod/
+          if-no-files-found: error
+
+      - name: Run repository tests
+        if: ${{ inputs.generate-remediation }}
+        env:
+          TEST_COMMAND: ${{ inputs.test-command }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$TEST_COMMAND" ]; then
+            bash -lc "$TEST_COMMAND"
+          elif [ -f package-lock.json ]; then
+            npm ci
+            npm test --if-present
+          elif [ -f pyproject.toml ] || [ -f pytest.ini ] || [ -d tests ]; then
+            python3 -m pytest -q
+          else
+            echo "No generic test command detected; relying on scanner validation."
+          fi
+
+      - name: Create remediation branch and PR
+        if: ${{ inputs.generate-remediation }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_BRANCH: ${{ github.base_ref || github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No source changes were generated; no remediation PR needed."
+            exit 0
+          fi
+          branch="security-remediation/${GITHUB_SHA::12}"
+          git checkout -b "$branch"
+          rm -f .preprod/scan.json .preprod/remediation-request.json .preprod/remediation-result.json
+          rm -rf .preprod/baseline-scan .preprod/post-remediation-scan
+          git config user.name 'pre-prod-tester[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: apply AI security remediation'
+          git push --set-upstream origin "$branch"
+          python3 - <<'PY' > "$RUNNER_TEMP/pr-body.md"
+          import json
+          from pathlib import Path
+          p = Path('.preprod/remediation-result.json')
+          if p.exists():
+              d = json.loads(p.read_text())
+              print('## AI Security Remediation')
+              print()
+              print(f"Fixed: **{d.get('fixed', 0)}** / {d.get('findings', 0)} finding(s)")
+              print()
+              print('Human review is required before merge.')
+          else:
+              print('## AI Security Remediation')
+              print('Candidate remediation generated and validated by the security pipeline.')
+          PY
+          gh pr create --base "$BASE_BRANCH" --head "$branch" --title 'fix: AI-generated security remediation' --body-file "$RUNNER_TEMP/pr-body.md"
