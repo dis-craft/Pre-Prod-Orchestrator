@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse,json,os,subprocess,sys,tempfile,shutil
 from pathlib import Path
+from remediation.sandbox_validate import validate as sandbox_validate
 
 def rescan(repo):
  out=Path(tempfile.mkdtemp(prefix='preprod-rescan-'))
@@ -41,9 +42,12 @@ def main():
    attempts.append({'provider':provider,'model':model,'attempt':n,'status':'APPLIED' if fixed else 'FAILED','error':r.stderr[-2000:] if r.returncode not in (0,2) else ''})
    if fixed:
     passed,remaining=rescan(repo)
+    files=subprocess.check_output(['git','diff','--name-only',base],cwd=repo,text=True).splitlines()
+    sandbox=sandbox_validate(str(repo),files)
+    attempts[-1]['sandbox']=sandbox
     attempts[-1]['rescan_passed']=passed
     attempts[-1]['remaining']=remaining if isinstance(remaining,list) else []
-    if passed:
+    if passed and sandbox.get('passed'):
      success=True; break
   if success: break
  if not success: subprocess.run(['git','reset','--hard',base],cwd=repo,check=True); subprocess.run(['git','clean','-fd','-e','.preprod','-e','data'],cwd=repo,check=True)
