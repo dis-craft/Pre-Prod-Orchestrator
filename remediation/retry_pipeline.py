@@ -66,5 +66,6 @@ def main():
  if not success: subprocess.run(['git','reset','--hard',base],cwd=repo,check=True); subprocess.run(['git','clean','-fd','-e','.preprod','-e','data'],cwd=repo,check=True)
  result={'status':'APPLIED' if success else 'FAILED','findings':len(fs),'fixed':len(fs) if success else 0,'source_commit':base,'attempts':attempts}
  out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps(result,indent=2)+'\n')
+ print(json.dumps(result, indent=2), flush=True)
  return 0 if success else 2
 if __name__=='__main__': raise SystemExit(main())
