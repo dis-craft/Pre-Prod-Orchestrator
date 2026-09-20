@@ -34,3 +34,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## Live security data
+
+When `NEXT_PUBLIC_API_URL` is not configured, the frontend reads the latest published security scan from `NEXT_PUBLIC_SCAN_DATA_URL` (defaulting to the Pre-Prod Tester GitHub Pages JSON). The **Live Report** page therefore shows the same findings produced by the GitHub Actions scanner without exposing a GitHub token to the browser.
