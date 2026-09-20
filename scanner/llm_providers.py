@@ -145,8 +145,8 @@ class LLMProvider(ABC):
 
 class GeminiProvider(LLMProvider):
     """Google Gemini API provider using google-genai SDK."""
-    def __init__(self, api_key: str | None = None, model_name: str = 'gemini-3.6-flash'):
-        self.model_name = model_name or 'gemini-3.6-flash'
+    def __init__(self, api_key: str | None = None, model_name: str = 'gemini-3.5-flash-lite'):
+        self.model_name = model_name or 'gemini-3.5-flash-lite'
         self.api_key = api_key or os.environ.get("GEMINI_API_KEY") or DEFAULT_GEMINI_API_KEY
         if not self.api_key:
             print("Warning: Gemini API key not found.")
@@ -320,7 +320,7 @@ def create_provider(model_type: str, **kwargs) -> LLMProvider:
     if model_type == "gemini":
         return GeminiProvider(
             api_key=kwargs.get("api_key"),
-            model_name=kwargs.get("model_name", "gemini-3.6-flash")
+            model_name=kwargs.get("model_name", "gemini-3.5-flash-lite")
         )
     elif model_type == "ollama":
         return OllamaProvider(
