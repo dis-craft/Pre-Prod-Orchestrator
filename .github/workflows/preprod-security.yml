@@ -13,6 +13,26 @@ on:
         required: false
         type: string
         default: ""
+      fallback-model:
+        description: xAI fallback model.
+        required: false
+        type: string
+        default: grok-4.6
+      primary-attempts:
+        description: Primary remediation attempts.
+        required: false
+        type: string
+        default: "3"
+      fallback-attempts:
+        description: Fallback remediation attempts.
+        required: false
+        type: string
+        default: "2"
+      full-repo-rescan:
+        description: Scan whole repository for PR review.
+        required: false
+        type: boolean
+        default: false
     secrets:
       GEMINI_API_KEY:
         required: false
@@ -34,6 +54,7 @@ jobs:
       remediation: ${{ steps.engine.outputs.remediation }}
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
     steps:
       - name: Checkout caller repository
         uses: actions/checkout@v6
@@ -52,6 +73,10 @@ jobs:
         with:
           scan-input: .preprod/scan.json
           generate-remediation: ${{ inputs.generate-remediation }}
+          fallback-model: ${{ inputs.fallback-model }}
+          primary-attempts: ${{ inputs.primary-attempts }}
+          fallback-attempts: ${{ inputs.fallback-attempts }}
+          full-repo-rescan: ${{ inputs.full-repo-rescan }}
 
       - name: Enforce security gate for review
         if: ${{ !inputs.generate-remediation }}
@@ -111,6 +136,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BASE_BRANCH: ${{ github.base_ref || github.ref_name }}
+          DASHBOARD_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
         shell: bash
         run: |
           set -euo pipefail
@@ -118,7 +144,7 @@ jobs:
             echo "No source changes were generated; no remediation PR needed."
             exit 0
           fi
-          branch="security-remediation/${GITHUB_SHA::12}"
+          branch="security/ai-remediation/${GITHUB_SHA::12}"
           git checkout -b "$branch"
           python3 - <<'PY' > "$RUNNER_TEMP/pr-body.md"
           import json
@@ -131,6 +157,7 @@ jobs:
               print(f"Fixed: **{d.get('fixed', 0)}** / {d.get('findings', 0)} finding(s)")
               print()
               print('Human review is required before merge.')
+              print(f'Dashboard: {os.environ.get("DASHBOARD_URL", "")}')
           else:
               print('## AI Security Remediation')
               print('Candidate remediation generated and validated by the security pipeline.')
