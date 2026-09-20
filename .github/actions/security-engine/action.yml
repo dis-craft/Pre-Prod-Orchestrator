@@ -23,7 +23,7 @@ inputs:
   model:
     description: Gemini model used by the remediation agent.
     required: false
-    default: gemini-3.6-flash
+    default: gemini-3.5-flash-lite
   context-window:
     description: Number of surrounding source lines sent to the model.
     required: false
