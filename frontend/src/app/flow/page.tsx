@@ -55,9 +55,28 @@ export default function FlowPage() {
   };
 
   useEffect(() => {
-    void load();
-    const timer = window.setInterval(() => void load(), 8000);
-    return () => window.clearInterval(timer);
+    let active = true;
+    const run = async () => {
+      try {
+        const response = await fetch(`${FLOW_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = (await response.json()) as Flow;
+        if (active) {
+          setFlow(data);
+          setError('');
+        }
+      } catch (e) {
+        if (active) setError(e instanceof Error ? e.message : 'Unable to load live flow');
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    void run();
+    const timer = window.setInterval(() => void run(), 8000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
   }, []);
 
   return (
