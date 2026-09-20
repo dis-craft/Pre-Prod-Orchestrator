@@ -25,6 +25,8 @@ def main():
  base=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
  data=json.loads(findings.read_text()); fs=data.get('findings',data) if isinstance(data,dict) else data
  fs=[x for x in fs if str(x.get('severity','')).upper() in ('HIGH','CRITICAL')]
+ if not fs:
+  out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps({'status':'NO_FINDINGS','findings':0,'fixed':0,'source_commit':base,'attempts':[]},indent=2)+'\\n'); return 0
  attempts=[]; success=False
  providers=[('gemini',a.primary_model,a.primary_attempts)]
  if os.environ.get('XAI_API_KEY'): providers.append(('xai',a.fallback_model,a.fallback_attempts))
