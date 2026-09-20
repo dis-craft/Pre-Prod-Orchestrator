@@ -6,7 +6,7 @@ import { AppShell } from '../../components/layout/AppShell';
 import { SeverityBadge } from '../../components/ui/SeverityBadge';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { orchestratorService } from '../../lib/services/orchestrator';
-import { DashboardMetrics, Finding, AuditEvent } from '../../lib/types';
+import { DashboardMetrics, Finding, AuditEvent, PullRequest } from '../../lib/types';
 import { useAppMode } from '../../lib/mode/modeContext';
 import {
   Activity,
@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [findings, setFindings] = useState<Finding[]>([]);
   const [activities, setActivities] = useState<AuditEvent[]>([]);
+  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,15 +36,17 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         setError(null);
-        const [m, f, a] = await Promise.all([
+        const [m, f, a, prs] = await Promise.all([
           orchestratorService.getMetrics(),
           orchestratorService.getFindings(),
           orchestratorService.getAuditEvents(),
+          orchestratorService.getPullRequests(),
         ]);
         if (cancelled) return;
         setMetrics(m);
         setFindings(f);
         setActivities(a);
+        setPullRequests(prs);
       } catch (err) {
         if (cancelled) return;
         const message = err instanceof Error ? err.message : 'Unable to load live security data.';
@@ -103,7 +106,10 @@ export default function DashboardPage() {
   const latestFindingExplanation = latestFinding?.message || latestFinding?.evidence?.explanation || 'No security finding reported.';
   const remediationState = scanFailed ? 'NOT VERIFIED — awaiting AI remediation result' : 'NOT REQUIRED';
   const reviewState = scanFailed ? 'NOT CREATED — fix must validate first' : 'NOT REQUIRED';
-  const mergeState = scanFailed ? 'BLOCKED' : 'READY';
+  const latestPR = pullRequests.find((pr) => pr.status === 'OPEN' || pr.status === 'MERGED');
+  const mergeState = latestPR?.status === 'MERGED' ? 'MERGED' : scanFailed ? 'BLOCKED' : 'READY';
+  const aiFixState = scanFailed && latestPR ? 'FIX GENERATED — REVIEW PR' : scanFailed ? 'FIX REQUIRED — NOT VERIFIED' : 'NOT REQUIRED';
+  const reviewStateLive = latestPR ? `PR #${latestPR.number} — ${latestPR.status}` : scanFailed ? 'PR NOT CREATED YET' : 'READY';
 
   return (
     <AppShell>
@@ -252,8 +258,8 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
                 <Stage icon={<GitCommit className="w-4 h-4" />} title="1. CHANGE" text={latestCommit ? 'Captured' : 'Waiting'} done={Boolean(latestCommit)} />
                 <Stage icon={<ShieldCheck className="w-4 h-4" />} title="2. SECURITY" text={scanFailed ? `${findings.length} finding(s)` : 'Passed'} done={!scanFailed} />
-                <Stage icon={<Bot className="w-4 h-4" />} title="3. AI FIX" text={scanFailed ? 'Fix required — not yet verified' : 'Not required'} done={!scanFailed} />
-                <Stage icon={<GitPullRequest className="w-4 h-4" />} title="4. REVIEW" text={scanFailed ? 'PR not created yet' : 'Ready'} done={!scanFailed} />
+                <Stage icon={<Bot className="w-4 h-4" />} title="3. AI FIX" text={aiFixState} done={!scanFailed} />
+                <Stage icon={<GitPullRequest className="w-4 h-4" />} title="4. REVIEW" text={reviewStateLive} done={!scanFailed} />
                 <Stage icon={<CheckCircle2 className="w-4 h-4" />} title="5. MERGE" text={scanFailed ? 'Blocked until clean' : 'Ready'} done={!scanFailed} />
               </div>
             </div>
