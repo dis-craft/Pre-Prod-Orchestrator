@@ -97,6 +97,7 @@ export default function DashboardPage() {
   const latestRepo = String(evidence.repository || latestFinding?.repository || 'dis-craft/Pre-prod-tester');
   const latestCommit = String(evidence.commit || latestFinding?.commitSha || '');
   const latestWorkflow = String(evidence.workflowUrl || '');
+  const latestPR = findings.length ? null : null; // PR data is rendered from the live pull-request adapter.
   const scanFailed = findings.some((f) => ['CRITICAL', 'HIGH'].includes(f.severity));
   const pipelineState = scanFailed ? 'FIX REQUIRED' : 'SECURITY CHECK PASSED';
   const latestFindingExplanation = latestFinding?.message || latestFinding?.evidence?.explanation || 'No security finding reported.';
