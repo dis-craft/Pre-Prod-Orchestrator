@@ -49,6 +49,7 @@ export function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
     { name: 'Pull Requests', href: '/pull-requests', icon: GitPullRequest },
     { name: 'Audit Log', href: '/audit', icon: FileText },
     { name: 'Live Report', href: '/report', icon: BarChart3 },
+    { name: 'Flow', href: '/flow', icon: Activity },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
