@@ -1,0 +1,101 @@
+name: Pre-Prod Security Engine
+description: Run the repository scanner and, when enabled, the existing AI remediation agent against the caller workspace.
+inputs:
+  scan-input:
+    description: Structured Pre-Prod Tester scan JSON path.
+    required: true
+  generate-remediation:
+    description: Whether AI remediation should be generated and applied.
+    required: false
+    default: "false"
+  scan-output:
+    description: Directory for the baseline scan report.
+    required: false
+    default: .preprod/baseline-scan
+  remediation-output:
+    description: Remediation result JSON path.
+    required: false
+    default: .preprod/remediation-result.json
+  rescan-output:
+    description: Directory for the post-remediation scan.
+    required: false
+    default: .preprod/post-remediation-scan
+  model:
+    description: Gemini model used by the remediation agent.
+    required: false
+    default: gemini-3.6-flash
+  context-window:
+    description: Number of surrounding source lines sent to the model.
+    required: false
+    default: "30"
+outputs:
+  findings:
+    description: Baseline findings JSON path.
+    value: ${{ steps.scan.outputs.findings }}
+  remediation:
+    description: Remediation result JSON path.
+    value: ${{ steps.remediate.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - id: install
+      name: Install security engine dependencies
+      shell: bash
+      run: |
+        python3 -m pip install --disable-pip-version-check -q -r "$GITHUB_ACTION_PATH/../../requirements.txt"
+
+    - id: scan
+      name: Initial security scan
+      shell: bash
+      env:
+        SCAN_INPUT: ${{ inputs.scan-input }}
+        SCAN_OUTPUT: ${{ inputs.scan-output }}
+        PYTHONPATH: ${{ github.action_path }}/../..
+      run: |
+        set +e
+        python3 -m scanner --repo "$GITHUB_WORKSPACE" --json-input "$GITHUB_WORKSPACE/$SCAN_INPUT" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
+        rc=$?
+        set -e
+        if [ "$rc" -gt 1 ]; then exit "$rc"; fi
+        test -f "$GITHUB_WORKSPACE/$SCAN_OUTPUT/findings.json"
+        echo "findings=$GITHUB_WORKSPACE/$SCAN_OUTPUT/findings.json" >> "$GITHUB_OUTPUT"
+
+    - id: remediate
+      name: Generate and apply AI remediation
+      if: ${{ inputs.generate-remediation == 'true' }}
+      shell: bash
+      env:
+        FINDINGS: ${{ steps.scan.outputs.findings }}
+        OUTPUT: ${{ inputs.remediation-output }}
+        MODEL: ${{ inputs.model }}
+        CONTEXT_WINDOW: ${{ inputs.context-window }}
+        GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
+        PYTHONPATH: ${{ github.action_path }}/../..
+      run: |
+        set -euo pipefail
+        if [ -z "${GEMINI_API_KEY:-}" ]; then echo "GEMINI_API_KEY is required when generate-remediation=true."; exit 1; fi
+        python3 "$GITHUB_ACTION_PATH/../../remediation/ci_entrypoint.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --model "$MODEL" --context-window "$CONTEXT_WINDOW"
+        echo "result=$GITHUB_WORKSPACE/$OUTPUT" >> "$GITHUB_OUTPUT"
+
+    - name: Post-remediation diff rescan
+      if: ${{ inputs.generate-remediation == 'true' }}
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.rescan-output }}
+        PYTHONPATH: ${{ github.action_path }}/../..
+      run: |
+        set +e
+        git diff --no-ext-diff --unified=80 HEAD -- . > "$RUNNER_TEMP/post-remediation.diff"
+        python3 -m scanner --repo "$GITHUB_WORKSPACE" --diff "$RUNNER_TEMP/post-remediation.diff" --model none --format all --output "$GITHUB_WORKSPACE/$OUTPUT" --quiet
+        rc=$?
+        set -e
+        if [ "$rc" -gt 1 ]; then exit "$rc"; fi
+        test -f "$GITHUB_WORKSPACE/$OUTPUT/findings.json"
+        python3 - "$GITHUB_WORKSPACE/$OUTPUT/findings.json" <<'PY'
+        import json, sys
+        with open(sys.argv[1], encoding='utf-8') as fh: p = json.load(fh)
+        findings = p.get('findings', [])
+        high = [f for f in findings if str(f.get('severity', '')).upper() in {'HIGH','CRITICAL'}]
+        if high: raise SystemExit(f'Post-remediation scan still contains {len(high)} HIGH/CRITICAL finding(s).')
+        print(f'Post-remediation scan is clean for HIGH/CRITICAL findings ({len(findings)} total findings).')
+        PY
