@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.1",
+  "scans": [
+    {
+      "scan_id": "scn_64d6f14ce300",
+      "commit": "64d6f14ce3003578c721cdea552160263d9d7bca",
+      "parent": "cdf51b5e1597cebb6eaccbcd65f83e61df0e534c",
+      "branch": "main",
+      "message": "feat: add AI remediation branch trigger",
+      "captured_at": "2026-09-19T13:05:03.682687+00:00",
+      "files_changed": 1,
+      "additions": 118,
+      "deletions": 0,
+      "url": "scans/64d6f14ce3003578c721cdea552160263d9d7bca.json"
+    },
+    {
+      "scan_id": "scn_d91ae4b58cbe",
+      "commit": "d91ae4b58cbec8e94e87637dbc6b5a9ce0e89e91",
+      "parent": "73d32f30dfe6b93c710dd57a4caef2395526b8ea",
+      "branch": "main",
+      "message": "feat: add remediation payload bridge",
+      "captured_at": "2026-09-19T13:04:43.357861+00:00",
+      "files_changed": 1,
+      "additions": 59,
+      "deletions": 0,
+      "url": "scans/d91ae4b58cbec8e94e87637dbc6b5a9ce0e89e91.json"
+    },
+    {
+      "scan_id": "scn_12bde837efa1",
+      "commit": "12bde837efa1dd3df3ad376922dff44d3277afc3",
+      "parent": "ce2882812c0589666913982927d0710b8468c7e6",
+      "branch": "main",
+      "message": "test: verify diff capture 10",
+      "captured_at": "2026-09-19T09:59:07.034858+00:00",
+      "files_changed": 1,
+      "additions": 2,
+      "deletions": 1,
+      "url": "scans/12bde837efa1dd3df3ad376922dff44d3277afc3.json"
+    },
+    {
+      "scan_id": "scn_65d317037b54",
+      "commit": "65d317037b545f6eae4341c122f6264d8460cb71",
+      "parent": "713c594a4e3dba5a041c423661169d205b920381",
+      "branch": "main",
+      "message": "fix: capture text diffs for binary-marked files",
+      "captured_at": "2026-09-19T09:58:13.873878+00:00",
+      "files_changed": 1,
+      "additions": 9,
+      "deletions": 10,
+      "url": "scans/65d317037b545f6eae4341c122f6264d8460cb71.json"
+    },
+    {
+      "scan_id": "scn_948ddf2dfa41",
+      "commit": "948ddf2dfa41ca5b501cd77b5e04d716af9c689e",
+      "parent": "898ec28b8e48bf2d667d88bf6980b9265ab0e0c2",
+      "branch": "main",
+      "message": "Merge branch 'main' of https://github.com/dis-craft/Pre-prod-tester",
+      "captured_at": "2026-09-19T09:55:54.632188+00:00",
+      "files_changed": 1,
+      "additions": 70,
+      "deletions": 0,
+      "url": "scans/948ddf2dfa41ca5b501cd77b5e04d716af9c689e.json"
+    },
+    {
+      "scan_id": "scn_b0ee3c6f2939",
+      "commit": "b0ee3c6f2939aa2bcb48bc319e5d89cc8139bc82",
+      "parent": "1d999cb5236dfd3a8ab8b9172ba37c1548a6509a",
+      "branch": "main",
+      "message": "test: verify diff capture 8",
+      "captured_at": "2026-09-19T09:50:23.510987+00:00",
+      "files_changed": 1,
+      "additions": 0,
+      "deletions": 0,
+      "url": "scans/b0ee3c6f2939aa2bcb48bc319e5d89cc8139bc82.json"
+    },
+    {
+      "scan_id": "scn_6b1a44c39075",
+      "commit": "6b1a44c3907516b20470bf6f3e24e3b87da4aca6",
+      "parent": "f53b87fa95e7b2f9b53ade4fc38563591d653eb2",
+      "branch": "main",
+      "message": "feat: add reusable Pre-prod Tester integration",
+      "captured_at": "2026-09-19T09:12:11.549038+00:00",
+      "files_changed": 1,
+      "additions": 52,
+      "deletions": 0,
+      "url": "scans/6b1a44c3907516b20470bf6f3e24e3b87da4aca6.json"
+    },
+    {
+      "scan_id": "scn_845ae357023b",
+      "commit": "845ae357023bab348815ec1d52cfdf1841b0ecfc",
+      "parent": "a13e3e4539b59e864dece3e28811ce58563b2008",
+      "branch": "main",
+      "message": "Merge branch 'main' of https://github.com/dis-craft/Pre-prod-tester",
+      "captured_at": "2026-09-19T07:58:54.169754+00:00",
+      "files_changed": 1,
+      "additions": 3,
+      "deletions": 0,
+      "url": "scans/845ae357023bab348815ec1d52cfdf1841b0ecfc.json"
+    },
+    {
+      "scan_id": "scn_26608179ad8f",
+      "commit": "26608179ad8f2c9c30c5016dd051e438d5b6b3c1",
+      "parent": "1e5a0f12663ffc48f03828025d67af1e9c944f29",
+      "branch": "main",
+      "message": "Merge branch 'main' of https://github.com/dis-craft/Pre-prod-tester",
+      "captured_at": "2026-09-19T07:55:06.302750+00:00",
+      "files_changed": 1,
+      "additions": 1,
+      "deletions": 0,
+      "url": "scans/26608179ad8f2c9c30c5016dd051e438d5b6b3c1.json"
+    },
+    {
+      "scan_id": "scn_c940db6579e9",
+      "commit": "c940db6579e97b1a5d4cf3dd4fc31b85774fd5ef",
+      "parent": "34910ea306f86672e13007ae65ef81972a5029ea",
+      "branch": "main",
+      "message": "fix: persist scan data and prevent stale Pages JSON",
+      "captured_at": "2026-09-19T07:53:18.071564+00:00",
+      "files_changed": 1,
+      "additions": 15,
+      "deletions": 1,
+      "url": "scans/c940db6579e97b1a5d4cf3dd4fc31b85774fd5ef.json"
+    },
+    {
+      "scan_id": "scn_a7c798a3a5ea",
+      "commit": "a7c798a3a5eaded9fa6d5a0309effb9bf311d666",
+      "parent": "f3c0689a73b49b6cfa51dbf19da588bf5668d12f",
+      "branch": "main",
+      "message": "Merge branch 'main' of https://github.com/dis-craft/Pre-prod-tester",
+      "captured_at": "2026-09-19T07:29:23.664447+00:00",
+      "files_changed": 1,
+      "additions": 0,
+      "deletions": 0,
+      "url": "scans/a7c798a3a5eaded9fa6d5a0309effb9bf311d666.json"
+    },
+    {
+      "scan_id": "scn_c063371deb20",
+      "commit": "c063371deb201f32d346f91091aa680e6250a2d7",
+      "parent": "414f5898a5ce47cd4747ece966e94ec557de95bc",
+      "branch": "main",
+      "message": "fix: configure github-pages deployment environment",
+      "captured_at": "2026-09-19T07:26:45.161063+00:00",
+      "files_changed": 1,
+      "additions": 4,
+      "deletions": 2,
+      "url": "scans/c063371deb201f32d346f91091aa680e6250a2d7.json"
+    },
+    {
+      "scan_id": "scn_afd849c4830e",
+      "commit": "afd849c4830e5a73687b196e90d34696ac815547",
+      "parent": "c09acfcf6392de640efe27ee51f930e45c11ea2b",
+      "branch": "main",
+      "message": "test: verify diff capture",
+      "captured_at": "2026-09-19T07:23:28.736909+00:00",
+      "files_changed": 1,
+      "additions": 0,
+      "deletions": 0,
+      "url": "scans/afd849c4830e5a73687b196e90d34696ac815547.json"
+    },
+    {
+      "scan_id": "scn_cee03ed1ab8d",
+      "commit": "cee03ed1ab8dee6ce5e861cc7d4995b801556fc1",
+      "parent": "706fee27ff4f836229e792ee42151aa06845cc60",
+      "branch": "main",
+      "message": "fix: make diff capture file-aware",
+      "captured_at": "2026-09-19T07:20:35.669470+00:00",
+      "files_changed": 1,
+      "additions": 87,
+      "deletions": 195,
+      "url": "scans/cee03ed1ab8dee6ce5e861cc7d4995b801556fc1.json"
+    }
+  ]
+}

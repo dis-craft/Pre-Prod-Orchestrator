@@ -1,0 +1,1142 @@
+{
+  "schema_version": "1.1",
+  "scan": {
+    "id": "scn_6b1a44c39075",
+    "trigger": "push",
+    "captured_at": "2026-09-19T09:12:11.549038+00:00",
+    "workflow_run_id": "35434037822",
+    "workflow_url": "https://github.com/dis-craft/Pre-prod-tester/actions/runs/35434037822"
+  },
+  "repository": {
+    "full_name": "dis-craft/Pre-prod-tester",
+    "url": "https://github.com/dis-craft/Pre-prod-tester",
+    "default_branch": "main"
+  },
+  "comparison": {
+    "base_commit": "f53b87fa95e7b2f9b53ade4fc38563591d653eb2",
+    "target_commit": "6b1a44c3907516b20470bf6f3e24e3b87da4aca6",
+    "range": "f53b87fa95e7b2f9b53ade4fc38563591d653eb2..6b1a44c3907516b20470bf6f3e24e3b87da4aca6",
+    "method": "git diff two-commit comparison"
+  },
+  "commit": {
+    "before": "f53b87fa95e7b2f9b53ade4fc38563591d653eb2",
+    "after": "6b1a44c3907516b20470bf6f3e24e3b87da4aca6",
+    "branch": "main",
+    "message": "feat: add reusable Pre-prod Tester integration",
+    "author": {
+      "name": "Srikar T",
+      "email": "169169726+dis-craft@users.noreply.github.com"
+    },
+    "committed_at": "2026-09-19T14:41:57+05:30"
+  },
+  "change_summary": {
+    "files_changed": 1,
+    "additions": 52,
+    "deletions": 0,
+    "net_lines": 52
+  },
+  "changes": {
+    "format": "github-style-unified-diff",
+    "legend": {
+      "added": "+",
+      "removed": "-",
+      "context": " "
+    },
+    "files": [
+      {
+        "path": "PREPROD-INTEGRATION.md",
+        "status": "A",
+        "additions": 52,
+        "deletions": 0,
+        "added_lines": [
+          {
+            "type": "added",
+            "new_line": 1,
+            "content": "# Pre-prod Tester integration"
+          },
+          {
+            "type": "added",
+            "new_line": 2,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 3,
+            "content": "Pre-prod Tester is integrated as a GitHub Actions reusable workflow. It is not an npm dependency because the first-stage operation is Git-aware: it needs the caller repository's commit history and the exact before -> after push range."
+          },
+          {
+            "type": "added",
+            "new_line": 4,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 5,
+            "content": "## Add it to another repository"
+          },
+          {
+            "type": "added",
+            "new_line": 6,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 7,
+            "content": "Create .github/workflows/preprod.yml:"
+          },
+          {
+            "type": "added",
+            "new_line": 8,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 9,
+            "content": "    name: Pre-prod Tester"
+          },
+          {
+            "type": "added",
+            "new_line": 10,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 11,
+            "content": "    on:"
+          },
+          {
+            "type": "added",
+            "new_line": 12,
+            "content": "      push:"
+          },
+          {
+            "type": "added",
+            "new_line": 13,
+            "content": "        branches: [main]"
+          },
+          {
+            "type": "added",
+            "new_line": 14,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 15,
+            "content": "    permissions:"
+          },
+          {
+            "type": "added",
+            "new_line": 16,
+            "content": "      contents: read"
+          },
+          {
+            "type": "added",
+            "new_line": 17,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 18,
+            "content": "    jobs:"
+          },
+          {
+            "type": "added",
+            "new_line": 19,
+            "content": "      preprod:"
+          },
+          {
+            "type": "added",
+            "new_line": 20,
+            "content": "        uses: dis-craft/Pre-prod-tester/.github/workflows/preprod-scan.yml@main"
+          },
+          {
+            "type": "added",
+            "new_line": 21,
+            "content": "        permissions:"
+          },
+          {
+            "type": "added",
+            "new_line": 22,
+            "content": "          contents: read"
+          },
+          {
+            "type": "added",
+            "new_line": 23,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 24,
+            "content": "The reusable workflow checks out the calling repository, captures the exact Git diff, and uploads a machine-readable artifact."
+          },
+          {
+            "type": "added",
+            "new_line": 25,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 26,
+            "content": "## Output"
+          },
+          {
+            "type": "added",
+            "new_line": 27,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 28,
+            "content": "The action writes .preprod/scan.json and the workflow uploads it as preprod-scan-<commit-sha>."
+          },
+          {
+            "type": "added",
+            "new_line": 29,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 30,
+            "content": "The JSON contains repository and commit metadata, before/after SHAs, changed-file summary, exact additions/deletions, GitHub-style hunks, line-by-line records, raw unified diff, and security-engine placeholders."
+          },
+          {
+            "type": "added",
+            "new_line": 31,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 32,
+            "content": "## Why GitHub Actions instead of npm?"
+          },
+          {
+            "type": "added",
+            "new_line": 33,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 34,
+            "content": "npm is useful for a local CLI, but GitHub Actions is the native integration point for a push-triggered CI/CD scanner. The target repository only needs a small workflow file while the scanner implementation stays centralized."
+          },
+          {
+            "type": "added",
+            "new_line": 35,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 36,
+            "content": "Later this same workflow can POST the generated JSON to the detection API:"
+          },
+          {
+            "type": "added",
+            "new_line": 37,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 38,
+            "content": "    target repo push"
+          },
+          {
+            "type": "added",
+            "new_line": 39,
+            "content": "        |"
+          },
+          {
+            "type": "added",
+            "new_line": 40,
+            "content": "        v"
+          },
+          {
+            "type": "added",
+            "new_line": 41,
+            "content": "    Pre-prod Tester reusable workflow"
+          },
+          {
+            "type": "added",
+            "new_line": 42,
+            "content": "        |"
+          },
+          {
+            "type": "added",
+            "new_line": 43,
+            "content": "        v"
+          },
+          {
+            "type": "added",
+            "new_line": 44,
+            "content": "    structured scan JSON"
+          },
+          {
+            "type": "added",
+            "new_line": 45,
+            "content": "        |"
+          },
+          {
+            "type": "added",
+            "new_line": 46,
+            "content": "        v"
+          },
+          {
+            "type": "added",
+            "new_line": 47,
+            "content": "    POST /v1/scans"
+          },
+          {
+            "type": "added",
+            "new_line": 48,
+            "content": "        |"
+          },
+          {
+            "type": "added",
+            "new_line": 49,
+            "content": "        v"
+          },
+          {
+            "type": "added",
+            "new_line": 50,
+            "content": "    vulnerability detection"
+          },
+          {
+            "type": "added",
+            "new_line": 51,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 52,
+            "content": "Because Pre-prod Tester is currently private, its repository Actions settings must allow other repositories to access its reusable workflow/action."
+          }
+        ],
+        "removed_lines": [],
+        "hunks": [
+          {
+            "header": "@@ -0,0 +1,52 @@",
+            "old_start": 0,
+            "old_count": 0,
+            "new_start": 1,
+            "new_count": 52,
+            "lines": [
+              {
+                "type": "added",
+                "new_line": 1,
+                "content": "# Pre-prod Tester integration"
+              },
+              {
+                "type": "added",
+                "new_line": 2,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 3,
+                "content": "Pre-prod Tester is integrated as a GitHub Actions reusable workflow. It is not an npm dependency because the first-stage operation is Git-aware: it needs the caller repository's commit history and the exact before -> after push range."
+              },
+              {
+                "type": "added",
+                "new_line": 4,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 5,
+                "content": "## Add it to another repository"
+              },
+              {
+                "type": "added",
+                "new_line": 6,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 7,
+                "content": "Create .github/workflows/preprod.yml:"
+              },
+              {
+                "type": "added",
+                "new_line": 8,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 9,
+                "content": "    name: Pre-prod Tester"
+              },
+              {
+                "type": "added",
+                "new_line": 10,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 11,
+                "content": "    on:"
+              },
+              {
+                "type": "added",
+                "new_line": 12,
+                "content": "      push:"
+              },
+              {
+                "type": "added",
+                "new_line": 13,
+                "content": "        branches: [main]"
+              },
+              {
+                "type": "added",
+                "new_line": 14,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 15,
+                "content": "    permissions:"
+              },
+              {
+                "type": "added",
+                "new_line": 16,
+                "content": "      contents: read"
+              },
+              {
+                "type": "added",
+                "new_line": 17,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 18,
+                "content": "    jobs:"
+              },
+              {
+                "type": "added",
+                "new_line": 19,
+                "content": "      preprod:"
+              },
+              {
+                "type": "added",
+                "new_line": 20,
+                "content": "        uses: dis-craft/Pre-prod-tester/.github/workflows/preprod-scan.yml@main"
+              },
+              {
+                "type": "added",
+                "new_line": 21,
+                "content": "        permissions:"
+              },
+              {
+                "type": "added",
+                "new_line": 22,
+                "content": "          contents: read"
+              },
+              {
+                "type": "added",
+                "new_line": 23,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 24,
+                "content": "The reusable workflow checks out the calling repository, captures the exact Git diff, and uploads a machine-readable artifact."
+              },
+              {
+                "type": "added",
+                "new_line": 25,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 26,
+                "content": "## Output"
+              },
+              {
+                "type": "added",
+                "new_line": 27,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 28,
+                "content": "The action writes .preprod/scan.json and the workflow uploads it as preprod-scan-<commit-sha>."
+              },
+              {
+                "type": "added",
+                "new_line": 29,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 30,
+                "content": "The JSON contains repository and commit metadata, before/after SHAs, changed-file summary, exact additions/deletions, GitHub-style hunks, line-by-line records, raw unified diff, and security-engine placeholders."
+              },
+              {
+                "type": "added",
+                "new_line": 31,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 32,
+                "content": "## Why GitHub Actions instead of npm?"
+              },
+              {
+                "type": "added",
+                "new_line": 33,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 34,
+                "content": "npm is useful for a local CLI, but GitHub Actions is the native integration point for a push-triggered CI/CD scanner. The target repository only needs a small workflow file while the scanner implementation stays centralized."
+              },
+              {
+                "type": "added",
+                "new_line": 35,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 36,
+                "content": "Later this same workflow can POST the generated JSON to the detection API:"
+              },
+              {
+                "type": "added",
+                "new_line": 37,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 38,
+                "content": "    target repo push"
+              },
+              {
+                "type": "added",
+                "new_line": 39,
+                "content": "        |"
+              },
+              {
+                "type": "added",
+                "new_line": 40,
+                "content": "        v"
+              },
+              {
+                "type": "added",
+                "new_line": 41,
+                "content": "    Pre-prod Tester reusable workflow"
+              },
+              {
+                "type": "added",
+                "new_line": 42,
+                "content": "        |"
+              },
+              {
+                "type": "added",
+                "new_line": 43,
+                "content": "        v"
+              },
+              {
+                "type": "added",
+                "new_line": 44,
+                "content": "    structured scan JSON"
+              },
+              {
+                "type": "added",
+                "new_line": 45,
+                "content": "        |"
+              },
+              {
+                "type": "added",
+                "new_line": 46,
+                "content": "        v"
+              },
+              {
+                "type": "added",
+                "new_line": 47,
+                "content": "    POST /v1/scans"
+              },
+              {
+                "type": "added",
+                "new_line": 48,
+                "content": "        |"
+              },
+              {
+                "type": "added",
+                "new_line": 49,
+                "content": "        v"
+              },
+              {
+                "type": "added",
+                "new_line": 50,
+                "content": "    vulnerability detection"
+              },
+              {
+                "type": "added",
+                "new_line": 51,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 52,
+                "content": "Because Pre-prod Tester is currently private, its repository Actions settings must allow other repositories to access its reusable workflow/action."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "security_context": {
+    "detection_enabled": false,
+    "secrets_scan": false,
+    "sast_scan": false,
+    "dependency_scan": false,
+    "llm_analysis": false
+  },
+  "files": [
+    {
+      "path": "PREPROD-INTEGRATION.md",
+      "status": "A",
+      "language": "md",
+      "changes": {
+        "additions": 52,
+        "deletions": 0,
+        "total": 52
+      },
+      "diff": "diff --git a/PREPROD-INTEGRATION.md b/PREPROD-INTEGRATION.md\nnew file mode 100644\nindex 0000000..fd9d1aa\n--- /dev/null\n+++ b/PREPROD-INTEGRATION.md\n@@ -0,0 +1,52 @@\n+# Pre-prod Tester integration\n+\n+Pre-prod Tester is integrated as a GitHub Actions reusable workflow. It is not an npm dependency because the first-stage operation is Git-aware: it needs the caller repository's commit history and the exact before -> after push range.\n+\n+## Add it to another repository\n+\n+Create .github/workflows/preprod.yml:\n+\n+    name: Pre-prod Tester\n+\n+    on:\n+      push:\n+        branches: [main]\n+\n+    permissions:\n+      contents: read\n+\n+    jobs:\n+      preprod:\n+        uses: dis-craft/Pre-prod-tester/.github/workflows/preprod-scan.yml@main\n+        permissions:\n+          contents: read\n+\n+The reusable workflow checks out the calling repository, captures the exact Git diff, and uploads a machine-readable artifact.\n+\n+## Output\n+\n+The action writes .preprod/scan.json and the workflow uploads it as preprod-scan-<commit-sha>.\n+\n+The JSON contains repository and commit metadata, before/after SHAs, changed-file summary, exact additions/deletions, GitHub-style hunks, line-by-line records, raw unified diff, and security-engine placeholders.\n+\n+## Why GitHub Actions instead of npm?\n+\n+npm is useful for a local CLI, but GitHub Actions is the native integration point for a push-triggered CI/CD scanner. The target repository only needs a small workflow file while the scanner implementation stays centralized.\n+\n+Later this same workflow can POST the generated JSON to the detection API:\n+\n+    target repo push\n+        |\n+        v\n+    Pre-prod Tester reusable workflow\n+        |\n+        v\n+    structured scan JSON\n+        |\n+        v\n+    POST /v1/scans\n+        |\n+        v\n+    vulnerability detection\n+\n+Because Pre-prod Tester is currently private, its repository Actions settings must allow other repositories to access its reusable workflow/action.\n",
+      "hunks": [
+        {
+          "header": "@@ -0,0 +1,52 @@",
+          "old_start": 0,
+          "old_count": 0,
+          "new_start": 1,
+          "new_count": 52,
+          "lines": [
+            {
+              "type": "added",
+              "new_line": 1,
+              "content": "# Pre-prod Tester integration"
+            },
+            {
+              "type": "added",
+              "new_line": 2,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 3,
+              "content": "Pre-prod Tester is integrated as a GitHub Actions reusable workflow. It is not an npm dependency because the first-stage operation is Git-aware: it needs the caller repository's commit history and the exact before -> after push range."
+            },
+            {
+              "type": "added",
+              "new_line": 4,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 5,
+              "content": "## Add it to another repository"
+            },
+            {
+              "type": "added",
+              "new_line": 6,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 7,
+              "content": "Create .github/workflows/preprod.yml:"
+            },
+            {
+              "type": "added",
+              "new_line": 8,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 9,
+              "content": "    name: Pre-prod Tester"
+            },
+            {
+              "type": "added",
+              "new_line": 10,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 11,
+              "content": "    on:"
+            },
+            {
+              "type": "added",
+              "new_line": 12,
+              "content": "      push:"
+            },
+            {
+              "type": "added",
+              "new_line": 13,
+              "content": "        branches: [main]"
+            },
+            {
+              "type": "added",
+              "new_line": 14,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 15,
+              "content": "    permissions:"
+            },
+            {
+              "type": "added",
+              "new_line": 16,
+              "content": "      contents: read"
+            },
+            {
+              "type": "added",
+              "new_line": 17,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 18,
+              "content": "    jobs:"
+            },
+            {
+              "type": "added",
+              "new_line": 19,
+              "content": "      preprod:"
+            },
+            {
+              "type": "added",
+              "new_line": 20,
+              "content": "        uses: dis-craft/Pre-prod-tester/.github/workflows/preprod-scan.yml@main"
+            },
+            {
+              "type": "added",
+              "new_line": 21,
+              "content": "        permissions:"
+            },
+            {
+              "type": "added",
+              "new_line": 22,
+              "content": "          contents: read"
+            },
+            {
+              "type": "added",
+              "new_line": 23,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 24,
+              "content": "The reusable workflow checks out the calling repository, captures the exact Git diff, and uploads a machine-readable artifact."
+            },
+            {
+              "type": "added",
+              "new_line": 25,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 26,
+              "content": "## Output"
+            },
+            {
+              "type": "added",
+              "new_line": 27,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 28,
+              "content": "The action writes .preprod/scan.json and the workflow uploads it as preprod-scan-<commit-sha>."
+            },
+            {
+              "type": "added",
+              "new_line": 29,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 30,
+              "content": "The JSON contains repository and commit metadata, before/after SHAs, changed-file summary, exact additions/deletions, GitHub-style hunks, line-by-line records, raw unified diff, and security-engine placeholders."
+            },
+            {
+              "type": "added",
+              "new_line": 31,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 32,
+              "content": "## Why GitHub Actions instead of npm?"
+            },
+            {
+              "type": "added",
+              "new_line": 33,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 34,
+              "content": "npm is useful for a local CLI, but GitHub Actions is the native integration point for a push-triggered CI/CD scanner. The target repository only needs a small workflow file while the scanner implementation stays centralized."
+            },
+            {
+              "type": "added",
+              "new_line": 35,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 36,
+              "content": "Later this same workflow can POST the generated JSON to the detection API:"
+            },
+            {
+              "type": "added",
+              "new_line": 37,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 38,
+              "content": "    target repo push"
+            },
+            {
+              "type": "added",
+              "new_line": 39,
+              "content": "        |"
+            },
+            {
+              "type": "added",
+              "new_line": 40,
+              "content": "        v"
+            },
+            {
+              "type": "added",
+              "new_line": 41,
+              "content": "    Pre-prod Tester reusable workflow"
+            },
+            {
+              "type": "added",
+              "new_line": 42,
+              "content": "        |"
+            },
+            {
+              "type": "added",
+              "new_line": 43,
+              "content": "        v"
+            },
+            {
+              "type": "added",
+              "new_line": 44,
+              "content": "    structured scan JSON"
+            },
+            {
+              "type": "added",
+              "new_line": 45,
+              "content": "        |"
+            },
+            {
+              "type": "added",
+              "new_line": 46,
+              "content": "        v"
+            },
+            {
+              "type": "added",
+              "new_line": 47,
+              "content": "    POST /v1/scans"
+            },
+            {
+              "type": "added",
+              "new_line": 48,
+              "content": "        |"
+            },
+            {
+              "type": "added",
+              "new_line": 49,
+              "content": "        v"
+            },
+            {
+              "type": "added",
+              "new_line": 50,
+              "content": "    vulnerability detection"
+            },
+            {
+              "type": "added",
+              "new_line": 51,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 52,
+              "content": "Because Pre-prod Tester is currently private, its repository Actions settings must allow other repositories to access its reusable workflow/action."
+            }
+          ]
+        }
+      ],
+      "added_lines": [
+        {
+          "type": "added",
+          "new_line": 1,
+          "content": "# Pre-prod Tester integration"
+        },
+        {
+          "type": "added",
+          "new_line": 2,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 3,
+          "content": "Pre-prod Tester is integrated as a GitHub Actions reusable workflow. It is not an npm dependency because the first-stage operation is Git-aware: it needs the caller repository's commit history and the exact before -> after push range."
+        },
+        {
+          "type": "added",
+          "new_line": 4,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 5,
+          "content": "## Add it to another repository"
+        },
+        {
+          "type": "added",
+          "new_line": 6,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 7,
+          "content": "Create .github/workflows/preprod.yml:"
+        },
+        {
+          "type": "added",
+          "new_line": 8,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 9,
+          "content": "    name: Pre-prod Tester"
+        },
+        {
+          "type": "added",
+          "new_line": 10,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 11,
+          "content": "    on:"
+        },
+        {
+          "type": "added",
+          "new_line": 12,
+          "content": "      push:"
+        },
+        {
+          "type": "added",
+          "new_line": 13,
+          "content": "        branches: [main]"
+        },
+        {
+          "type": "added",
+          "new_line": 14,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 15,
+          "content": "    permissions:"
+        },
+        {
+          "type": "added",
+          "new_line": 16,
+          "content": "      contents: read"
+        },
+        {
+          "type": "added",
+          "new_line": 17,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 18,
+          "content": "    jobs:"
+        },
+        {
+          "type": "added",
+          "new_line": 19,
+          "content": "      preprod:"
+        },
+        {
+          "type": "added",
+          "new_line": 20,
+          "content": "        uses: dis-craft/Pre-prod-tester/.github/workflows/preprod-scan.yml@main"
+        },
+        {
+          "type": "added",
+          "new_line": 21,
+          "content": "        permissions:"
+        },
+        {
+          "type": "added",
+          "new_line": 22,
+          "content": "          contents: read"
+        },
+        {
+          "type": "added",
+          "new_line": 23,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 24,
+          "content": "The reusable workflow checks out the calling repository, captures the exact Git diff, and uploads a machine-readable artifact."
+        },
+        {
+          "type": "added",
+          "new_line": 25,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 26,
+          "content": "## Output"
+        },
+        {
+          "type": "added",
+          "new_line": 27,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 28,
+          "content": "The action writes .preprod/scan.json and the workflow uploads it as preprod-scan-<commit-sha>."
+        },
+        {
+          "type": "added",
+          "new_line": 29,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 30,
+          "content": "The JSON contains repository and commit metadata, before/after SHAs, changed-file summary, exact additions/deletions, GitHub-style hunks, line-by-line records, raw unified diff, and security-engine placeholders."
+        },
+        {
+          "type": "added",
+          "new_line": 31,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 32,
+          "content": "## Why GitHub Actions instead of npm?"
+        },
+        {
+          "type": "added",
+          "new_line": 33,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 34,
+          "content": "npm is useful for a local CLI, but GitHub Actions is the native integration point for a push-triggered CI/CD scanner. The target repository only needs a small workflow file while the scanner implementation stays centralized."
+        },
+        {
+          "type": "added",
+          "new_line": 35,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 36,
+          "content": "Later this same workflow can POST the generated JSON to the detection API:"
+        },
+        {
+          "type": "added",
+          "new_line": 37,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 38,
+          "content": "    target repo push"
+        },
+        {
+          "type": "added",
+          "new_line": 39,
+          "content": "        |"
+        },
+        {
+          "type": "added",
+          "new_line": 40,
+          "content": "        v"
+        },
+        {
+          "type": "added",
+          "new_line": 41,
+          "content": "    Pre-prod Tester reusable workflow"
+        },
+        {
+          "type": "added",
+          "new_line": 42,
+          "content": "        |"
+        },
+        {
+          "type": "added",
+          "new_line": 43,
+          "content": "        v"
+        },
+        {
+          "type": "added",
+          "new_line": 44,
+          "content": "    structured scan JSON"
+        },
+        {
+          "type": "added",
+          "new_line": 45,
+          "content": "        |"
+        },
+        {
+          "type": "added",
+          "new_line": 46,
+          "content": "        v"
+        },
+        {
+          "type": "added",
+          "new_line": 47,
+          "content": "    POST /v1/scans"
+        },
+        {
+          "type": "added",
+          "new_line": 48,
+          "content": "        |"
+        },
+        {
+          "type": "added",
+          "new_line": 49,
+          "content": "        v"
+        },
+        {
+          "type": "added",
+          "new_line": 50,
+          "content": "    vulnerability detection"
+        },
+        {
+          "type": "added",
+          "new_line": 51,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 52,
+          "content": "Because Pre-prod Tester is currently private, its repository Actions settings must allow other repositories to access its reusable workflow/action."
+        }
+      ],
+      "removed_lines": []
+    }
+  ]
+}

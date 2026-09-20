@@ -1,0 +1,2462 @@
+{
+  "schema_version": "1.1",
+  "scan": {
+    "id": "scn_64d6f14ce300",
+    "trigger": "push",
+    "captured_at": "2026-09-19T13:05:03.682687+00:00",
+    "workflow_run_id": "35444703397",
+    "workflow_url": "https://github.com/dis-craft/Pre-prod-tester/actions/runs/35444703397"
+  },
+  "repository": {
+    "full_name": "dis-craft/Pre-prod-tester",
+    "url": "https://github.com/dis-craft/Pre-prod-tester",
+    "default_branch": "main"
+  },
+  "comparison": {
+    "base_commit": "cdf51b5e1597cebb6eaccbcd65f83e61df0e534c",
+    "target_commit": "64d6f14ce3003578c721cdea552160263d9d7bca",
+    "range": "cdf51b5e1597cebb6eaccbcd65f83e61df0e534c..64d6f14ce3003578c721cdea552160263d9d7bca",
+    "method": "git diff two-commit comparison"
+  },
+  "commit": {
+    "before": "cdf51b5e1597cebb6eaccbcd65f83e61df0e534c",
+    "after": "64d6f14ce3003578c721cdea552160263d9d7bca",
+    "branch": "main",
+    "message": "feat: add AI remediation branch trigger",
+    "author": {
+      "name": "Srikar T",
+      "email": "169169726+dis-craft@users.noreply.github.com"
+    },
+    "committed_at": "2026-09-19T18:34:45+05:30"
+  },
+  "change_summary": {
+    "files_changed": 1,
+    "additions": 118,
+    "deletions": 0,
+    "net_lines": 118
+  },
+  "changes": {
+    "format": "github-style-unified-diff",
+    "legend": {
+      "added": "+",
+      "removed": "-",
+      "context": " "
+    },
+    "files": [
+      {
+        "path": ".github/workflows/remediation.yml",
+        "status": "A",
+        "additions": 118,
+        "deletions": 0,
+        "added_lines": [
+          {
+            "type": "added",
+            "new_line": 1,
+            "content": "name: Pre-prod AI Remediation"
+          },
+          {
+            "type": "added",
+            "new_line": 2,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 3,
+            "content": "on:"
+          },
+          {
+            "type": "added",
+            "new_line": 4,
+            "content": "  workflow_dispatch:"
+          },
+          {
+            "type": "added",
+            "new_line": 5,
+            "content": "    inputs:"
+          },
+          {
+            "type": "added",
+            "new_line": 6,
+            "content": "      generate_remediation:"
+          },
+          {
+            "type": "added",
+            "new_line": 7,
+            "content": "        description: Generate an AI remediation branch and PR"
+          },
+          {
+            "type": "added",
+            "new_line": 8,
+            "content": "        required: true"
+          },
+          {
+            "type": "added",
+            "new_line": 9,
+            "content": "        default: false"
+          },
+          {
+            "type": "added",
+            "new_line": 10,
+            "content": "        type: boolean"
+          },
+          {
+            "type": "added",
+            "new_line": 11,
+            "content": "      finding_report:"
+          },
+          {
+            "type": "added",
+            "new_line": 12,
+            "content": "        description: Path to scanner findings JSON in the workspace"
+          },
+          {
+            "type": "added",
+            "new_line": 13,
+            "content": "        required: false"
+          },
+          {
+            "type": "added",
+            "new_line": 14,
+            "content": "        default: .preprod/findings.json"
+          },
+          {
+            "type": "added",
+            "new_line": 15,
+            "content": "        type: string"
+          },
+          {
+            "type": "added",
+            "new_line": 16,
+            "content": "  workflow_call:"
+          },
+          {
+            "type": "added",
+            "new_line": 17,
+            "content": "    inputs:"
+          },
+          {
+            "type": "added",
+            "new_line": 18,
+            "content": "      generate_remediation:"
+          },
+          {
+            "type": "added",
+            "new_line": 19,
+            "content": "        required: true"
+          },
+          {
+            "type": "added",
+            "new_line": 20,
+            "content": "        type: boolean"
+          },
+          {
+            "type": "added",
+            "new_line": 21,
+            "content": "      finding_report:"
+          },
+          {
+            "type": "added",
+            "new_line": 22,
+            "content": "        required: true"
+          },
+          {
+            "type": "added",
+            "new_line": 23,
+            "content": "        type: string"
+          },
+          {
+            "type": "added",
+            "new_line": 24,
+            "content": "    secrets:"
+          },
+          {
+            "type": "added",
+            "new_line": 25,
+            "content": "      ORCHESTRATOR_URL:"
+          },
+          {
+            "type": "added",
+            "new_line": 26,
+            "content": "        required: true"
+          },
+          {
+            "type": "added",
+            "new_line": 27,
+            "content": "      ORCHESTRATOR_TOKEN:"
+          },
+          {
+            "type": "added",
+            "new_line": 28,
+            "content": "        required: false"
+          },
+          {
+            "type": "added",
+            "new_line": 29,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 30,
+            "content": "permissions:"
+          },
+          {
+            "type": "added",
+            "new_line": 31,
+            "content": "  contents: write"
+          },
+          {
+            "type": "added",
+            "new_line": 32,
+            "content": "  pull-requests: write"
+          },
+          {
+            "type": "added",
+            "new_line": 33,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 34,
+            "content": "jobs:"
+          },
+          {
+            "type": "added",
+            "new_line": 35,
+            "content": "  remediation:"
+          },
+          {
+            "type": "added",
+            "new_line": 36,
+            "content": "    if: ${{ inputs.generate_remediation || github.event.inputs.generate_remediation == 'true' }}"
+          },
+          {
+            "type": "added",
+            "new_line": 37,
+            "content": "    runs-on: ubuntu-latest"
+          },
+          {
+            "type": "added",
+            "new_line": 38,
+            "content": "    steps:"
+          },
+          {
+            "type": "added",
+            "new_line": 39,
+            "content": "      - name: Checkout target repository"
+          },
+          {
+            "type": "added",
+            "new_line": 40,
+            "content": "        uses: actions/checkout@v4"
+          },
+          {
+            "type": "added",
+            "new_line": 41,
+            "content": "        with:"
+          },
+          {
+            "type": "added",
+            "new_line": 42,
+            "content": "          fetch-depth: 0"
+          },
+          {
+            "type": "added",
+            "new_line": 43,
+            "content": "          token: ${{ github.token }}"
+          },
+          {
+            "type": "added",
+            "new_line": 44,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 45,
+            "content": "      - name: Build remediation request"
+          },
+          {
+            "type": "added",
+            "new_line": 46,
+            "content": "        env:"
+          },
+          {
+            "type": "added",
+            "new_line": 47,
+            "content": "          REPORT: ${{ inputs.finding_report || github.event.inputs.finding_report || '.preprod/findings.json' }}"
+          },
+          {
+            "type": "added",
+            "new_line": 48,
+            "content": "          GITHUB_REPOSITORY: ${{ github.repository }}"
+          },
+          {
+            "type": "added",
+            "new_line": 49,
+            "content": "          GITHUB_SHA: ${{ github.sha }}"
+          },
+          {
+            "type": "added",
+            "new_line": 50,
+            "content": "          GITHUB_REF_NAME: ${{ github.ref_name }}"
+          },
+          {
+            "type": "added",
+            "new_line": 51,
+            "content": "        run: |"
+          },
+          {
+            "type": "added",
+            "new_line": 52,
+            "content": "          if [ ! -f \"$REPORT\" ]; then"
+          },
+          {
+            "type": "added",
+            "new_line": 53,
+            "content": "            echo \"Finding report not found: $REPORT\""
+          },
+          {
+            "type": "added",
+            "new_line": 54,
+            "content": "            exit 1"
+          },
+          {
+            "type": "added",
+            "new_line": 55,
+            "content": "          fi"
+          },
+          {
+            "type": "added",
+            "new_line": 56,
+            "content": "          python3 scripts/remediation-payload.py --input \"$REPORT\" --generate"
+          },
+          {
+            "type": "added",
+            "new_line": 57,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 58,
+            "content": "      - name: Request AI remediation patch"
+          },
+          {
+            "type": "added",
+            "new_line": 59,
+            "content": "        id: orchestrator"
+          },
+          {
+            "type": "added",
+            "new_line": 60,
+            "content": "        env:"
+          },
+          {
+            "type": "added",
+            "new_line": 61,
+            "content": "          ORCHESTRATOR_URL: ${{ secrets.ORCHESTRATOR_URL }}"
+          },
+          {
+            "type": "added",
+            "new_line": 62,
+            "content": "          ORCHESTRATOR_TOKEN: ${{ secrets.ORCHESTRATOR_TOKEN }}"
+          },
+          {
+            "type": "added",
+            "new_line": 63,
+            "content": "          REPOSITORY: ${{ github.repository }}"
+          },
+          {
+            "type": "added",
+            "new_line": 64,
+            "content": "          COMMIT_SHA: ${{ github.sha }}"
+          },
+          {
+            "type": "added",
+            "new_line": 65,
+            "content": "        run: |"
+          },
+          {
+            "type": "added",
+            "new_line": 66,
+            "content": "          set -euo pipefail"
+          },
+          {
+            "type": "added",
+            "new_line": 67,
+            "content": "          if [ -z \"${ORCHESTRATOR_URL:-}\" ]; then"
+          },
+          {
+            "type": "added",
+            "new_line": 68,
+            "content": "            echo \"ORCHESTRATOR_URL is not configured.\""
+          },
+          {
+            "type": "added",
+            "new_line": 69,
+            "content": "            exit 1"
+          },
+          {
+            "type": "added",
+            "new_line": 70,
+            "content": "          fi"
+          },
+          {
+            "type": "added",
+            "new_line": 71,
+            "content": "          auth=()"
+          },
+          {
+            "type": "added",
+            "new_line": 72,
+            "content": "          if [ -n \"${ORCHESTRATOR_TOKEN:-}\" ]; then"
+          },
+          {
+            "type": "added",
+            "new_line": 73,
+            "content": "            auth=(-H \"Authorization: Bearer ${ORCHESTRATOR_TOKEN}\")"
+          },
+          {
+            "type": "added",
+            "new_line": 74,
+            "content": "          fi"
+          },
+          {
+            "type": "added",
+            "new_line": 75,
+            "content": "          curl --fail-with-body -sS -X POST \\"
+          },
+          {
+            "type": "added",
+            "new_line": 76,
+            "content": "            \"${ORCHESTRATOR_URL%/}/api/remediation/generate\" \\"
+          },
+          {
+            "type": "added",
+            "new_line": 77,
+            "content": "            -H 'Content-Type: application/json' \\"
+          },
+          {
+            "type": "added",
+            "new_line": 78,
+            "content": "            \"${auth[@]}\" \\"
+          },
+          {
+            "type": "added",
+            "new_line": 79,
+            "content": "            --data-binary @.preprod/remediation-request.json \\"
+          },
+          {
+            "type": "added",
+            "new_line": 80,
+            "content": "            -o .preprod/remediation-result.json"
+          },
+          {
+            "type": "added",
+            "new_line": 81,
+            "content": "          python3 - <<'PY'"
+          },
+          {
+            "type": "added",
+            "new_line": 82,
+            "content": "          import json"
+          },
+          {
+            "type": "added",
+            "new_line": 83,
+            "content": "          from pathlib import Path"
+          },
+          {
+            "type": "added",
+            "new_line": 84,
+            "content": "          p = json.loads(Path('.preprod/remediation-result.json').read_text())"
+          },
+          {
+            "type": "added",
+            "new_line": 85,
+            "content": "          patch = p.get('patch')"
+          },
+          {
+            "type": "added",
+            "new_line": 86,
+            "content": "          if not patch:"
+          },
+          {
+            "type": "added",
+            "new_line": 87,
+            "content": "              raise SystemExit('Orchestrator returned no patch')"
+          },
+          {
+            "type": "added",
+            "new_line": 88,
+            "content": "          Path('.preprod/remediation.patch').write_text(patch, encoding='utf-8')"
+          },
+          {
+            "type": "added",
+            "new_line": 89,
+            "content": "          print('Received candidate remediation patch')"
+          },
+          {
+            "type": "added",
+            "new_line": 90,
+            "content": "          PY"
+          },
+          {
+            "type": "added",
+            "new_line": 91,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 92,
+            "content": "      - name: Apply AI patch"
+          },
+          {
+            "type": "added",
+            "new_line": 93,
+            "content": "        run: |"
+          },
+          {
+            "type": "added",
+            "new_line": 94,
+            "content": "          git apply --check .preprod/remediation.patch"
+          },
+          {
+            "type": "added",
+            "new_line": 95,
+            "content": "          git apply .preprod/remediation.patch"
+          },
+          {
+            "type": "added",
+            "new_line": 96,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 97,
+            "content": "      - name: Run repository tests"
+          },
+          {
+            "type": "added",
+            "new_line": 98,
+            "content": "        run: |"
+          },
+          {
+            "type": "added",
+            "new_line": 99,
+            "content": "          if [ -f package.json ]; then npm test --if-present; fi"
+          },
+          {
+            "type": "added",
+            "new_line": 100,
+            "content": "          if [ -f pyproject.toml ] || [ -f pytest.ini ] || [ -d tests ]; then python -m pytest -q; fi"
+          },
+          {
+            "type": "added",
+            "new_line": 101,
+            "content": ""
+          },
+          {
+            "type": "added",
+            "new_line": 102,
+            "content": "      - name: Create remediation branch and PR"
+          },
+          {
+            "type": "added",
+            "new_line": 103,
+            "content": "        env:"
+          },
+          {
+            "type": "added",
+            "new_line": 104,
+            "content": "          GH_TOKEN: ${{ github.token }}"
+          },
+          {
+            "type": "added",
+            "new_line": 105,
+            "content": "        run: |"
+          },
+          {
+            "type": "added",
+            "new_line": 106,
+            "content": "          set -euo pipefail"
+          },
+          {
+            "type": "added",
+            "new_line": 107,
+            "content": "          branch=\"security-remediation/${GITHUB_SHA::12}\""
+          },
+          {
+            "type": "added",
+            "new_line": 108,
+            "content": "          git checkout -b \"$branch\""
+          },
+          {
+            "type": "added",
+            "new_line": 109,
+            "content": "          git config user.name 'pre-prod-tester[bot]'"
+          },
+          {
+            "type": "added",
+            "new_line": 110,
+            "content": "          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'"
+          },
+          {
+            "type": "added",
+            "new_line": 111,
+            "content": "          git add -A"
+          },
+          {
+            "type": "added",
+            "new_line": 112,
+            "content": "          git commit -m 'fix: apply AI security remediation'"
+          },
+          {
+            "type": "added",
+            "new_line": 113,
+            "content": "          git push --set-upstream origin \"$branch\""
+          },
+          {
+            "type": "added",
+            "new_line": 114,
+            "content": "          gh pr create \\"
+          },
+          {
+            "type": "added",
+            "new_line": 115,
+            "content": "            --base \"${GITHUB_REF_NAME:-main}\" \\"
+          },
+          {
+            "type": "added",
+            "new_line": 116,
+            "content": "            --head \"$branch\" \\"
+          },
+          {
+            "type": "added",
+            "new_line": 117,
+            "content": "            --title 'fix: AI-generated security remediation' \\"
+          },
+          {
+            "type": "added",
+            "new_line": 118,
+            "content": "            --body-file .preprod/remediation-result.json"
+          }
+        ],
+        "removed_lines": [],
+        "hunks": [
+          {
+            "header": "@@ -0,0 +1,118 @@",
+            "old_start": 0,
+            "old_count": 0,
+            "new_start": 1,
+            "new_count": 118,
+            "lines": [
+              {
+                "type": "added",
+                "new_line": 1,
+                "content": "name: Pre-prod AI Remediation"
+              },
+              {
+                "type": "added",
+                "new_line": 2,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 3,
+                "content": "on:"
+              },
+              {
+                "type": "added",
+                "new_line": 4,
+                "content": "  workflow_dispatch:"
+              },
+              {
+                "type": "added",
+                "new_line": 5,
+                "content": "    inputs:"
+              },
+              {
+                "type": "added",
+                "new_line": 6,
+                "content": "      generate_remediation:"
+              },
+              {
+                "type": "added",
+                "new_line": 7,
+                "content": "        description: Generate an AI remediation branch and PR"
+              },
+              {
+                "type": "added",
+                "new_line": 8,
+                "content": "        required: true"
+              },
+              {
+                "type": "added",
+                "new_line": 9,
+                "content": "        default: false"
+              },
+              {
+                "type": "added",
+                "new_line": 10,
+                "content": "        type: boolean"
+              },
+              {
+                "type": "added",
+                "new_line": 11,
+                "content": "      finding_report:"
+              },
+              {
+                "type": "added",
+                "new_line": 12,
+                "content": "        description: Path to scanner findings JSON in the workspace"
+              },
+              {
+                "type": "added",
+                "new_line": 13,
+                "content": "        required: false"
+              },
+              {
+                "type": "added",
+                "new_line": 14,
+                "content": "        default: .preprod/findings.json"
+              },
+              {
+                "type": "added",
+                "new_line": 15,
+                "content": "        type: string"
+              },
+              {
+                "type": "added",
+                "new_line": 16,
+                "content": "  workflow_call:"
+              },
+              {
+                "type": "added",
+                "new_line": 17,
+                "content": "    inputs:"
+              },
+              {
+                "type": "added",
+                "new_line": 18,
+                "content": "      generate_remediation:"
+              },
+              {
+                "type": "added",
+                "new_line": 19,
+                "content": "        required: true"
+              },
+              {
+                "type": "added",
+                "new_line": 20,
+                "content": "        type: boolean"
+              },
+              {
+                "type": "added",
+                "new_line": 21,
+                "content": "      finding_report:"
+              },
+              {
+                "type": "added",
+                "new_line": 22,
+                "content": "        required: true"
+              },
+              {
+                "type": "added",
+                "new_line": 23,
+                "content": "        type: string"
+              },
+              {
+                "type": "added",
+                "new_line": 24,
+                "content": "    secrets:"
+              },
+              {
+                "type": "added",
+                "new_line": 25,
+                "content": "      ORCHESTRATOR_URL:"
+              },
+              {
+                "type": "added",
+                "new_line": 26,
+                "content": "        required: true"
+              },
+              {
+                "type": "added",
+                "new_line": 27,
+                "content": "      ORCHESTRATOR_TOKEN:"
+              },
+              {
+                "type": "added",
+                "new_line": 28,
+                "content": "        required: false"
+              },
+              {
+                "type": "added",
+                "new_line": 29,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 30,
+                "content": "permissions:"
+              },
+              {
+                "type": "added",
+                "new_line": 31,
+                "content": "  contents: write"
+              },
+              {
+                "type": "added",
+                "new_line": 32,
+                "content": "  pull-requests: write"
+              },
+              {
+                "type": "added",
+                "new_line": 33,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 34,
+                "content": "jobs:"
+              },
+              {
+                "type": "added",
+                "new_line": 35,
+                "content": "  remediation:"
+              },
+              {
+                "type": "added",
+                "new_line": 36,
+                "content": "    if: ${{ inputs.generate_remediation || github.event.inputs.generate_remediation == 'true' }}"
+              },
+              {
+                "type": "added",
+                "new_line": 37,
+                "content": "    runs-on: ubuntu-latest"
+              },
+              {
+                "type": "added",
+                "new_line": 38,
+                "content": "    steps:"
+              },
+              {
+                "type": "added",
+                "new_line": 39,
+                "content": "      - name: Checkout target repository"
+              },
+              {
+                "type": "added",
+                "new_line": 40,
+                "content": "        uses: actions/checkout@v4"
+              },
+              {
+                "type": "added",
+                "new_line": 41,
+                "content": "        with:"
+              },
+              {
+                "type": "added",
+                "new_line": 42,
+                "content": "          fetch-depth: 0"
+              },
+              {
+                "type": "added",
+                "new_line": 43,
+                "content": "          token: ${{ github.token }}"
+              },
+              {
+                "type": "added",
+                "new_line": 44,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 45,
+                "content": "      - name: Build remediation request"
+              },
+              {
+                "type": "added",
+                "new_line": 46,
+                "content": "        env:"
+              },
+              {
+                "type": "added",
+                "new_line": 47,
+                "content": "          REPORT: ${{ inputs.finding_report || github.event.inputs.finding_report || '.preprod/findings.json' }}"
+              },
+              {
+                "type": "added",
+                "new_line": 48,
+                "content": "          GITHUB_REPOSITORY: ${{ github.repository }}"
+              },
+              {
+                "type": "added",
+                "new_line": 49,
+                "content": "          GITHUB_SHA: ${{ github.sha }}"
+              },
+              {
+                "type": "added",
+                "new_line": 50,
+                "content": "          GITHUB_REF_NAME: ${{ github.ref_name }}"
+              },
+              {
+                "type": "added",
+                "new_line": 51,
+                "content": "        run: |"
+              },
+              {
+                "type": "added",
+                "new_line": 52,
+                "content": "          if [ ! -f \"$REPORT\" ]; then"
+              },
+              {
+                "type": "added",
+                "new_line": 53,
+                "content": "            echo \"Finding report not found: $REPORT\""
+              },
+              {
+                "type": "added",
+                "new_line": 54,
+                "content": "            exit 1"
+              },
+              {
+                "type": "added",
+                "new_line": 55,
+                "content": "          fi"
+              },
+              {
+                "type": "added",
+                "new_line": 56,
+                "content": "          python3 scripts/remediation-payload.py --input \"$REPORT\" --generate"
+              },
+              {
+                "type": "added",
+                "new_line": 57,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 58,
+                "content": "      - name: Request AI remediation patch"
+              },
+              {
+                "type": "added",
+                "new_line": 59,
+                "content": "        id: orchestrator"
+              },
+              {
+                "type": "added",
+                "new_line": 60,
+                "content": "        env:"
+              },
+              {
+                "type": "added",
+                "new_line": 61,
+                "content": "          ORCHESTRATOR_URL: ${{ secrets.ORCHESTRATOR_URL }}"
+              },
+              {
+                "type": "added",
+                "new_line": 62,
+                "content": "          ORCHESTRATOR_TOKEN: ${{ secrets.ORCHESTRATOR_TOKEN }}"
+              },
+              {
+                "type": "added",
+                "new_line": 63,
+                "content": "          REPOSITORY: ${{ github.repository }}"
+              },
+              {
+                "type": "added",
+                "new_line": 64,
+                "content": "          COMMIT_SHA: ${{ github.sha }}"
+              },
+              {
+                "type": "added",
+                "new_line": 65,
+                "content": "        run: |"
+              },
+              {
+                "type": "added",
+                "new_line": 66,
+                "content": "          set -euo pipefail"
+              },
+              {
+                "type": "added",
+                "new_line": 67,
+                "content": "          if [ -z \"${ORCHESTRATOR_URL:-}\" ]; then"
+              },
+              {
+                "type": "added",
+                "new_line": 68,
+                "content": "            echo \"ORCHESTRATOR_URL is not configured.\""
+              },
+              {
+                "type": "added",
+                "new_line": 69,
+                "content": "            exit 1"
+              },
+              {
+                "type": "added",
+                "new_line": 70,
+                "content": "          fi"
+              },
+              {
+                "type": "added",
+                "new_line": 71,
+                "content": "          auth=()"
+              },
+              {
+                "type": "added",
+                "new_line": 72,
+                "content": "          if [ -n \"${ORCHESTRATOR_TOKEN:-}\" ]; then"
+              },
+              {
+                "type": "added",
+                "new_line": 73,
+                "content": "            auth=(-H \"Authorization: Bearer ${ORCHESTRATOR_TOKEN}\")"
+              },
+              {
+                "type": "added",
+                "new_line": 74,
+                "content": "          fi"
+              },
+              {
+                "type": "added",
+                "new_line": 75,
+                "content": "          curl --fail-with-body -sS -X POST \\"
+              },
+              {
+                "type": "added",
+                "new_line": 76,
+                "content": "            \"${ORCHESTRATOR_URL%/}/api/remediation/generate\" \\"
+              },
+              {
+                "type": "added",
+                "new_line": 77,
+                "content": "            -H 'Content-Type: application/json' \\"
+              },
+              {
+                "type": "added",
+                "new_line": 78,
+                "content": "            \"${auth[@]}\" \\"
+              },
+              {
+                "type": "added",
+                "new_line": 79,
+                "content": "            --data-binary @.preprod/remediation-request.json \\"
+              },
+              {
+                "type": "added",
+                "new_line": 80,
+                "content": "            -o .preprod/remediation-result.json"
+              },
+              {
+                "type": "added",
+                "new_line": 81,
+                "content": "          python3 - <<'PY'"
+              },
+              {
+                "type": "added",
+                "new_line": 82,
+                "content": "          import json"
+              },
+              {
+                "type": "added",
+                "new_line": 83,
+                "content": "          from pathlib import Path"
+              },
+              {
+                "type": "added",
+                "new_line": 84,
+                "content": "          p = json.loads(Path('.preprod/remediation-result.json').read_text())"
+              },
+              {
+                "type": "added",
+                "new_line": 85,
+                "content": "          patch = p.get('patch')"
+              },
+              {
+                "type": "added",
+                "new_line": 86,
+                "content": "          if not patch:"
+              },
+              {
+                "type": "added",
+                "new_line": 87,
+                "content": "              raise SystemExit('Orchestrator returned no patch')"
+              },
+              {
+                "type": "added",
+                "new_line": 88,
+                "content": "          Path('.preprod/remediation.patch').write_text(patch, encoding='utf-8')"
+              },
+              {
+                "type": "added",
+                "new_line": 89,
+                "content": "          print('Received candidate remediation patch')"
+              },
+              {
+                "type": "added",
+                "new_line": 90,
+                "content": "          PY"
+              },
+              {
+                "type": "added",
+                "new_line": 91,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 92,
+                "content": "      - name: Apply AI patch"
+              },
+              {
+                "type": "added",
+                "new_line": 93,
+                "content": "        run: |"
+              },
+              {
+                "type": "added",
+                "new_line": 94,
+                "content": "          git apply --check .preprod/remediation.patch"
+              },
+              {
+                "type": "added",
+                "new_line": 95,
+                "content": "          git apply .preprod/remediation.patch"
+              },
+              {
+                "type": "added",
+                "new_line": 96,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 97,
+                "content": "      - name: Run repository tests"
+              },
+              {
+                "type": "added",
+                "new_line": 98,
+                "content": "        run: |"
+              },
+              {
+                "type": "added",
+                "new_line": 99,
+                "content": "          if [ -f package.json ]; then npm test --if-present; fi"
+              },
+              {
+                "type": "added",
+                "new_line": 100,
+                "content": "          if [ -f pyproject.toml ] || [ -f pytest.ini ] || [ -d tests ]; then python -m pytest -q; fi"
+              },
+              {
+                "type": "added",
+                "new_line": 101,
+                "content": ""
+              },
+              {
+                "type": "added",
+                "new_line": 102,
+                "content": "      - name: Create remediation branch and PR"
+              },
+              {
+                "type": "added",
+                "new_line": 103,
+                "content": "        env:"
+              },
+              {
+                "type": "added",
+                "new_line": 104,
+                "content": "          GH_TOKEN: ${{ github.token }}"
+              },
+              {
+                "type": "added",
+                "new_line": 105,
+                "content": "        run: |"
+              },
+              {
+                "type": "added",
+                "new_line": 106,
+                "content": "          set -euo pipefail"
+              },
+              {
+                "type": "added",
+                "new_line": 107,
+                "content": "          branch=\"security-remediation/${GITHUB_SHA::12}\""
+              },
+              {
+                "type": "added",
+                "new_line": 108,
+                "content": "          git checkout -b \"$branch\""
+              },
+              {
+                "type": "added",
+                "new_line": 109,
+                "content": "          git config user.name 'pre-prod-tester[bot]'"
+              },
+              {
+                "type": "added",
+                "new_line": 110,
+                "content": "          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'"
+              },
+              {
+                "type": "added",
+                "new_line": 111,
+                "content": "          git add -A"
+              },
+              {
+                "type": "added",
+                "new_line": 112,
+                "content": "          git commit -m 'fix: apply AI security remediation'"
+              },
+              {
+                "type": "added",
+                "new_line": 113,
+                "content": "          git push --set-upstream origin \"$branch\""
+              },
+              {
+                "type": "added",
+                "new_line": 114,
+                "content": "          gh pr create \\"
+              },
+              {
+                "type": "added",
+                "new_line": 115,
+                "content": "            --base \"${GITHUB_REF_NAME:-main}\" \\"
+              },
+              {
+                "type": "added",
+                "new_line": 116,
+                "content": "            --head \"$branch\" \\"
+              },
+              {
+                "type": "added",
+                "new_line": 117,
+                "content": "            --title 'fix: AI-generated security remediation' \\"
+              },
+              {
+                "type": "added",
+                "new_line": 118,
+                "content": "            --body-file .preprod/remediation-result.json"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "security_context": {
+    "detection_enabled": false,
+    "secrets_scan": false,
+    "sast_scan": false,
+    "dependency_scan": false,
+    "llm_analysis": false
+  },
+  "files": [
+    {
+      "path": ".github/workflows/remediation.yml",
+      "status": "A",
+      "language": "yml",
+      "changes": {
+        "additions": 118,
+        "deletions": 0,
+        "total": 118
+      },
+      "diff": "diff --git a/.github/workflows/remediation.yml b/.github/workflows/remediation.yml\nnew file mode 100644\nindex 0000000..22cf10d\n--- /dev/null\n+++ b/.github/workflows/remediation.yml\n@@ -0,0 +1,118 @@\n+name: Pre-prod AI Remediation\n+\n+on:\n+  workflow_dispatch:\n+    inputs:\n+      generate_remediation:\n+        description: Generate an AI remediation branch and PR\n+        required: true\n+        default: false\n+        type: boolean\n+      finding_report:\n+        description: Path to scanner findings JSON in the workspace\n+        required: false\n+        default: .preprod/findings.json\n+        type: string\n+  workflow_call:\n+    inputs:\n+      generate_remediation:\n+        required: true\n+        type: boolean\n+      finding_report:\n+        required: true\n+        type: string\n+    secrets:\n+      ORCHESTRATOR_URL:\n+        required: true\n+      ORCHESTRATOR_TOKEN:\n+        required: false\n+\n+permissions:\n+  contents: write\n+  pull-requests: write\n+\n+jobs:\n+  remediation:\n+    if: ${{ inputs.generate_remediation || github.event.inputs.generate_remediation == 'true' }}\n+    runs-on: ubuntu-latest\n+    steps:\n+      - name: Checkout target repository\n+        uses: actions/checkout@v4\n+        with:\n+          fetch-depth: 0\n+          token: ${{ github.token }}\n+\n+      - name: Build remediation request\n+        env:\n+          REPORT: ${{ inputs.finding_report || github.event.inputs.finding_report || '.preprod/findings.json' }}\n+          GITHUB_REPOSITORY: ${{ github.repository }}\n+          GITHUB_SHA: ${{ github.sha }}\n+          GITHUB_REF_NAME: ${{ github.ref_name }}\n+        run: |\n+          if [ ! -f \"$REPORT\" ]; then\n+            echo \"Finding report not found: $REPORT\"\n+            exit 1\n+          fi\n+          python3 scripts/remediation-payload.py --input \"$REPORT\" --generate\n+\n+      - name: Request AI remediation patch\n+        id: orchestrator\n+        env:\n+          ORCHESTRATOR_URL: ${{ secrets.ORCHESTRATOR_URL }}\n+          ORCHESTRATOR_TOKEN: ${{ secrets.ORCHESTRATOR_TOKEN }}\n+          REPOSITORY: ${{ github.repository }}\n+          COMMIT_SHA: ${{ github.sha }}\n+        run: |\n+          set -euo pipefail\n+          if [ -z \"${ORCHESTRATOR_URL:-}\" ]; then\n+            echo \"ORCHESTRATOR_URL is not configured.\"\n+            exit 1\n+          fi\n+          auth=()\n+          if [ -n \"${ORCHESTRATOR_TOKEN:-}\" ]; then\n+            auth=(-H \"Authorization: Bearer ${ORCHESTRATOR_TOKEN}\")\n+          fi\n+          curl --fail-with-body -sS -X POST \\\n+            \"${ORCHESTRATOR_URL%/}/api/remediation/generate\" \\\n+            -H 'Content-Type: application/json' \\\n+            \"${auth[@]}\" \\\n+            --data-binary @.preprod/remediation-request.json \\\n+            -o .preprod/remediation-result.json\n+          python3 - <<'PY'\n+          import json\n+          from pathlib import Path\n+          p = json.loads(Path('.preprod/remediation-result.json').read_text())\n+          patch = p.get('patch')\n+          if not patch:\n+              raise SystemExit('Orchestrator returned no patch')\n+          Path('.preprod/remediation.patch').write_text(patch, encoding='utf-8')\n+          print('Received candidate remediation patch')\n+          PY\n+\n+      - name: Apply AI patch\n+        run: |\n+          git apply --check .preprod/remediation.patch\n+          git apply .preprod/remediation.patch\n+\n+      - name: Run repository tests\n+        run: |\n+          if [ -f package.json ]; then npm test --if-present; fi\n+          if [ -f pyproject.toml ] || [ -f pytest.ini ] || [ -d tests ]; then python -m pytest -q; fi\n+\n+      - name: Create remediation branch and PR\n+        env:\n+          GH_TOKEN: ${{ github.token }}\n+        run: |\n+          set -euo pipefail\n+          branch=\"security-remediation/${GITHUB_SHA::12}\"\n+          git checkout -b \"$branch\"\n+          git config user.name 'pre-prod-tester[bot]'\n+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'\n+          git add -A\n+          git commit -m 'fix: apply AI security remediation'\n+          git push --set-upstream origin \"$branch\"\n+          gh pr create \\\n+            --base \"${GITHUB_REF_NAME:-main}\" \\\n+            --head \"$branch\" \\\n+            --title 'fix: AI-generated security remediation' \\\n+            --body-file .preprod/remediation-result.json\n",
+      "hunks": [
+        {
+          "header": "@@ -0,0 +1,118 @@",
+          "old_start": 0,
+          "old_count": 0,
+          "new_start": 1,
+          "new_count": 118,
+          "lines": [
+            {
+              "type": "added",
+              "new_line": 1,
+              "content": "name: Pre-prod AI Remediation"
+            },
+            {
+              "type": "added",
+              "new_line": 2,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 3,
+              "content": "on:"
+            },
+            {
+              "type": "added",
+              "new_line": 4,
+              "content": "  workflow_dispatch:"
+            },
+            {
+              "type": "added",
+              "new_line": 5,
+              "content": "    inputs:"
+            },
+            {
+              "type": "added",
+              "new_line": 6,
+              "content": "      generate_remediation:"
+            },
+            {
+              "type": "added",
+              "new_line": 7,
+              "content": "        description: Generate an AI remediation branch and PR"
+            },
+            {
+              "type": "added",
+              "new_line": 8,
+              "content": "        required: true"
+            },
+            {
+              "type": "added",
+              "new_line": 9,
+              "content": "        default: false"
+            },
+            {
+              "type": "added",
+              "new_line": 10,
+              "content": "        type: boolean"
+            },
+            {
+              "type": "added",
+              "new_line": 11,
+              "content": "      finding_report:"
+            },
+            {
+              "type": "added",
+              "new_line": 12,
+              "content": "        description: Path to scanner findings JSON in the workspace"
+            },
+            {
+              "type": "added",
+              "new_line": 13,
+              "content": "        required: false"
+            },
+            {
+              "type": "added",
+              "new_line": 14,
+              "content": "        default: .preprod/findings.json"
+            },
+            {
+              "type": "added",
+              "new_line": 15,
+              "content": "        type: string"
+            },
+            {
+              "type": "added",
+              "new_line": 16,
+              "content": "  workflow_call:"
+            },
+            {
+              "type": "added",
+              "new_line": 17,
+              "content": "    inputs:"
+            },
+            {
+              "type": "added",
+              "new_line": 18,
+              "content": "      generate_remediation:"
+            },
+            {
+              "type": "added",
+              "new_line": 19,
+              "content": "        required: true"
+            },
+            {
+              "type": "added",
+              "new_line": 20,
+              "content": "        type: boolean"
+            },
+            {
+              "type": "added",
+              "new_line": 21,
+              "content": "      finding_report:"
+            },
+            {
+              "type": "added",
+              "new_line": 22,
+              "content": "        required: true"
+            },
+            {
+              "type": "added",
+              "new_line": 23,
+              "content": "        type: string"
+            },
+            {
+              "type": "added",
+              "new_line": 24,
+              "content": "    secrets:"
+            },
+            {
+              "type": "added",
+              "new_line": 25,
+              "content": "      ORCHESTRATOR_URL:"
+            },
+            {
+              "type": "added",
+              "new_line": 26,
+              "content": "        required: true"
+            },
+            {
+              "type": "added",
+              "new_line": 27,
+              "content": "      ORCHESTRATOR_TOKEN:"
+            },
+            {
+              "type": "added",
+              "new_line": 28,
+              "content": "        required: false"
+            },
+            {
+              "type": "added",
+              "new_line": 29,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 30,
+              "content": "permissions:"
+            },
+            {
+              "type": "added",
+              "new_line": 31,
+              "content": "  contents: write"
+            },
+            {
+              "type": "added",
+              "new_line": 32,
+              "content": "  pull-requests: write"
+            },
+            {
+              "type": "added",
+              "new_line": 33,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 34,
+              "content": "jobs:"
+            },
+            {
+              "type": "added",
+              "new_line": 35,
+              "content": "  remediation:"
+            },
+            {
+              "type": "added",
+              "new_line": 36,
+              "content": "    if: ${{ inputs.generate_remediation || github.event.inputs.generate_remediation == 'true' }}"
+            },
+            {
+              "type": "added",
+              "new_line": 37,
+              "content": "    runs-on: ubuntu-latest"
+            },
+            {
+              "type": "added",
+              "new_line": 38,
+              "content": "    steps:"
+            },
+            {
+              "type": "added",
+              "new_line": 39,
+              "content": "      - name: Checkout target repository"
+            },
+            {
+              "type": "added",
+              "new_line": 40,
+              "content": "        uses: actions/checkout@v4"
+            },
+            {
+              "type": "added",
+              "new_line": 41,
+              "content": "        with:"
+            },
+            {
+              "type": "added",
+              "new_line": 42,
+              "content": "          fetch-depth: 0"
+            },
+            {
+              "type": "added",
+              "new_line": 43,
+              "content": "          token: ${{ github.token }}"
+            },
+            {
+              "type": "added",
+              "new_line": 44,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 45,
+              "content": "      - name: Build remediation request"
+            },
+            {
+              "type": "added",
+              "new_line": 46,
+              "content": "        env:"
+            },
+            {
+              "type": "added",
+              "new_line": 47,
+              "content": "          REPORT: ${{ inputs.finding_report || github.event.inputs.finding_report || '.preprod/findings.json' }}"
+            },
+            {
+              "type": "added",
+              "new_line": 48,
+              "content": "          GITHUB_REPOSITORY: ${{ github.repository }}"
+            },
+            {
+              "type": "added",
+              "new_line": 49,
+              "content": "          GITHUB_SHA: ${{ github.sha }}"
+            },
+            {
+              "type": "added",
+              "new_line": 50,
+              "content": "          GITHUB_REF_NAME: ${{ github.ref_name }}"
+            },
+            {
+              "type": "added",
+              "new_line": 51,
+              "content": "        run: |"
+            },
+            {
+              "type": "added",
+              "new_line": 52,
+              "content": "          if [ ! -f \"$REPORT\" ]; then"
+            },
+            {
+              "type": "added",
+              "new_line": 53,
+              "content": "            echo \"Finding report not found: $REPORT\""
+            },
+            {
+              "type": "added",
+              "new_line": 54,
+              "content": "            exit 1"
+            },
+            {
+              "type": "added",
+              "new_line": 55,
+              "content": "          fi"
+            },
+            {
+              "type": "added",
+              "new_line": 56,
+              "content": "          python3 scripts/remediation-payload.py --input \"$REPORT\" --generate"
+            },
+            {
+              "type": "added",
+              "new_line": 57,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 58,
+              "content": "      - name: Request AI remediation patch"
+            },
+            {
+              "type": "added",
+              "new_line": 59,
+              "content": "        id: orchestrator"
+            },
+            {
+              "type": "added",
+              "new_line": 60,
+              "content": "        env:"
+            },
+            {
+              "type": "added",
+              "new_line": 61,
+              "content": "          ORCHESTRATOR_URL: ${{ secrets.ORCHESTRATOR_URL }}"
+            },
+            {
+              "type": "added",
+              "new_line": 62,
+              "content": "          ORCHESTRATOR_TOKEN: ${{ secrets.ORCHESTRATOR_TOKEN }}"
+            },
+            {
+              "type": "added",
+              "new_line": 63,
+              "content": "          REPOSITORY: ${{ github.repository }}"
+            },
+            {
+              "type": "added",
+              "new_line": 64,
+              "content": "          COMMIT_SHA: ${{ github.sha }}"
+            },
+            {
+              "type": "added",
+              "new_line": 65,
+              "content": "        run: |"
+            },
+            {
+              "type": "added",
+              "new_line": 66,
+              "content": "          set -euo pipefail"
+            },
+            {
+              "type": "added",
+              "new_line": 67,
+              "content": "          if [ -z \"${ORCHESTRATOR_URL:-}\" ]; then"
+            },
+            {
+              "type": "added",
+              "new_line": 68,
+              "content": "            echo \"ORCHESTRATOR_URL is not configured.\""
+            },
+            {
+              "type": "added",
+              "new_line": 69,
+              "content": "            exit 1"
+            },
+            {
+              "type": "added",
+              "new_line": 70,
+              "content": "          fi"
+            },
+            {
+              "type": "added",
+              "new_line": 71,
+              "content": "          auth=()"
+            },
+            {
+              "type": "added",
+              "new_line": 72,
+              "content": "          if [ -n \"${ORCHESTRATOR_TOKEN:-}\" ]; then"
+            },
+            {
+              "type": "added",
+              "new_line": 73,
+              "content": "            auth=(-H \"Authorization: Bearer ${ORCHESTRATOR_TOKEN}\")"
+            },
+            {
+              "type": "added",
+              "new_line": 74,
+              "content": "          fi"
+            },
+            {
+              "type": "added",
+              "new_line": 75,
+              "content": "          curl --fail-with-body -sS -X POST \\"
+            },
+            {
+              "type": "added",
+              "new_line": 76,
+              "content": "            \"${ORCHESTRATOR_URL%/}/api/remediation/generate\" \\"
+            },
+            {
+              "type": "added",
+              "new_line": 77,
+              "content": "            -H 'Content-Type: application/json' \\"
+            },
+            {
+              "type": "added",
+              "new_line": 78,
+              "content": "            \"${auth[@]}\" \\"
+            },
+            {
+              "type": "added",
+              "new_line": 79,
+              "content": "            --data-binary @.preprod/remediation-request.json \\"
+            },
+            {
+              "type": "added",
+              "new_line": 80,
+              "content": "            -o .preprod/remediation-result.json"
+            },
+            {
+              "type": "added",
+              "new_line": 81,
+              "content": "          python3 - <<'PY'"
+            },
+            {
+              "type": "added",
+              "new_line": 82,
+              "content": "          import json"
+            },
+            {
+              "type": "added",
+              "new_line": 83,
+              "content": "          from pathlib import Path"
+            },
+            {
+              "type": "added",
+              "new_line": 84,
+              "content": "          p = json.loads(Path('.preprod/remediation-result.json').read_text())"
+            },
+            {
+              "type": "added",
+              "new_line": 85,
+              "content": "          patch = p.get('patch')"
+            },
+            {
+              "type": "added",
+              "new_line": 86,
+              "content": "          if not patch:"
+            },
+            {
+              "type": "added",
+              "new_line": 87,
+              "content": "              raise SystemExit('Orchestrator returned no patch')"
+            },
+            {
+              "type": "added",
+              "new_line": 88,
+              "content": "          Path('.preprod/remediation.patch').write_text(patch, encoding='utf-8')"
+            },
+            {
+              "type": "added",
+              "new_line": 89,
+              "content": "          print('Received candidate remediation patch')"
+            },
+            {
+              "type": "added",
+              "new_line": 90,
+              "content": "          PY"
+            },
+            {
+              "type": "added",
+              "new_line": 91,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 92,
+              "content": "      - name: Apply AI patch"
+            },
+            {
+              "type": "added",
+              "new_line": 93,
+              "content": "        run: |"
+            },
+            {
+              "type": "added",
+              "new_line": 94,
+              "content": "          git apply --check .preprod/remediation.patch"
+            },
+            {
+              "type": "added",
+              "new_line": 95,
+              "content": "          git apply .preprod/remediation.patch"
+            },
+            {
+              "type": "added",
+              "new_line": 96,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 97,
+              "content": "      - name: Run repository tests"
+            },
+            {
+              "type": "added",
+              "new_line": 98,
+              "content": "        run: |"
+            },
+            {
+              "type": "added",
+              "new_line": 99,
+              "content": "          if [ -f package.json ]; then npm test --if-present; fi"
+            },
+            {
+              "type": "added",
+              "new_line": 100,
+              "content": "          if [ -f pyproject.toml ] || [ -f pytest.ini ] || [ -d tests ]; then python -m pytest -q; fi"
+            },
+            {
+              "type": "added",
+              "new_line": 101,
+              "content": ""
+            },
+            {
+              "type": "added",
+              "new_line": 102,
+              "content": "      - name: Create remediation branch and PR"
+            },
+            {
+              "type": "added",
+              "new_line": 103,
+              "content": "        env:"
+            },
+            {
+              "type": "added",
+              "new_line": 104,
+              "content": "          GH_TOKEN: ${{ github.token }}"
+            },
+            {
+              "type": "added",
+              "new_line": 105,
+              "content": "        run: |"
+            },
+            {
+              "type": "added",
+              "new_line": 106,
+              "content": "          set -euo pipefail"
+            },
+            {
+              "type": "added",
+              "new_line": 107,
+              "content": "          branch=\"security-remediation/${GITHUB_SHA::12}\""
+            },
+            {
+              "type": "added",
+              "new_line": 108,
+              "content": "          git checkout -b \"$branch\""
+            },
+            {
+              "type": "added",
+              "new_line": 109,
+              "content": "          git config user.name 'pre-prod-tester[bot]'"
+            },
+            {
+              "type": "added",
+              "new_line": 110,
+              "content": "          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'"
+            },
+            {
+              "type": "added",
+              "new_line": 111,
+              "content": "          git add -A"
+            },
+            {
+              "type": "added",
+              "new_line": 112,
+              "content": "          git commit -m 'fix: apply AI security remediation'"
+            },
+            {
+              "type": "added",
+              "new_line": 113,
+              "content": "          git push --set-upstream origin \"$branch\""
+            },
+            {
+              "type": "added",
+              "new_line": 114,
+              "content": "          gh pr create \\"
+            },
+            {
+              "type": "added",
+              "new_line": 115,
+              "content": "            --base \"${GITHUB_REF_NAME:-main}\" \\"
+            },
+            {
+              "type": "added",
+              "new_line": 116,
+              "content": "            --head \"$branch\" \\"
+            },
+            {
+              "type": "added",
+              "new_line": 117,
+              "content": "            --title 'fix: AI-generated security remediation' \\"
+            },
+            {
+              "type": "added",
+              "new_line": 118,
+              "content": "            --body-file .preprod/remediation-result.json"
+            }
+          ]
+        }
+      ],
+      "added_lines": [
+        {
+          "type": "added",
+          "new_line": 1,
+          "content": "name: Pre-prod AI Remediation"
+        },
+        {
+          "type": "added",
+          "new_line": 2,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 3,
+          "content": "on:"
+        },
+        {
+          "type": "added",
+          "new_line": 4,
+          "content": "  workflow_dispatch:"
+        },
+        {
+          "type": "added",
+          "new_line": 5,
+          "content": "    inputs:"
+        },
+        {
+          "type": "added",
+          "new_line": 6,
+          "content": "      generate_remediation:"
+        },
+        {
+          "type": "added",
+          "new_line": 7,
+          "content": "        description: Generate an AI remediation branch and PR"
+        },
+        {
+          "type": "added",
+          "new_line": 8,
+          "content": "        required: true"
+        },
+        {
+          "type": "added",
+          "new_line": 9,
+          "content": "        default: false"
+        },
+        {
+          "type": "added",
+          "new_line": 10,
+          "content": "        type: boolean"
+        },
+        {
+          "type": "added",
+          "new_line": 11,
+          "content": "      finding_report:"
+        },
+        {
+          "type": "added",
+          "new_line": 12,
+          "content": "        description: Path to scanner findings JSON in the workspace"
+        },
+        {
+          "type": "added",
+          "new_line": 13,
+          "content": "        required: false"
+        },
+        {
+          "type": "added",
+          "new_line": 14,
+          "content": "        default: .preprod/findings.json"
+        },
+        {
+          "type": "added",
+          "new_line": 15,
+          "content": "        type: string"
+        },
+        {
+          "type": "added",
+          "new_line": 16,
+          "content": "  workflow_call:"
+        },
+        {
+          "type": "added",
+          "new_line": 17,
+          "content": "    inputs:"
+        },
+        {
+          "type": "added",
+          "new_line": 18,
+          "content": "      generate_remediation:"
+        },
+        {
+          "type": "added",
+          "new_line": 19,
+          "content": "        required: true"
+        },
+        {
+          "type": "added",
+          "new_line": 20,
+          "content": "        type: boolean"
+        },
+        {
+          "type": "added",
+          "new_line": 21,
+          "content": "      finding_report:"
+        },
+        {
+          "type": "added",
+          "new_line": 22,
+          "content": "        required: true"
+        },
+        {
+          "type": "added",
+          "new_line": 23,
+          "content": "        type: string"
+        },
+        {
+          "type": "added",
+          "new_line": 24,
+          "content": "    secrets:"
+        },
+        {
+          "type": "added",
+          "new_line": 25,
+          "content": "      ORCHESTRATOR_URL:"
+        },
+        {
+          "type": "added",
+          "new_line": 26,
+          "content": "        required: true"
+        },
+        {
+          "type": "added",
+          "new_line": 27,
+          "content": "      ORCHESTRATOR_TOKEN:"
+        },
+        {
+          "type": "added",
+          "new_line": 28,
+          "content": "        required: false"
+        },
+        {
+          "type": "added",
+          "new_line": 29,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 30,
+          "content": "permissions:"
+        },
+        {
+          "type": "added",
+          "new_line": 31,
+          "content": "  contents: write"
+        },
+        {
+          "type": "added",
+          "new_line": 32,
+          "content": "  pull-requests: write"
+        },
+        {
+          "type": "added",
+          "new_line": 33,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 34,
+          "content": "jobs:"
+        },
+        {
+          "type": "added",
+          "new_line": 35,
+          "content": "  remediation:"
+        },
+        {
+          "type": "added",
+          "new_line": 36,
+          "content": "    if: ${{ inputs.generate_remediation || github.event.inputs.generate_remediation == 'true' }}"
+        },
+        {
+          "type": "added",
+          "new_line": 37,
+          "content": "    runs-on: ubuntu-latest"
+        },
+        {
+          "type": "added",
+          "new_line": 38,
+          "content": "    steps:"
+        },
+        {
+          "type": "added",
+          "new_line": 39,
+          "content": "      - name: Checkout target repository"
+        },
+        {
+          "type": "added",
+          "new_line": 40,
+          "content": "        uses: actions/checkout@v4"
+        },
+        {
+          "type": "added",
+          "new_line": 41,
+          "content": "        with:"
+        },
+        {
+          "type": "added",
+          "new_line": 42,
+          "content": "          fetch-depth: 0"
+        },
+        {
+          "type": "added",
+          "new_line": 43,
+          "content": "          token: ${{ github.token }}"
+        },
+        {
+          "type": "added",
+          "new_line": 44,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 45,
+          "content": "      - name: Build remediation request"
+        },
+        {
+          "type": "added",
+          "new_line": 46,
+          "content": "        env:"
+        },
+        {
+          "type": "added",
+          "new_line": 47,
+          "content": "          REPORT: ${{ inputs.finding_report || github.event.inputs.finding_report || '.preprod/findings.json' }}"
+        },
+        {
+          "type": "added",
+          "new_line": 48,
+          "content": "          GITHUB_REPOSITORY: ${{ github.repository }}"
+        },
+        {
+          "type": "added",
+          "new_line": 49,
+          "content": "          GITHUB_SHA: ${{ github.sha }}"
+        },
+        {
+          "type": "added",
+          "new_line": 50,
+          "content": "          GITHUB_REF_NAME: ${{ github.ref_name }}"
+        },
+        {
+          "type": "added",
+          "new_line": 51,
+          "content": "        run: |"
+        },
+        {
+          "type": "added",
+          "new_line": 52,
+          "content": "          if [ ! -f \"$REPORT\" ]; then"
+        },
+        {
+          "type": "added",
+          "new_line": 53,
+          "content": "            echo \"Finding report not found: $REPORT\""
+        },
+        {
+          "type": "added",
+          "new_line": 54,
+          "content": "            exit 1"
+        },
+        {
+          "type": "added",
+          "new_line": 55,
+          "content": "          fi"
+        },
+        {
+          "type": "added",
+          "new_line": 56,
+          "content": "          python3 scripts/remediation-payload.py --input \"$REPORT\" --generate"
+        },
+        {
+          "type": "added",
+          "new_line": 57,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 58,
+          "content": "      - name: Request AI remediation patch"
+        },
+        {
+          "type": "added",
+          "new_line": 59,
+          "content": "        id: orchestrator"
+        },
+        {
+          "type": "added",
+          "new_line": 60,
+          "content": "        env:"
+        },
+        {
+          "type": "added",
+          "new_line": 61,
+          "content": "          ORCHESTRATOR_URL: ${{ secrets.ORCHESTRATOR_URL }}"
+        },
+        {
+          "type": "added",
+          "new_line": 62,
+          "content": "          ORCHESTRATOR_TOKEN: ${{ secrets.ORCHESTRATOR_TOKEN }}"
+        },
+        {
+          "type": "added",
+          "new_line": 63,
+          "content": "          REPOSITORY: ${{ github.repository }}"
+        },
+        {
+          "type": "added",
+          "new_line": 64,
+          "content": "          COMMIT_SHA: ${{ github.sha }}"
+        },
+        {
+          "type": "added",
+          "new_line": 65,
+          "content": "        run: |"
+        },
+        {
+          "type": "added",
+          "new_line": 66,
+          "content": "          set -euo pipefail"
+        },
+        {
+          "type": "added",
+          "new_line": 67,
+          "content": "          if [ -z \"${ORCHESTRATOR_URL:-}\" ]; then"
+        },
+        {
+          "type": "added",
+          "new_line": 68,
+          "content": "            echo \"ORCHESTRATOR_URL is not configured.\""
+        },
+        {
+          "type": "added",
+          "new_line": 69,
+          "content": "            exit 1"
+        },
+        {
+          "type": "added",
+          "new_line": 70,
+          "content": "          fi"
+        },
+        {
+          "type": "added",
+          "new_line": 71,
+          "content": "          auth=()"
+        },
+        {
+          "type": "added",
+          "new_line": 72,
+          "content": "          if [ -n \"${ORCHESTRATOR_TOKEN:-}\" ]; then"
+        },
+        {
+          "type": "added",
+          "new_line": 73,
+          "content": "            auth=(-H \"Authorization: Bearer ${ORCHESTRATOR_TOKEN}\")"
+        },
+        {
+          "type": "added",
+          "new_line": 74,
+          "content": "          fi"
+        },
+        {
+          "type": "added",
+          "new_line": 75,
+          "content": "          curl --fail-with-body -sS -X POST \\"
+        },
+        {
+          "type": "added",
+          "new_line": 76,
+          "content": "            \"${ORCHESTRATOR_URL%/}/api/remediation/generate\" \\"
+        },
+        {
+          "type": "added",
+          "new_line": 77,
+          "content": "            -H 'Content-Type: application/json' \\"
+        },
+        {
+          "type": "added",
+          "new_line": 78,
+          "content": "            \"${auth[@]}\" \\"
+        },
+        {
+          "type": "added",
+          "new_line": 79,
+          "content": "            --data-binary @.preprod/remediation-request.json \\"
+        },
+        {
+          "type": "added",
+          "new_line": 80,
+          "content": "            -o .preprod/remediation-result.json"
+        },
+        {
+          "type": "added",
+          "new_line": 81,
+          "content": "          python3 - <<'PY'"
+        },
+        {
+          "type": "added",
+          "new_line": 82,
+          "content": "          import json"
+        },
+        {
+          "type": "added",
+          "new_line": 83,
+          "content": "          from pathlib import Path"
+        },
+        {
+          "type": "added",
+          "new_line": 84,
+          "content": "          p = json.loads(Path('.preprod/remediation-result.json').read_text())"
+        },
+        {
+          "type": "added",
+          "new_line": 85,
+          "content": "          patch = p.get('patch')"
+        },
+        {
+          "type": "added",
+          "new_line": 86,
+          "content": "          if not patch:"
+        },
+        {
+          "type": "added",
+          "new_line": 87,
+          "content": "              raise SystemExit('Orchestrator returned no patch')"
+        },
+        {
+          "type": "added",
+          "new_line": 88,
+          "content": "          Path('.preprod/remediation.patch').write_text(patch, encoding='utf-8')"
+        },
+        {
+          "type": "added",
+          "new_line": 89,
+          "content": "          print('Received candidate remediation patch')"
+        },
+        {
+          "type": "added",
+          "new_line": 90,
+          "content": "          PY"
+        },
+        {
+          "type": "added",
+          "new_line": 91,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 92,
+          "content": "      - name: Apply AI patch"
+        },
+        {
+          "type": "added",
+          "new_line": 93,
+          "content": "        run: |"
+        },
+        {
+          "type": "added",
+          "new_line": 94,
+          "content": "          git apply --check .preprod/remediation.patch"
+        },
+        {
+          "type": "added",
+          "new_line": 95,
+          "content": "          git apply .preprod/remediation.patch"
+        },
+        {
+          "type": "added",
+          "new_line": 96,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 97,
+          "content": "      - name: Run repository tests"
+        },
+        {
+          "type": "added",
+          "new_line": 98,
+          "content": "        run: |"
+        },
+        {
+          "type": "added",
+          "new_line": 99,
+          "content": "          if [ -f package.json ]; then npm test --if-present; fi"
+        },
+        {
+          "type": "added",
+          "new_line": 100,
+          "content": "          if [ -f pyproject.toml ] || [ -f pytest.ini ] || [ -d tests ]; then python -m pytest -q; fi"
+        },
+        {
+          "type": "added",
+          "new_line": 101,
+          "content": ""
+        },
+        {
+          "type": "added",
+          "new_line": 102,
+          "content": "      - name: Create remediation branch and PR"
+        },
+        {
+          "type": "added",
+          "new_line": 103,
+          "content": "        env:"
+        },
+        {
+          "type": "added",
+          "new_line": 104,
+          "content": "          GH_TOKEN: ${{ github.token }}"
+        },
+        {
+          "type": "added",
+          "new_line": 105,
+          "content": "        run: |"
+        },
+        {
+          "type": "added",
+          "new_line": 106,
+          "content": "          set -euo pipefail"
+        },
+        {
+          "type": "added",
+          "new_line": 107,
+          "content": "          branch=\"security-remediation/${GITHUB_SHA::12}\""
+        },
+        {
+          "type": "added",
+          "new_line": 108,
+          "content": "          git checkout -b \"$branch\""
+        },
+        {
+          "type": "added",
+          "new_line": 109,
+          "content": "          git config user.name 'pre-prod-tester[bot]'"
+        },
+        {
+          "type": "added",
+          "new_line": 110,
+          "content": "          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'"
+        },
+        {
+          "type": "added",
+          "new_line": 111,
+          "content": "          git add -A"
+        },
+        {
+          "type": "added",
+          "new_line": 112,
+          "content": "          git commit -m 'fix: apply AI security remediation'"
+        },
+        {
+          "type": "added",
+          "new_line": 113,
+          "content": "          git push --set-upstream origin \"$branch\""
+        },
+        {
+          "type": "added",
+          "new_line": 114,
+          "content": "          gh pr create \\"
+        },
+        {
+          "type": "added",
+          "new_line": 115,
+          "content": "            --base \"${GITHUB_REF_NAME:-main}\" \\"
+        },
+        {
+          "type": "added",
+          "new_line": 116,
+          "content": "            --head \"$branch\" \\"
+        },
+        {
+          "type": "added",
+          "new_line": 117,
+          "content": "            --title 'fix: AI-generated security remediation' \\"
+        },
+        {
+          "type": "added",
+          "new_line": 118,
+          "content": "            --body-file .preprod/remediation-result.json"
+        }
+      ],
+      "removed_lines": []
+    }
+  ]
+}

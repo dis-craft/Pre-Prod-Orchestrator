@@ -1,0 +1,80 @@
+{
+  "branch": "security-remediation/c4199b50c499",
+  "commit": "fa93a155ce5aeca5d41a7e33d25f3759e562e5e9",
+  "findings_count": 7,
+  "fixed_count": 3,
+  "written_files": [
+    "YML_actions\\vulnerable.js"
+  ],
+  "results": [
+    {
+      "finding_id": "e0a1d4a6-27e6-4013-a2cf-e44ccadf1d5b",
+      "status": "APPLIED",
+      "edits": [
+        {
+          "file": "vulnerable.js",
+          "start_line": 10,
+          "end_line": 10,
+          "original": "  password: \"SuperSecret123!\",",
+          "replacement": "  password: process.env.DB_PASSWORD,",
+          "explanation": "Replace hardcoded database password with an environment variable."
+        }
+      ],
+      "error": null
+    },
+    {
+      "finding_id": "eca45b69-2e70-40af-a052-057605898d73",
+      "status": "APPLIED",
+      "edits": [
+        {
+          "file": "vulnerable.js",
+          "start_line": 18,
+          "end_line": 20,
+          "original": "  const query = `SELECT * FROM users WHERE username = '${username}'`;\n\n  db.query(query, (err, results) => {",
+          "replacement": "  const query = \"SELECT * FROM users WHERE username = ?\";\n\n  db.query(query, [username], (err, results) => {",
+          "explanation": "Use a parameterized query to prevent SQL injection."
+        }
+      ],
+      "error": null
+    },
+    {
+      "finding_id": "b45ba64c-d7a1-46e7-b695-7b2e4449e20b",
+      "status": "APPLIED",
+      "edits": [
+        {
+          "file": "vulnerable.js",
+          "start_line": 18,
+          "end_line": 20,
+          "original": "  const query = \"SELECT * FROM users WHERE username = ?\";\n\n  db.query(query, [username], (err, results) => {",
+          "replacement": "  db.query(\"SELECT * FROM users WHERE username = ?\", [username], (err, results) => {",
+          "explanation": "Pass query string literal directly into parameterized db.query call to resolve unsafe dynamic query warning."
+        }
+      ],
+      "error": null
+    },
+    {
+      "finding_id": "8717b066-bbc6-40ab-a00f-da0c9a4ac23f",
+      "status": "FAILED",
+      "edits": [],
+      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+    },
+    {
+      "finding_id": "eb295d98-f70e-4819-aa40-fc1189debe62",
+      "status": "FAILED",
+      "edits": [],
+      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+    },
+    {
+      "finding_id": "3ad58d45-5574-463d-8730-e09ee087e1d7",
+      "status": "FAILED",
+      "edits": [],
+      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+    },
+    {
+      "finding_id": "a9f7f71f-a4fa-4775-a95c-7833694f7870",
+      "status": "FAILED",
+      "edits": [],
+      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash\\nPlease retry in 22.350656847s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '22s'}]}}"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+name: Capture Changes and Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'data/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  capture-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Capture exact push diff
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: python3 scripts/capture-diff.py
+
+      - name: Persist generated scan data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/latest.json data/index.json data/scans/
+          if git diff --cached --quiet; then
+            echo "No generated data changes to commit."
+          else
+            git commit -m "chore: publish scan data [skip ci]"
+            git push origin HEAD:"$GITHUB_REF_NAME"
+          fi
+
+      - name: Build isolated Pages site
+        run: |
+          rm -rf .pages
+          mkdir -p .pages/data/scans
+          cp index.html .pages/index.html
+          cp data/latest.json .pages/data/latest.json
+          cp data/index.json .pages/data/index.json
+          cp -R data/scans/. .pages/data/scans/
+
+          cat > .pages/deployment.json <<EOF
+          {
+            "deployed_commit": "${{ github.sha }}",
+            "deployed_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "workflow_run": "${{ github.run_id }}"
+          }
+          EOF
+
+          echo "Pages payload:"
+          find .pages -type f -maxdepth 4 -print
+          echo "Latest scan:"
+          python3 -m json.tool .pages/data/latest.json | head -80
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

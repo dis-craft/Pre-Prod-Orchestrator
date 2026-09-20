@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang='en'><head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>AI Security Remediation Report</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 30px; color: #1f2328; background: #f6f8fa; line-height: 1.5; }
+.container { max-width: 1400px; margin: 0 auto; background: #ffffff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); overflow: hidden; border: 1px solid #d0d7de; }
+.header { background: linear-gradient(135deg, #0f172a, #1e293b); color: #ffffff; padding: 28px 32px; border-bottom: 1px solid #334155; }
+.header h1 { margin: 0 0 8px 0; font-size: 1.75rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.header .meta { color: #94a3b8; font-size: 0.9rem; display: flex; gap: 20px; flex-wrap: wrap; }
+.content { padding: 32px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: center; }
+.stat-card .num { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+.stat-card .label { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 600; }
+.table-wrapper { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 28px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; text-align: left; }
+th { background: #f1f5f9; color: #334155; font-weight: 600; padding: 14px 16px; border-bottom: 2px solid #cbd5e1; white-space: nowrap; }
+td { padding: 14px 16px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+tr:nth-child(even) { background-color: #fafafa; }
+tr:hover { background-color: #f8fafc; }
+.badge { padding: 4px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; color: #ffffff; display: inline-block; }
+.badge-critical { background-color: #dc2626; }
+.badge-high { background-color: #ea580c; }
+.badge-medium { background-color: #d97706; }
+.badge-low { background-color: #2563eb; }
+.badge-info { background-color: #64748b; }
+.badge-success { background-color: #16a34a; }
+.badge-danger { background-color: #dc2626; }
+.diff-box { background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.85rem; overflow-x: auto; line-height: 1.6; margin-top: 10px; }
+.diff-del { color: #f87171; background: rgba(239, 68, 68, 0.15); display: block; padding: 0 4px; }
+.diff-add { color: #4ade80; background: rgba(34, 197, 94, 0.15); display: block; padding: 0 4px; }
+.card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #ffffff; }
+.card h3 { margin: 0 0 10px 0; font-size: 1.1rem; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+.alert-box { background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 14px 18px; border-radius: 6px; margin-top: 24px; font-size: 0.9rem; }
+</style></head><body>
+<div class='container'>
+<div class='header'>
+<h1>🛡️ AI Security Remediation Report</h1>
+<div class='meta'>
+<span>📅 Generated: 2026-09-19 20:00:13 UTC</span>
+<span>🌿 Branch: <code>security-remediation/c4199b50c499</code></span>
+<span>📌 Commit: <code>fa93a155ce5a</code></span>
+</div></div>
+<div class='content'>
+<div class='stats-grid'>
+<div class='stat-card'><div class='num' style='color:#0f172a;'>3</div><div class='label'>Total Scanned</div></div>
+<div class='stat-card'><div class='num' style='color:#16a34a;'>3</div><div class='label'>Fixed & Applied</div></div>
+<div class='stat-card'><div class='num' style='color:#dc2626;'>4</div><div class='label'>Failed / Quota</div></div>
+<div class='stat-card'><div class='num' style='color:#64748b;'>0</div><div class='label'>Skipped</div></div>
+</div>
+<h2>✅ Applied Remediations</h2>
+<div class='table-wrapper'><table>
+<thead><tr><th>Rule</th><th>File</th><th>Lines</th><th>CWE</th><th>Severity</th><th>Fix Summary</th></tr></thead><tbody>
+<tr>
+<td><code>SEC-PASSWORD</code></td>
+<td><code>vulnerable.js</code></td>
+<td>L10-10</td>
+<td>CWE-?</td>
+<td><span class='badge badge-high'>HIGH</span></td>
+<td>Replace hardcoded database password with an environment variable.</td>
+</tr>
+<tr>
+<td><code>INJ-SQL-JS</code></td>
+<td><code>vulnerable.js</code></td>
+<td>L18-20</td>
+<td>CWE-?</td>
+<td><span class='badge badge-critical'>CRITICAL</span></td>
+<td>Use a parameterized query to prevent SQL injection.</td>
+</tr>
+<tr>
+<td><code>INJ-SQL-JS</code></td>
+<td><code>vulnerable.js</code></td>
+<td>L18-20</td>
+<td>CWE-?</td>
+<td><span class='badge badge-critical'>CRITICAL</span></td>
+<td>Pass query string literal directly into parameterized db.query call to resolve unsafe dynamic query warning.</td>
+</tr>
+</tbody></table></div>
+<h2>📝 Code Diff Details</h2>
+<div class='card'>
+<h3><code>SEC-PASSWORD</code> in <code>vulnerable.js:10</code></h3>
+<p style='color:#475569;'>Hardcoded database credentials.</p>
+<strong><code>vulnerable.js</code> (Lines 10 - 10):</strong>
+<div class='diff-box'>
+<span class='diff-del'>-   password: &quot;SuperSecret123!&quot;,</span>
+<span class='diff-add'>+   password: process.env.DB_PASSWORD,</span>
+</div>
+</div>
+<div class='card'>
+<h3><code>INJ-SQL-JS</code> in <code>vulnerable.js:18</code></h3>
+<p style='color:#475569;'>Unsafe SQL concatenation.</p>
+<strong><code>vulnerable.js</code> (Lines 18 - 20):</strong>
+<div class='diff-box'>
+<span class='diff-del'>-   const query = `SELECT * FROM users WHERE username = &#x27;${username}&#x27;`;</span>
+<span class='diff-del'>- </span>
+<span class='diff-del'>-   db.query(query, (err, results) =&gt; {</span>
+<span class='diff-add'>+   const query = &quot;SELECT * FROM users WHERE username = ?&quot;;</span>
+<span class='diff-add'>+ </span>
+<span class='diff-add'>+   db.query(query, [username], (err, results) =&gt; {</span>
+</div>
+</div>
+<div class='card'>
+<h3><code>INJ-SQL-JS</code> in <code>vulnerable.js:20</code></h3>
+<p style='color:#475569;'>Unsafe SQL query execution.</p>
+<strong><code>vulnerable.js</code> (Lines 18 - 20):</strong>
+<div class='diff-box'>
+<span class='diff-del'>-   const query = &quot;SELECT * FROM users WHERE username = ?&quot;;</span>
+<span class='diff-del'>- </span>
+<span class='diff-del'>-   db.query(query, [username], (err, results) =&gt; {</span>
+<span class='diff-add'>+   db.query(&quot;SELECT * FROM users WHERE username = ?&quot;, [username], (err, results) =&gt; {</span>
+</div>
+</div>
+<h2>❌ Failed Fixes</h2><div class='table-wrapper'><table>
+<thead><tr><th>Finding ID</th><th>Reason</th></tr></thead><tbody>
+<tr><td><code>8717b066-bbc6-40ab-a00f-da0c9a4ac23f</code></td><td>503 UNAVAILABLE. {&#x27;error&#x27;: {&#x27;code&#x27;: 503, &#x27;message&#x27;: &#x27;This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.&#x27;, &#x27;status&#x27;: &#x27;UNAVAILABLE&#x27;}}</td></tr>
+<tr><td><code>eb295d98-f70e-4819-aa40-fc1189debe62</code></td><td>503 UNAVAILABLE. {&#x27;error&#x27;: {&#x27;code&#x27;: 503, &#x27;message&#x27;: &#x27;This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.&#x27;, &#x27;status&#x27;: &#x27;UNAVAILABLE&#x27;}}</td></tr>
+<tr><td><code>3ad58d45-5574-463d-8730-e09ee087e1d7</code></td><td>503 UNAVAILABLE. {&#x27;error&#x27;: {&#x27;code&#x27;: 503, &#x27;message&#x27;: &#x27;This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.&#x27;, &#x27;status&#x27;: &#x27;UNAVAILABLE&#x27;}}</td></tr>
+<tr><td><code>a9f7f71f-a4fa-4775-a95c-7833694f7870</code></td><td>429 RESOURCE_EXHAUSTED. {&#x27;error&#x27;: {&#x27;code&#x27;: 429, &#x27;message&#x27;: &#x27;You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash\nPlease retry in 22.350656847s.&#x27;, &#x27;status&#x27;: &#x27;RESOURCE_EXHAUSTED&#x27;, &#x27;details&#x27;: [{&#x27;@type&#x27;: &#x27;type.googleapis.com/google.rpc.Help&#x27;, &#x27;links&#x27;: [{&#x27;description&#x27;: &#x27;Learn more about Gemini API quotas&#x27;, &#x27;url&#x27;: &#x27;https://ai.google.dev/gemini-api/docs/rate-limits&#x27;}]}, {&#x27;@type&#x27;: &#x27;type.googleapis.com/google.rpc.QuotaFailure&#x27;, &#x27;violations&#x27;: [{&#x27;quotaMetric&#x27;: &#x27;generativelanguage.googleapis.com/generate_content_free_tier_requests&#x27;, &#x27;quotaId&#x27;: &#x27;GenerateRequestsPerMinutePerProjectPerModel-FreeTier&#x27;, &#x27;quotaDimensions&#x27;: {&#x27;location&#x27;: &#x27;global&#x27;, &#x27;model&#x27;: &#x27;gemini-3.6-flash&#x27;}, &#x27;quotaValue&#x27;: &#x27;5&#x27;}]}, {&#x27;@type&#x27;: &#x27;type.googleapis.com/google.rpc.RetryInfo&#x27;, &#x27;retryDelay&#x27;: &#x27;22s&#x27;}]}}</td></tr>
+</tbody></table></div>
+<div class='alert-box'>⚠️ <strong>Human Review Required:</strong> These fixes were generated by AI and verified syntactically. Please review and run repository tests before merging.</div>
+</div></div></body></html>
