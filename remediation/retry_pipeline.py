@@ -8,12 +8,12 @@ def rescan(repo):
  out=Path(tempfile.mkdtemp(prefix='preprod-rescan-'))
  try:
   r=subprocess.run([sys.executable,'-m','scanner','--repo',str(repo),'--model','none','--format','json','--output',str(out),'--quiet'],cwd=repo,text=True,capture_output=True)
-  if r.returncode>1: return False,'scanner-error'
+  if r.returncode>1: return {'error': 'scanner-error', 'stderr': r.stderr[-4000:]}
   p=out/'findings.json'
-  if not p.exists(): return False,'no-report'
+  if not p.exists(): return {'error': 'no-report'}
   d=json.loads(p.read_text()); xs=d.get('findings',d) if isinstance(d,dict) else d
   blocking=[x for x in xs if str(x.get('severity','')).upper() in ('HIGH','CRITICAL')]
-  return blocking
+  return {'findings': blocking}
  finally: shutil.rmtree(out,ignore_errors=True)
 
 def main():
@@ -43,10 +43,17 @@ def main():
    attempts.append({'provider':provider,'model':model,'attempt':n,'status':'APPLIED' if fixed else 'FAILED','error':r.stderr[-2000:] if r.returncode not in (0,2) else ''})
    if fixed:
     remaining=rescan(repo)
-    base_keys={(str(x.get('rule','')),str(x.get('file',''))) for x in fs}
-    unresolved=[x for x in remaining if (str(x.get('rule','')),str(x.get('file',''))) in base_keys]
-    new_findings=[x for x in remaining if (str(x.get('rule','')),str(x.get('file',''))) not in base_keys]
-    passed=(not unresolved and not new_findings)
+    if remaining.get('error'):
+     passed=False
+     unresolved=[]
+     new_findings=[]
+     attempts[-1]['rescan_error']=remaining
+    else:
+     remaining_findings=remaining.get('findings', [])
+     base_keys={(str(x.get('rule','')),str(x.get('file',''))) for x in fs}
+     unresolved=[x for x in remaining_findings if (str(x.get('rule','')),str(x.get('file',''))) in base_keys]
+     new_findings=[x for x in remaining_findings if (str(x.get('rule','')),str(x.get('file',''))) not in base_keys]
+     passed=(not unresolved and not new_findings)
     files=subprocess.check_output(['git','diff','--name-only',base],cwd=repo,text=True).splitlines()
     sandbox=sandbox_validate(str(repo),files)
     attempts[-1]['sandbox']=sandbox
