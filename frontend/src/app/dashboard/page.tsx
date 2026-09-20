@@ -106,8 +106,8 @@ export default function DashboardPage() {
   const latestFindingExplanation = latestFinding?.message || latestFinding?.evidence?.explanation || 'No security finding reported.';
   const remediationState = scanFailed ? 'NOT VERIFIED — awaiting AI remediation result' : 'NOT REQUIRED';
   const reviewState = scanFailed ? 'NOT CREATED — fix must validate first' : 'NOT REQUIRED';
-  const latestPR = pullRequests.find((pr) => pr.status === 'OPEN' || pr.status === 'MERGED');
-  const mergeState = latestPR?.status === 'MERGED' ? 'MERGED' : scanFailed ? 'BLOCKED' : 'READY';
+  const latestPR = pullRequests.find((pr) => pr.branch.startsWith('security-remediation/'));
+  const mergeState = latestPR?.status === 'MERGED' ? 'MERGED' : latestPR ? 'AWAITING REVIEW' : scanFailed ? 'BLOCKED' : 'READY';
   const aiFixState = scanFailed && latestPR ? 'FIX GENERATED — REVIEW PR' : scanFailed ? 'FIX REQUIRED — NOT VERIFIED' : 'NOT REQUIRED';
   const reviewStateLive = latestPR ? `PR #${latestPR.number} — ${latestPR.status}` : scanFailed ? 'PR NOT CREATED YET' : 'READY';
 
