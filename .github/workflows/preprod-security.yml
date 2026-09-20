@@ -16,6 +16,8 @@ on:
     secrets:
       GEMINI_API_KEY:
         required: false
+      XAI_API_KEY:
+        required: false
     outputs:
       findings:
         description: Baseline findings JSON.
@@ -23,10 +25,6 @@ on:
       remediation:
         description: Remediation result JSON.
         value: ${{ jobs.security.outputs.remediation }}
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
   security:
