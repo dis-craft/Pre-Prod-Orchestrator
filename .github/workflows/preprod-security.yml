@@ -14,17 +14,17 @@ on:
         type: string
         default: ""
       fallback-model:
-        description: xAI fallback model.
+        description: Secondary Gemini model.
         required: false
         type: string
-        default: grok-4.6
+        default: gemini-2.5-flash
       primary-attempts:
-        description: Primary remediation attempts.
+        description: Primary Gemini model attempts.
         required: false
         type: string
         default: "3"
       fallback-attempts:
-        description: Fallback remediation attempts.
+        description: Secondary Gemini model attempts.
         required: false
         type: string
         default: "2"
@@ -35,8 +35,6 @@ on:
         default: false
     secrets:
       GEMINI_API_KEY:
-        required: false
-      XAI_API_KEY:
         required: false
     outputs:
       findings:
@@ -54,7 +52,6 @@ jobs:
       remediation: ${{ steps.engine.outputs.remediation }}
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
     steps:
       - name: Checkout caller repository
         uses: actions/checkout@v6
