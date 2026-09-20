@@ -20,22 +20,69 @@ export default function DashboardPage() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [findings, setFindings] = useState<Finding[]>([]);
   const [activities, setActivities] = useState<AuditEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchData = async () => {
-      const [m, f, a] = await Promise.all([
-        orchestratorService.getMetrics(),
-        orchestratorService.getFindings(),
-        orchestratorService.getAuditEvents(),
-      ]);
-      setMetrics(m);
-      setFindings(f);
-      setActivities(a);
+      try {
+        setError(null);
+        const [m, f, a] = await Promise.all([
+          orchestratorService.getMetrics(),
+          orchestratorService.getFindings(),
+          orchestratorService.getAuditEvents(),
+        ]);
+        if (cancelled) return;
+        setMetrics(m);
+        setFindings(f);
+        setActivities(a);
+      } catch (err) {
+        if (cancelled) return;
+        const message = err instanceof Error ? err.message : 'Unable to load live security data.';
+        setError(message);
+        console.error('Dashboard data load failed:', err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     };
 
     fetchData();
-    return orchestratorService.subscribe(fetchData);
+    const unsubscribe = orchestratorService.subscribe(fetchData);
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, []);
+
+  if (loading && !metrics) {
+    return (
+      <AppShell>
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="text-center font-mono text-xs text-gray-400">
+            Loading live security dashboard…
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (error && !metrics) {
+    return (
+      <AppShell>
+        <div className="min-h-[60vh] flex items-center justify-center p-6">
+          <div className="max-w-2xl w-full bg-[#161b22] border border-red-900/60 rounded p-5">
+            <h1 className="text-sm font-semibold text-red-300">Dashboard data unavailable</h1>
+            <p className="text-xs text-gray-400 mt-2 font-mono break-words">{error}</p>
+            <p className="text-[11px] text-gray-500 mt-3">
+              Check the Vercel environment variables and the published Pre-Prod Tester scan URL.
+            </p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   if (!metrics) return null;
 
