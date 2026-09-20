@@ -1,7 +1,19 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse,json,os,subprocess,sys
+import argparse,json,os,subprocess,sys,tempfile,shutil
 from pathlib import Path
+
+def rescan(repo):
+ out=Path(tempfile.mkdtemp(prefix='preprod-rescan-'))
+ try:
+  r=subprocess.run([sys.executable,'-m','scanner','--repo',str(repo),'--model','none','--format','json','--output',str(out),'--quiet'],cwd=repo,text=True,capture_output=True)
+  if r.returncode>1: return False,'scanner-error'
+  p=out/'findings.json'
+  if not p.exists(): return False,'no-report'
+  d=json.loads(p.read_text()); xs=d.get('findings',d) if isinstance(d,dict) else d
+  blocking=[x for x in xs if str(x.get('severity','')).upper() in ('HIGH','CRITICAL')]
+  return len(blocking)==0,blocking
+ finally: shutil.rmtree(out,ignore_errors=True)
 
 def main():
  p=argparse.ArgumentParser()
@@ -28,7 +40,11 @@ def main():
     except Exception: pass
    attempts.append({'provider':provider,'model':model,'attempt':n,'status':'APPLIED' if fixed else 'FAILED','error':r.stderr[-2000:] if r.returncode not in (0,2) else ''})
    if fixed:
-    success=True; break
+    passed,remaining=rescan(repo)
+    attempts[-1]['rescan_passed']=passed
+    attempts[-1]['remaining']=remaining if isinstance(remaining,list) else []
+    if passed:
+     success=True; break
   if success: break
  if not success: subprocess.run(['git','reset','--hard',base],cwd=repo,check=True); subprocess.run(['git','clean','-fd','-e','.preprod','-e','data'],cwd=repo,check=True)
  result={'status':'APPLIED' if success else 'FAILED','findings':len(fs),'fixed':len(fs) if success else 0,'source_commit':base,'attempts':attempts}
