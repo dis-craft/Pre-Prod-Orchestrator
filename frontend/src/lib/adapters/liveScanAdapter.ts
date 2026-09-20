@@ -153,10 +153,10 @@ class LiveScanAdapter implements IOrchestratorAdapter {
   async getValidationById(_id: string): Promise<Validation | undefined> { return undefined; }
   async getPullRequests(): Promise<PullRequest[]> { return []; }
   async getPullRequestById(_id: string): Promise<PullRequest | undefined> { return undefined; }
-  async startRemediation(): Promise<Remediation> {
+  async startRemediation(_findingId: string): Promise<Remediation> {
     throw new Error('Remediation is executed by the GitHub Actions pipeline. Run Pre-Prod Full Security Pipeline with generate_remediation=true.');
   }
-  async runValidation(): Promise<Validation> {
+  async runValidation(_validationId: string, _onStepUpdate?: (stepId: string, status: string) => void): Promise<Validation> {
     throw new Error('Validation is executed by the GitHub Actions pipeline.');
   }
   async resetState(): Promise<void> {}
