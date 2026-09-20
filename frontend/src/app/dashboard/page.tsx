@@ -8,11 +8,17 @@ import { StatusBadge } from '../../components/ui/StatusBadge';
 import { orchestratorService } from '../../lib/services/orchestrator';
 import { DashboardMetrics, Finding, AuditEvent } from '../../lib/types';
 import { useAppMode } from '../../lib/mode/modeContext';
-import { 
-  Activity, 
+import {
+  Activity,
   ArrowRight,
   FileCode,
-  ShieldCheck
+  ShieldCheck,
+  GitPullRequest,
+  GitCommit,
+  Building2,
+  Bot,
+  CheckCircle2,
+  Clock3,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -85,6 +91,13 @@ export default function DashboardPage() {
   }
 
   if (!metrics) return null;
+
+  const latestFinding = findings[0];
+  const latestRepo = latestFinding?.repository || activities[0]?.evidence?.repository || 'dis-craft/Pre-prod-tester';
+  const latestCommit = activities[0]?.evidence?.commit || latestFinding?.commitSha || '';
+  const latestWorkflow = activities[0]?.evidence?.workflowUrl || '';
+  const scanFailed = findings.some((f) => ['CRITICAL', 'HIGH'].includes(f.severity));
+  const pipelineState = scanFailed ? 'FIX REQUIRED' : 'SECURITY CHECK PASSED';
 
   return (
     <AppShell>
@@ -197,24 +210,77 @@ export default function DashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-[#161b22] border border-[#30363d] rounded p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-900/50 shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="font-semibold text-gray-100 font-sans text-sm">Security Pipeline Operational</h2>
-                <p className="text-gray-400 font-mono text-[11px] mt-0.5">
-                  Monitored repositories: 3 • Active SAST rulesets: 142 • Compliance status: PASSING
-                </p>
+          <div className="space-y-3">
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-3.5 sm:p-4">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded bg-blue-950/40 text-blue-400 border border-blue-900/50 shrink-0">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase font-mono text-gray-500">Monitored Company / Repository</div>
+                    <h2 className="font-semibold text-gray-100 font-sans text-sm mt-0.5">{latestRepo}</h2>
+                    <p className="text-gray-400 font-mono text-[11px] mt-0.5">
+                      Latest change: {latestCommit ? latestCommit.slice(0, 12) : 'waiting for scan'} • {metrics.openFindings} open finding(s)
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] font-mono">
+                  <span className={`px-2 py-1 rounded border ${scanFailed ? 'text-red-300 border-red-900/60 bg-red-950/20' : 'text-emerald-300 border-emerald-900/60 bg-emerald-950/20'}`}>
+                    {pipelineState}
+                  </span>
+                  {latestWorkflow && (
+                    <a href={latestWorkflow} target="_blank" rel="noreferrer" className="px-2 py-1 rounded border border-[#30363d] text-gray-300 hover:bg-[#21262d]">
+                      Actions
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
-            <Link
-              href="/repositories"
-              className="px-3 py-1.5 rounded bg-[#0d1117] hover:bg-[#21262d] text-gray-300 border border-[#30363d] font-mono text-xs transition-colors shrink-0 self-start sm:self-auto"
-            >
-              Manage Monitored Repos
-            </Link>
+
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-3.5 sm:p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <GitCommit className="w-4 h-4 text-gray-400" />
+                <h2 className="text-sm font-semibold text-gray-200">Push → Detect → Fix → Review → Merge</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+                <Stage icon={<GitCommit className="w-4 h-4" />} title="1. CHANGE" text={latestCommit ? 'Captured' : 'Waiting'} done={Boolean(latestCommit)} />
+                <Stage icon={<ShieldCheck className="w-4 h-4" />} title="2. SECURITY" text={scanFailed ? `${findings.length} finding(s)` : 'Passed'} done={!scanFailed} />
+                <Stage icon={<Bot className="w-4 h-4" />} title="3. AI FIX" text={scanFailed ? 'Remediation triggered' : 'Not required'} done={!scanFailed} />
+                <Stage icon={<GitPullRequest className="w-4 h-4" />} title="4. REVIEW" text={scanFailed ? 'PR review required' : 'Ready'} done={!scanFailed} />
+                <Stage icon={<CheckCircle2 className="w-4 h-4" />} title="5. MERGE" text={scanFailed ? 'Blocked until clean' : 'Ready'} done={!scanFailed} />
+              </div>
+            </div>
+
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-3.5 sm:p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Clock3 className="w-4 h-4 text-gray-400" />
+                <h2 className="text-sm font-semibold text-gray-200">Latest Change Details</h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-[11px]">
+                <Detail label="FILES" value={String((activities[0]?.evidence?.filesChanged ?? metrics.openFindings) || 0)} />
+                <Detail label="FINDINGS" value={String(findings.length)} />
+                <Detail label="CRITICAL" value={String(metrics.criticalCount)} />
+                <Detail label="STATUS" value={pipelineState} />
+              </div>
+            </div>
+
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-900/50 shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="font-semibold text-gray-100 font-sans text-sm">Security Pipeline Connected</h2>
+                  <p className="text-gray-400 font-mono text-[11px] mt-0.5">
+                    Pushes are scanned; findings can trigger AI remediation and a review PR before merge.
+                  </p>
+                </div>
+              </div>
+              <Link href="/repositories" className="px-3 py-1.5 rounded bg-[#0d1117] hover:bg-[#21262d] text-gray-300 border border-[#30363d] font-mono text-xs transition-colors shrink-0">
+                Monitored Repository
+              </Link>
+            </div>
           </div>
         )}
 
@@ -304,5 +370,24 @@ export default function DashboardPage() {
         </div>
       </div>
     </AppShell>
+  );
+}
+
+
+function Stage({ icon, title, text, done }: { icon: React.ReactNode; title: string; text: string; done: boolean }) {
+  return (
+    <div className="bg-[#0d1117] p-2.5 rounded border border-[#30363d]">
+      <div className="flex items-center gap-1.5 text-[10px] text-gray-500">{icon}{title}</div>
+      <div className={`font-semibold text-xs mt-1 ${done ? 'text-emerald-400' : 'text-amber-400'}`}>{text}</div>
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-[#0d1117] border border-[#30363d] rounded p-2.5">
+      <div className="text-[10px] text-gray-500">{label}</div>
+      <div className="text-gray-200 mt-1 break-words">{value}</div>
+    </div>
   );
 }
