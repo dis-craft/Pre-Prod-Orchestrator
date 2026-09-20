@@ -11,6 +11,7 @@ import logging
 import os
 import re
 import textwrap
+import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Optional
@@ -436,58 +437,6 @@ class RemediationAgent:
                     raise
                 time.sleep(2 ** (attempt - 1))
         raise RuntimeError(f"Gemini failed: {last_error}")
-
-    def _call_xai(self, prompt: str) -> str:
-        """Call xAI's OpenAI-compatible chat-completions API."""
-        import urllib.error
-        import urllib.request
-
-        api_key = os.environ.get("XAI_API_KEY", "")
-        if not api_key:
-            raise RuntimeError("XAI_API_KEY is required for the xAI fallback")
-
-        payload = json.dumps({
-            "model": self.model_name,
-            "messages": [
-                {"role": "system", "content": _SYSTEM_PROMPT},
-                {"role": "user", "content": prompt},
-            ],
-            "temperature": 0.1,
-            "max_tokens": 4096,
-        }).encode("utf-8")
-
-        attempts = max(1, int(os.environ.get("XAI_RETRY_ATTEMPTS", "3")))
-        for attempt in range(1, attempts + 1):
-            request = urllib.request.Request(
-                "https://api.x.ai/v1/chat/completions",
-                data=payload,
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                },
-                method="POST",
-            )
-            try:
-                with urllib.request.urlopen(request, timeout=90) as response:
-                    data = json.loads(response.read().decode("utf-8"))
-                content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
-                if isinstance(content, list):
-                    content = "".join(
-                        item.get("text", "") if isinstance(item, dict) else str(item)
-                        for item in content
-                    )
-                return content or ""
-            except urllib.error.HTTPError as exc:
-                detail = exc.read().decode("utf-8", errors="replace")
-                if exc.code not in {429, 500, 502, 503, 504} or attempt == attempts:
-                    raise RuntimeError(f"xAI HTTP {exc.code}: {detail[:500]}") from exc
-                time.sleep(2 ** (attempt - 1))
-            except (urllib.error.URLError, TimeoutError) as exc:
-                if attempt == attempts:
-                    raise RuntimeError(f"xAI request failed: {exc}") from exc
-                time.sleep(2 ** (attempt - 1))
-
-        raise RuntimeError("xAI request exhausted")
 
     # ------------------------------------------------------------------
     # Parse LLM response
