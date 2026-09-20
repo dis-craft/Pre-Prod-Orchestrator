@@ -10,6 +10,7 @@ import {
 import { IOrchestratorAdapter } from '../adapters/adapterInterface';
 import { demoAdapter } from '../adapters/demoAdapter';
 import { apiAdapter } from '../adapters/apiAdapter';
+import { liveScanAdapter } from '../adapters/liveScanAdapter';
 
 export type AppMode = 'normal' | 'demo';
 
@@ -73,7 +74,10 @@ export class OrchestratorService implements IOrchestratorService {
   }
 
   private get activeAdapter(): IOrchestratorAdapter {
-    return this.mode === 'demo' ? demoAdapter : apiAdapter;
+    if (this.mode === 'demo') return demoAdapter;
+    // When no backend URL is configured, consume the published Pre-Prod Tester
+    // scan directly. If an API URL is configured, keep the full backend adapter.
+    return process.env.NEXT_PUBLIC_API_URL ? apiAdapter : liveScanAdapter;
   }
 
   public async getMetrics(): Promise<DashboardMetrics> {
