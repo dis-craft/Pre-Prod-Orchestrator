@@ -62,3 +62,6 @@ PR → detect changes → scan → normalize finding → classify
 - Treat scanner findings as detection signals; treat tests and re-scan as verification.
 - Minimize LLM context to relevant code.
 - Never commit secrets or model/API credentials.
+
+
+
