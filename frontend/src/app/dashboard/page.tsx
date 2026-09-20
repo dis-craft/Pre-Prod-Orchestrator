@@ -99,6 +99,10 @@ export default function DashboardPage() {
   const latestWorkflow = String(evidence.workflowUrl || '');
   const scanFailed = findings.some((f) => ['CRITICAL', 'HIGH'].includes(f.severity));
   const pipelineState = scanFailed ? 'FIX REQUIRED' : 'SECURITY CHECK PASSED';
+  const latestFindingExplanation = latestFinding?.message || latestFinding?.evidence?.explanation || 'No security finding reported.';
+  const remediationState = scanFailed ? 'NOT VERIFIED — awaiting AI remediation result' : 'NOT REQUIRED';
+  const reviewState = scanFailed ? 'NOT CREATED — fix must validate first' : 'NOT REQUIRED';
+  const mergeState = scanFailed ? 'BLOCKED' : 'READY';
 
   return (
     <AppShell>
@@ -247,8 +251,8 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
                 <Stage icon={<GitCommit className="w-4 h-4" />} title="1. CHANGE" text={latestCommit ? 'Captured' : 'Waiting'} done={Boolean(latestCommit)} />
                 <Stage icon={<ShieldCheck className="w-4 h-4" />} title="2. SECURITY" text={scanFailed ? `${findings.length} finding(s)` : 'Passed'} done={!scanFailed} />
-                <Stage icon={<Bot className="w-4 h-4" />} title="3. AI FIX" text={scanFailed ? 'Remediation triggered' : 'Not required'} done={!scanFailed} />
-                <Stage icon={<GitPullRequest className="w-4 h-4" />} title="4. REVIEW" text={scanFailed ? 'PR review required' : 'Ready'} done={!scanFailed} />
+                <Stage icon={<Bot className="w-4 h-4" />} title="3. AI FIX" text={scanFailed ? 'Fix required — not yet verified' : 'Not required'} done={!scanFailed} />
+                <Stage icon={<GitPullRequest className="w-4 h-4" />} title="4. REVIEW" text={scanFailed ? 'PR not created yet' : 'Ready'} done={!scanFailed} />
                 <Stage icon={<CheckCircle2 className="w-4 h-4" />} title="5. MERGE" text={scanFailed ? 'Blocked until clean' : 'Ready'} done={!scanFailed} />
               </div>
             </div>
@@ -263,6 +267,12 @@ export default function DashboardPage() {
                 <Detail label="FINDINGS" value={String(findings.length)} />
                 <Detail label="CRITICAL" value={String(metrics.criticalCount)} />
                 <Detail label="STATUS" value={pipelineState} />
+              </div>
+              <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Detail label="WHAT HAPPENED" value={latestFindingExplanation} />
+                <Detail label="AI REMEDIATION" value={remediationState} />
+                <Detail label="REVIEW PR" value={reviewState} />
+                <Detail label="MERGE" value={mergeState} />
               </div>
             </div>
 
