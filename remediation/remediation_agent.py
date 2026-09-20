@@ -111,6 +111,11 @@ _USER_PROMPT_TEMPLATE = textwrap.dedent("""\
 
 ---
 
+## Repository Context
+{repo_context}
+
+---
+
 ## Source Code (with line numbers)
 
 File: `{file}`
@@ -208,7 +213,8 @@ class RemediationAgent:
         )
 
         # 3. Build prompt
-        prompt = self._build_prompt(finding, context)
+        repo_context = self._repository_context(finding)
+        prompt = self._build_prompt(finding, context, repo_context)
 
         # 4. Call LLM
         log.info("Calling Gemini for finding %s (%s:%d)", fid, file_rel, line)
@@ -344,7 +350,42 @@ class RemediationAgent:
     # Prompt building
     # ------------------------------------------------------------------
 
-    def _build_prompt(self, finding: dict, context: str) -> str:
+    def _repository_context(self, finding: dict) -> str:
+        skip = {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build", ".preprod", "data"}
+        files = []
+        for root, dirs, names in os.walk(self.repo_path):
+            dirs[:] = [d for d in dirs if d not in skip]
+            for name in names:
+                try:
+                    files.append(str(Path(root, name).relative_to(self.repo_path)).replace("\\", "/"))
+                except ValueError:
+                    pass
+        files.sort()
+        important = []
+        for rel in files:
+            if Path(rel).name in {"README.md", "package.json", "requirements.txt", "pyproject.toml", "go.mod", "pom.xml", "Cargo.toml"} and len(important) < 6:
+                try:
+                    important.append("--- " + rel + " ---\n" + (self.repo_path / rel).read_text(encoding="utf-8", errors="replace")[:6000])
+                except OSError:
+                    pass
+        target = str(finding.get("file", ""))
+        related = []
+        stem = Path(target).stem
+        for rel in files:
+            if rel == target or len(related) >= 4 or Path(rel).stem != stem:
+                continue
+            try:
+                related.append("--- " + rel + " ---\n" + (self.repo_path / rel).read_text(encoding="utf-8", errors="replace")[:4000])
+            except OSError:
+                pass
+        parts = ["Repository file tree:\n" + "\n".join(files[:300])]
+        if important:
+            parts.append("Important project files:\n" + "\n".join(important))
+        if related:
+            parts.append("Related modules:\n" + "\n".join(related))
+        return "\n\n".join(parts)[:26000]
+
+    def _build_prompt(self, finding: dict, context: str, repo_context: str) -> str:
         return _USER_PROMPT_TEMPLATE.format(
             finding_id=finding.get("id", ""),
             rule=finding.get("rule", ""),
@@ -357,6 +398,7 @@ class RemediationAgent:
             what_and_why=finding.get("what_and_why", finding.get("message", "")),
             how_to_fix=finding.get("how_to_fix", "Apply standard secure coding practices."),
             context=context,
+            repo_context=repo_context,
         )
 
     # ------------------------------------------------------------------
