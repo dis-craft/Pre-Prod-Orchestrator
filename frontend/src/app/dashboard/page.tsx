@@ -93,9 +93,10 @@ export default function DashboardPage() {
   if (!metrics) return null;
 
   const latestFinding = findings[0];
-  const latestRepo = latestFinding?.repository || activities[0]?.evidence?.repository || 'dis-craft/Pre-prod-tester';
-  const latestCommit = activities[0]?.evidence?.commit || latestFinding?.commitSha || '';
-  const latestWorkflow = activities[0]?.evidence?.workflowUrl || '';
+  const evidence = activities[0]?.evidence || {};
+  const latestRepo = String(evidence.repository || latestFinding?.repository || 'dis-craft/Pre-prod-tester');
+  const latestCommit = String(evidence.commit || latestFinding?.commitSha || '');
+  const latestWorkflow = String(evidence.workflowUrl || '');
   const scanFailed = findings.some((f) => ['CRITICAL', 'HIGH'].includes(f.severity));
   const pipelineState = scanFailed ? 'FIX REQUIRED' : 'SECURITY CHECK PASSED';
 
@@ -258,7 +259,7 @@ export default function DashboardPage() {
                 <h2 className="text-sm font-semibold text-gray-200">Latest Change Details</h2>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-[11px]">
-                <Detail label="FILES" value={String((activities[0]?.evidence?.filesChanged ?? metrics.openFindings) || 0)} />
+                <Detail label="FILES" value={String(evidence.filesChanged ?? 0)} />
                 <Detail label="FINDINGS" value={String(findings.length)} />
                 <Detail label="CRITICAL" value={String(metrics.criticalCount)} />
                 <Detail label="STATUS" value={pipelineState} />
