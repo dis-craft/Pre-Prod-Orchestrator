@@ -94,6 +94,7 @@ runs:
         PRIMARY_ATTEMPTS: ${{ inputs.primary-attempts }}
         FALLBACK_ATTEMPTS: ${{ inputs.fallback-attempts }}
         GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
+        GEMINI_RETRY_ATTEMPTS: "1"
         PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set -euo pipefail
