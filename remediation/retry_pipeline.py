@@ -19,7 +19,7 @@ def rescan(repo):
 def main():
  p=argparse.ArgumentParser()
  p.add_argument('--repo',required=True); p.add_argument('--findings',required=True); p.add_argument('--output',required=True)
- p.add_argument('--primary-model',default='gemini-3.5-flash-lite'); p.add_argument('--fallback-model',default='grok-4.6')
+ p.add_argument('--primary-model',default='gemini-3.5-flash-lite'); p.add_argument('--fallback-model',default='gemini-2.5-flash')
  p.add_argument('--primary-attempts',type=int,default=3); p.add_argument('--fallback-attempts',type=int,default=2)
  a=p.parse_args(); repo=Path(a.repo).resolve(); findings=Path(a.findings); out=Path(a.output)
  base=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
@@ -28,8 +28,7 @@ def main():
  if not fs:
   out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps({'status':'NO_FINDINGS','findings':0,'fixed':0,'source_commit':base,'attempts':[]},indent=2)+'\\n'); return 0
  attempts=[]; success=False
- providers=[('gemini',a.primary_model,a.primary_attempts)]
- if os.environ.get('XAI_API_KEY'): providers.append(('xai',a.fallback_model,a.fallback_attempts))
+ providers=[('gemini',a.primary_model,a.primary_attempts),('gemini',a.fallback_model,a.fallback_attempts)]
  for provider,model,count in providers:
   for n in range(1,max(0,count)+1):
    subprocess.run(['git','reset','--hard',base],cwd=repo,check=True,stdout=subprocess.DEVNULL)
