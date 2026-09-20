@@ -143,8 +143,6 @@ class LLMProvider(ABC):
             confidence=0.5
         )
 
-DEFAULT_GEMINI_API_KEY = "AQ.Ab8RN6L9zp0zeAJdVGirPyZZ0h9T45GpS_WxqjdWCUoJgvBXyg"
-
 class GeminiProvider(LLMProvider):
     """Google Gemini API provider using google-genai SDK."""
     def __init__(self, api_key: str | None = None, model_name: str = 'gemini-3.6-flash'):
