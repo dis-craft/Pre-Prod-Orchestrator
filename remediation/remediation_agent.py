@@ -364,17 +364,41 @@ class RemediationAgent:
     # ------------------------------------------------------------------
 
     def _call_llm(self, prompt: str) -> str:
-        """Call Gemini and return raw text response."""
-        response = self.client.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=_SYSTEM_PROMPT,
-                temperature=0.1,       # Low temperature for deterministic edits
-                max_output_tokens=4096,
-            ),
-        )
-        return response.text or ""
+        """Call Gemini and retry transient capacity/rate-limit failures."""
+        attempts = max(1, int(os.environ.get("GEMINI_RETRY_ATTEMPTS", "4")))
+        last_error: Exception | None = None
+
+        for attempt in range(1, attempts + 1):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=genai.types.GenerateContentConfig(
+                        system_instruction=_SYSTEM_PROMPT,
+                        temperature=0.1,
+                        max_output_tokens=4096,
+                    ),
+                )
+                return response.text or ""
+            except Exception as exc:
+                last_error = exc
+                message = str(exc).lower()
+                transient = any(
+                    marker in message
+                    for marker in ("503", "unavailable", "429", "resource exhausted", "high demand")
+                )
+                if not transient or attempt == attempts:
+                    raise
+
+                delay = 2 ** (attempt - 1)
+                log.warning(
+                    "Transient Gemini failure on attempt %d/%d; retrying in %ds: %s",
+                    attempt, attempts, delay, exc,
+                )
+                import time
+                time.sleep(delay)
+
+        raise RuntimeError(f"Gemini call failed after {attempts} attempts: {last_error}")
 
     # ------------------------------------------------------------------
     # Parse LLM response
