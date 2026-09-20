@@ -13,7 +13,7 @@ def rescan(repo):
   if not p.exists(): return False,'no-report'
   d=json.loads(p.read_text()); xs=d.get('findings',d) if isinstance(d,dict) else d
   blocking=[x for x in xs if str(x.get('severity','')).upper() in ('HIGH','CRITICAL')]
-  return len(blocking)==0,blocking
+  return blocking
  finally: shutil.rmtree(out,ignore_errors=True)
 
 def main():
@@ -41,12 +41,17 @@ def main():
     except Exception: pass
    attempts.append({'provider':provider,'model':model,'attempt':n,'status':'APPLIED' if fixed else 'FAILED','error':r.stderr[-2000:] if r.returncode not in (0,2) else ''})
    if fixed:
-    passed,remaining=rescan(repo)
+    remaining=rescan(repo)
+    base_keys={(str(x.get('rule','')),str(x.get('file',''))) for x in fs}
+    unresolved=[x for x in remaining if (str(x.get('rule','')),str(x.get('file',''))) in base_keys]
+    new_findings=[x for x in remaining if (str(x.get('rule','')),str(x.get('file',''))) not in base_keys]
+    passed=(not unresolved and not new_findings)
     files=subprocess.check_output(['git','diff','--name-only',base],cwd=repo,text=True).splitlines()
     sandbox=sandbox_validate(str(repo),files)
     attempts[-1]['sandbox']=sandbox
     attempts[-1]['rescan_passed']=passed
-    attempts[-1]['remaining']=remaining if isinstance(remaining,list) else []
+    attempts[-1]['remaining']=unresolved
+    attempts[-1]['new_findings']=new_findings
     if passed and sandbox.get('passed'):
      success=True; break
   if success: break
