@@ -147,7 +147,7 @@ jobs:
           branch="security/ai-remediation/${GITHUB_SHA::12}"
           git checkout -b "$branch"
           python3 - <<'PY' > "$RUNNER_TEMP/pr-body.md"
-          import json
+          import json, os
           from pathlib import Path
           p = Path('.preprod/remediation-result.json')
           if p.exists():
