@@ -85,7 +85,10 @@ runs:
         PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set +e
-        python3 -m scanner --repo "$GITHUB_WORKSPACE" --model none --format all --output "$GITHUB_WORKSPACE/$OUTPUT" --quiet
+        rm -rf "$RUNNER_TEMP/remediation-scan"
+        mkdir -p "$RUNNER_TEMP/remediation-scan"
+        rsync -a --exclude ".git" --exclude "data" --exclude ".preprod" --exclude "node_modules" "$GITHUB_WORKSPACE/" "$RUNNER_TEMP/remediation-scan/"
+        python3 -m scanner --repo "$RUNNER_TEMP/remediation-scan" --model none --format all --output "$GITHUB_WORKSPACE/$OUTPUT" --quiet
         rc=$?
         set -e
         if [ "$rc" -gt 1 ]; then exit "$rc"; fi
