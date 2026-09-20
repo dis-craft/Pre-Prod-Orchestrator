@@ -27,7 +27,23 @@ inputs:
   context-window:
     description: Number of surrounding source lines sent to the model.
     required: false
-    default: "30"
+    default: "60"
+  fallback-model:
+    description: xAI/Grok fallback model.
+    required: false
+    default: grok-4.6
+  primary-attempts:
+    description: Primary remediation attempts.
+    required: false
+    default: "3"
+  fallback-attempts:
+    description: Fallback remediation attempts.
+    required: false
+    default: "2"
+  full-repo-rescan:
+    description: Scan the whole repository.
+    required: false
+    default: "false"
 outputs:
   findings:
     description: Baseline findings JSON path.
@@ -50,10 +66,14 @@ runs:
       env:
         SCAN_INPUT: ${{ inputs.scan-input }}
         SCAN_OUTPUT: ${{ inputs.scan-output }}
+        FULL_REPO_RESCAN: ${{ inputs.full-repo-rescan }}
         PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set +e
-        python3 -m scanner --repo "$GITHUB_WORKSPACE" --json-input "$GITHUB_WORKSPACE/$SCAN_INPUT" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
+        if [ "$FULL_REPO_RESCAN" = "true" ]; then
+          python3 -m scanner --repo "$GITHUB_WORKSPACE" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
+        else
+          python3 -m scanner --repo "$GITHUB_WORKSPACE" --json-input "$GITHUB_WORKSPACE/$SCAN_INPUT" --model none --format all --output "$GITHUB_WORKSPACE/$SCAN_OUTPUT" --quiet
         rc=$?
         set -e
         if [ "$rc" -gt 1 ]; then exit "$rc"; fi
@@ -69,11 +89,15 @@ runs:
         OUTPUT: ${{ inputs.remediation-output }}
         MODEL: ${{ inputs.model }}
         CONTEXT_WINDOW: ${{ inputs.context-window }}
+        FALLBACK_MODEL: ${{ inputs.fallback-model }}
+        PRIMARY_ATTEMPTS: ${{ inputs.primary-attempts }}
+        FALLBACK_ATTEMPTS: ${{ inputs.fallback-attempts }}
+        XAI_API_KEY: ${{ env.XAI_API_KEY }}
         GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
         PYTHONPATH: ${{ github.action_path }}/../../..
       run: |
         set -euo pipefail
-        if [ -z "${GEMINI_API_KEY:-}" ]; then echo "GEMINI_API_KEY is required when generate-remediation=true."; exit 1; fi
+        if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${XAI_API_KEY:-}" ]; then echo "At least one remediation model API key is required."; exit 1; fi
         python3 "$GITHUB_ACTION_PATH/../../../remediation/retry_pipeline.py" --repo "$GITHUB_WORKSPACE" --findings "$FINDINGS" --output "$GITHUB_WORKSPACE/$OUTPUT" --primary-model "$MODEL" --fallback-model "$FALLBACK_MODEL" --primary-attempts "$PRIMARY_ATTEMPTS" --fallback-attempts "$FALLBACK_ATTEMPTS"
         echo "result=$GITHUB_WORKSPACE/$OUTPUT" >> "$GITHUB_OUTPUT"
 
