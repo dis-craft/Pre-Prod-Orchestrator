@@ -4,13 +4,18 @@ import argparse,json,os,subprocess,sys,tempfile,shutil
 from pathlib import Path
 from remediation.sandbox_validate import validate as sandbox_validate
 
-def rescan(repo):
+def rescan(repo, base):
  out=Path(tempfile.mkdtemp(prefix='preprod-rescan-'))
+ diff_path=out/'changes.diff'
  try:
-  r=subprocess.run([sys.executable,'-m','scanner','--repo',str(repo),'--model','none','--format','json','--output',str(out),'--quiet'],cwd=repo,text=True,capture_output=True)
-  if r.returncode>1: return {'error': 'scanner-error', 'stderr': r.stderr[-4000:]}
+  patch=subprocess.run(['git','diff','--no-ext-diff','--unified=80',base],cwd=repo,text=True,capture_output=True,check=True).stdout
+  diff_path.write_text(patch,encoding='utf-8')
+  if not patch.strip():
+   return {'findings': []}
+  r=subprocess.run([sys.executable,'-m','scanner','--repo',str(repo),'--diff',str(diff_path),'--model','none','--format','json','--output',str(out),'--quiet'],cwd=repo,text=True,capture_output=True)
+  if r.returncode>1: return {'error':'scanner-error','stderr':(r.stderr or r.stdout)[-4000:]}
   p=out/'findings.json'
-  if not p.exists(): return {'error': 'no-report'}
+  if not p.exists(): return {'error':'no-report'}
   d=json.loads(p.read_text()); xs=d.get('findings',d) if isinstance(d,dict) else d
   blocking=[x for x in xs if str(x.get('severity','')).upper() in ('HIGH','CRITICAL')]
   return {'findings': blocking}
@@ -42,7 +47,7 @@ def main():
     except Exception: pass
    attempts.append({'provider':provider,'model':model,'attempt':n,'status':'APPLIED' if fixed else 'FAILED','error':r.stderr[-2000:] if r.returncode not in (0,2) else ''})
    if fixed:
-    remaining=rescan(repo)
+    remaining=rescan(repo, base)
     if remaining.get('error'):
      passed=False
      unresolved=[]
