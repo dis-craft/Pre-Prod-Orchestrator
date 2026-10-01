@@ -11,6 +11,7 @@ import logging
 import os
 import re
 import textwrap
+import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Optional
@@ -111,6 +112,11 @@ _USER_PROMPT_TEMPLATE = textwrap.dedent("""\
 
 ---
 
+## Repository Context
+{repo_context}
+
+---
+
 ## Source Code (with line numbers)
 
 File: `{file}`
@@ -208,7 +214,8 @@ class RemediationAgent:
         )
 
         # 3. Build prompt
-        prompt = self._build_prompt(finding, context)
+        repo_context = self._repository_context(finding)
+        prompt = self._build_prompt(finding, context, repo_context)
 
         # 4. Call LLM
         log.info("Calling Gemini for finding %s (%s:%d)", fid, file_rel, line)
@@ -344,7 +351,42 @@ class RemediationAgent:
     # Prompt building
     # ------------------------------------------------------------------
 
-    def _build_prompt(self, finding: dict, context: str) -> str:
+    def _repository_context(self, finding: dict) -> str:
+        skip = {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build", ".preprod", "data"}
+        files = []
+        for root, dirs, names in os.walk(self.repo_path):
+            dirs[:] = [d for d in dirs if d not in skip]
+            for name in names:
+                try:
+                    files.append(str(Path(root, name).relative_to(self.repo_path)).replace("\\", "/"))
+                except ValueError:
+                    pass
+        files.sort()
+        important = []
+        for rel in files:
+            if Path(rel).name in {"README.md", "package.json", "requirements.txt", "pyproject.toml", "go.mod", "pom.xml", "Cargo.toml"} and len(important) < 6:
+                try:
+                    important.append("--- " + rel + " ---\n" + (self.repo_path / rel).read_text(encoding="utf-8", errors="replace")[:6000])
+                except OSError:
+                    pass
+        target = str(finding.get("file", ""))
+        related = []
+        stem = Path(target).stem
+        for rel in files:
+            if rel == target or len(related) >= 4 or Path(rel).stem != stem:
+                continue
+            try:
+                related.append("--- " + rel + " ---\n" + (self.repo_path / rel).read_text(encoding="utf-8", errors="replace")[:4000])
+            except OSError:
+                pass
+        parts = ["Repository file tree:\n" + "\n".join(files[:300])]
+        if important:
+            parts.append("Important project files:\n" + "\n".join(important))
+        if related:
+            parts.append("Related modules:\n" + "\n".join(related))
+        return "\n\n".join(parts)[:26000]
+
+    def _build_prompt(self, finding: dict, context: str, repo_context: str) -> str:
         return _USER_PROMPT_TEMPLATE.format(
             finding_id=finding.get("id", ""),
             rule=finding.get("rule", ""),
@@ -357,6 +399,7 @@ class RemediationAgent:
             what_and_why=finding.get("what_and_why", finding.get("message", "")),
             how_to_fix=finding.get("how_to_fix", "Apply standard secure coding practices."),
             context=context,
+            repo_context=repo_context,
         )
 
     # ------------------------------------------------------------------
@@ -364,10 +407,13 @@ class RemediationAgent:
     # ------------------------------------------------------------------
 
     def _call_llm(self, prompt: str) -> str:
-        """Call Gemini and retry transient capacity/rate-limit failures."""
-        attempts = max(1, int(os.environ.get("GEMINI_RETRY_ATTEMPTS", "4")))
-        last_error: Exception | None = None
+        """Call Gemini and require schema-constrained JSON edits."""
+        provider = os.environ.get("REMEDIATION_PROVIDER", "gemini").lower()
+        if provider == "xai":
+            return self._call_xai(prompt)
 
+        attempts = max(1, int(os.environ.get("GEMINI_RETRY_ATTEMPTS", "4")))
+        last_error = None
         for attempt in range(1, attempts + 1):
             try:
                 response = self.client.models.generate_content(
@@ -375,8 +421,29 @@ class RemediationAgent:
                     contents=prompt,
                     config=genai.types.GenerateContentConfig(
                         system_instruction=_SYSTEM_PROMPT,
-                        temperature=0.1,
                         max_output_tokens=4096,
+                        response_mime_type="application/json",
+                        response_schema={
+                            "type": "object",
+                            "properties": {
+                                "edits": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "file": {"type": "string"},
+                                            "start_line": {"type": "integer"},
+                                            "end_line": {"type": "integer"},
+                                            "original": {"type": "string"},
+                                            "replacement": {"type": "string"},
+                                            "explanation": {"type": "string"},
+                                        },
+                                        "required": ["file", "start_line", "end_line", "original", "replacement", "explanation"],
+                                    },
+                                }
+                            },
+                            "required": ["edits"],
+                        },
                     ),
                 )
                 return response.text or ""
@@ -385,20 +452,12 @@ class RemediationAgent:
                 message = str(exc).lower()
                 transient = any(
                     marker in message
-                    for marker in ("503", "unavailable", "429", "resource exhausted", "high demand")
+                    for marker in ("503", "unavailable", "429", "resource exhausted", "high demand", "timeout")
                 )
                 if not transient or attempt == attempts:
                     raise
-
-                delay = 2 ** (attempt - 1)
-                log.warning(
-                    "Transient Gemini failure on attempt %d/%d; retrying in %ds: %s",
-                    attempt, attempts, delay, exc,
-                )
-                import time
-                time.sleep(delay)
-
-        raise RuntimeError(f"Gemini call failed after {attempts} attempts: {last_error}")
+                time.sleep(2 ** (attempt - 1))
+        raise RuntimeError(f"Gemini failed: {last_error}")
 
     # ------------------------------------------------------------------
     # Parse LLM response

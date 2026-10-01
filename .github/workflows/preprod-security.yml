@@ -13,6 +13,41 @@ on:
         required: false
         type: string
         default: ""
+      fallback-model:
+        description: Secondary Gemini model.
+        required: false
+        type: string
+        default: gemini-2.5-flash
+      primary-attempts:
+        description: Primary Gemini model attempts.
+        required: false
+        type: string
+        default: "3"
+      fallback-attempts:
+        description: Secondary Gemini model attempts.
+        required: false
+        type: string
+        default: "2"
+      full-repo-rescan:
+        description: Scan whole repository for PR review.
+        required: false
+        type: boolean
+        default: false
+      scan-input:
+        description: Canonical scan JSON path produced by Pre-Prod Tester.
+        required: false
+        type: string
+        default: .preprod/scan.json
+      source-sha:
+        description: Original source commit being remediated.
+        required: false
+        type: string
+        default: ""
+      reuse-findings:
+        description: Reuse security findings from the canonical scan artifact.
+        required: false
+        type: boolean
+        default: false
     secrets:
       GEMINI_API_KEY:
         required: false
@@ -23,10 +58,6 @@ on:
       remediation:
         description: Remediation result JSON.
         value: ${{ jobs.security.outputs.remediation }}
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
   security:
@@ -41,12 +72,33 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ inputs.source-sha != '' && 'main' || github.ref }}
 
       - name: Capture exact push diff
         id: capture
+        if: ${{ inputs.source-sha == '' }}
         uses: dis-craft/Pre-prod-tester/.github/actions/capture-diff@main
         with:
           output: .preprod/scan.json
+
+      - name: Prepare canonical scan
+        id: canonical_scan
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ inputs.source-sha }}
+          CANONICAL_SCAN: ${{ inputs.scan-input }}
+        run: |
+          set -euo pipefail
+          if [ -n "$SOURCE_SHA" ]; then
+            test -f "$CANONICAL_SCAN"
+            cp "$CANONICAL_SCAN" "$RUNNER_TEMP/canonical-scan.json"
+            git fetch origin "$SOURCE_SHA"
+            git checkout --force "$SOURCE_SHA"
+            mkdir -p .preprod
+            cp "$RUNNER_TEMP/canonical-scan.json" .preprod/scan.json
+          else
+            test -f "$CANONICAL_SCAN"
+          fi
 
       - name: Run scanner and AI remediation
         id: engine
@@ -54,6 +106,12 @@ jobs:
         with:
           scan-input: .preprod/scan.json
           generate-remediation: ${{ inputs.generate-remediation }}
+          model: gemini-3.5-flash
+          fallback-model: ${{ inputs.fallback-model }}
+          primary-attempts: ${{ inputs.primary-attempts }}
+          fallback-attempts: ${{ inputs.fallback-attempts }}
+          full-repo-rescan: ${{ inputs.full-repo-rescan }}
+          reuse-findings: ${{ inputs.reuse-findings }}
 
       - name: Enforce security gate for review
         if: ${{ !inputs.generate-remediation }}
@@ -113,6 +171,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BASE_BRANCH: ${{ github.base_ref || github.ref_name }}
+          DASHBOARD_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+          SOURCE_SHA: ${{ inputs.source-sha || github.sha }}
         shell: bash
         run: |
           set -euo pipefail
@@ -120,10 +180,10 @@ jobs:
             echo "No source changes were generated; no remediation PR needed."
             exit 0
           fi
-          branch="security-remediation/${GITHUB_SHA::12}"
+          branch="security/ai-remediation/${SOURCE_SHA::12}"
           git checkout -b "$branch"
           python3 - <<'PY' > "$RUNNER_TEMP/pr-body.md"
-          import json
+          import json, os
           from pathlib import Path
           p = Path('.preprod/remediation-result.json')
           if p.exists():
@@ -133,6 +193,7 @@ jobs:
               print(f"Fixed: **{d.get('fixed', 0)}** / {d.get('findings', 0)} finding(s)")
               print()
               print('Human review is required before merge.')
+              print(f'Dashboard: {os.environ.get("DASHBOARD_URL", "")}')
           else:
               print('## AI Security Remediation')
               print('Candidate remediation generated and validated by the security pipeline.')
