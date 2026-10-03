@@ -54,7 +54,7 @@ class RuleRegistry:
             [r"execute\s*\(\s*f?[\"'].*?\{\s*\w+\s*\}.*?[\"']\s*\)", r"execute\s*\(\s*[\"'].*?%\s*s.*?[\"']\s*%"],
             [".py"], "Unsafe string formatting in SQL execution.", "Attacker can execute arbitrary SQL queries.", "Use parameterized queries.")
         add("INJ-SQL-JS", "89", "Injection", "SQL Injection (Node.js)", "CRITICAL",
-            [r"query\s*\(\s*`.*?\$\{", r"query\s*\(\s*query\b", r"`\s*SELECT\s+.*?\$\{", r"query\s*\(\s*[\"'].*?\+.*?\+.*?[\"']"],
+            [r"query\s*\(\s*`.*?\$\{", r"query\s*\(\s*query\s*\)", r"`\s*SELECT\s+.*?\$\{", r"query\s*\(\s*[\"'].*?\+.*?\+.*?[\"']"],
             [".js", ".ts"], "Unsafe string formatting or template literals in SQL execution.", "Attacker can execute arbitrary SQL queries.", "Use parameterized queries.")
         add("INJ-SQL-JAVA", "89", "Injection", "SQL Injection (Java)", "CRITICAL",
             [r"executeQuery\s*\(\s*[\"'].*?\+.*?\+.*?[\"']\s*\)"],
